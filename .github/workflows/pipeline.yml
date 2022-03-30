@@ -72,7 +72,7 @@ jobs:
       - name: build ui
         run: npm run build:ui
   deploy:
-    if: ${{ github.ref == refs/head/main }}
+    if: ${{ github.ref == 'refs/head/main' }}
     runs-on: ubuntu-20.04
     needs: [build]
     steps:
@@ -87,7 +87,7 @@ jobs:
           checkstring: "ok"
           rollbackonhealthcheckfailed: true
   tag_release:
-    if: ${{ github.ref == refs/head/main }}
+    if: ${{ github.ref == 'refs/head/main' }}
     needs: [deploy]
     runs-on: ubuntu-20.04
     steps:
