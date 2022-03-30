@@ -4,8 +4,14 @@
   "description": "Backend for Instaclone",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test": "cross-env NODE_ENV=test jest --verbose --detectOpenHandles",
+    "start": "cross-env NODE_ENV=production node src/index.ts",
+    "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
+    "start:test": "cross-env NODE_ENV=test node src/index.ts",
+    "start:dev": "cross-env NODE_ENV=development node src/index.ts",
+    "lint": "eslint .",
+    "build:ui": "rm -rf build && cd ../frontend && npm run build && mv build ../backend"
   },
   "author": "",
   "license": "ISC",
