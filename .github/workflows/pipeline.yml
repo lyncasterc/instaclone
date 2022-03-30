@@ -1,0 +1,103 @@
+name: Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  test_lint_backend:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: npm install
+        run: npm install
+      - name: lint
+        run: npm run lint
+      - name: test
+        run: npm test
+  test_lint_frontend:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: npm install
+        run: npm install
+      - name: lint
+        run: npm run lint
+      # - name: install backend dependencies (for cypress to run)
+      #   run: |
+      #     cd ../backend
+      #     npm install
+      # - name: cypress tests
+      #   env:
+      #       PORT: 3001
+      #   uses: cypress-io/github-action@v2
+      #   with: 
+      #     # project: ./frontend
+      #     start: npm run server:dev
+      #     wait-on: http://localhost:3001
+      #     working-directory: ./frontend
+
+  build:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: backend
+    needs: [test_lint_backend, test_lint_frontend]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: npm install
+        run: npm install
+      - name: install frontend dependencies
+        run: cd ../frontend && npm install
+      - name: build ui
+        run: npm run build:ui
+  deploy:
+    if: ${{ github.ref == refs/head/main' }}
+    runs-on: ubuntu-20.04
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "instaclone-sc"
+          heroku_email: "stiven.cabrera3@gmail.com"
+          appdir: "backend"
+          healthcheck: ""
+          checkstring: "ok"
+          rollbackonhealthcheckfailed: true
+  tag_release:
+    if: ${{ github.ref == refs/head/main' }}
+    needs: [deploy]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# for deploying, make sure to have all final dependencies installed before deploying at all. aka, don't deploy, realize you need a new dep and then deploy again
+  # todo: research how i can add new packages after deployment and then redeploy 
