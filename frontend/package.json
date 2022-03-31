@@ -33,39 +33,10 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:tests": "concurrently \"npm run server:dev\" \"npm start\" \"npm run cypress:open\"",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "ts-jest:init": "npx ts-jest config:init"
   },
   "proxy": "http://localhost:3001",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest",
-      "airbnb",
-      "airbnb-typescript"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "/Users/stivencabrera/Desktop/MERN-projects/instaclone/frontend/tsconfig.json"
-    },
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "rules": {
-      "no-console": 0,
-      "react/jsx-filename-extension": [
-        2,
-        {
-          "extensions": [
-            ".js",
-            ".jsx",
-            ".ts",
-            ".tsx"
-          ]
-        }
-      ],
-      "react/react-in-jsx-scope": 0
-    }
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -88,6 +59,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.4.0"
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "ts-jest": "^27.1.4"
   }
 }
