@@ -31,7 +31,7 @@ function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
 
 const getErrorMessage = (maybeError: unknown) => toErrorWithMessage(maybeError).message;
 
-module.exports = {
+export default {
   info,
   error,
   getErrorMessage,
