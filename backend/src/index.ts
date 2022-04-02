@@ -1,19 +1,10 @@
-import express from 'express';
-import cors from 'cors';
-import mongo from './mongo';
-import config from './utils/config';
+import http from 'http';
+import app from './app';
 import logger from './utils/logger';
+import config from './utils/config';
 
-const { NODE_ENV } = process.env;
-const app = express();
-app.use(express.json());
-app.use(express.static('build'));
-app.use(cors());
+const server = http.createServer(app);
 
-if (NODE_ENV === 'development') {
-  mongo.connect(config.DEV_MONGODB_URI!);
-}
-
-app.listen(config.PORT, () => {
+server.listen(config.PORT, () => {
   logger.info(`Server running on port ${config.PORT}`);
 });
