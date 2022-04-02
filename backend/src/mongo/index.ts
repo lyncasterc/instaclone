@@ -1,9 +1,5 @@
 import mongoose from 'mongoose';
 import logger from '../utils/logger';
-import user from './models/user';
-import post from './models/post';
-import comment from './models/comment';
-import testMongodb from './test-mongodb';
 
 const connect = async (uri: string) => {
   try {
@@ -15,10 +11,8 @@ const connect = async (uri: string) => {
   }
 };
 
-export default {
-  connect,
-  user,
-  post,
-  comment,
-  testMongodb,
-};
+export default connect;
+export { default as User } from './models/user';
+export { default as Post } from './models/post';
+export { default as Comment } from './models/comment';
+export { default as testMongodb } from './test-mongodb';
