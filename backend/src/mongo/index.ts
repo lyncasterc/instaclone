@@ -3,6 +3,7 @@ import logger from '../utils/logger';
 import user from './models/user';
 import post from './models/post';
 import comment from './models/comment';
+import testMongodb from './test-mongodb';
 
 const connect = async (uri: string) => {
   try {
@@ -19,4 +20,5 @@ export default {
   user,
   post,
   comment,
+  testMongodb,
 };
