@@ -1,6 +1,6 @@
 import express from 'express';
-import userService from '../services/userService';
-import fieldParsers from '../utils/fieldParsers';
+import userService from '../services/user-service';
+import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
 
 const router = express.Router();
@@ -30,5 +30,7 @@ router.post('/', async (req, res) => {
     res.status(400).send({ error: logger.getErrorMessage(error) });
   }
 });
+
+// router.pat
 
 export default router;
