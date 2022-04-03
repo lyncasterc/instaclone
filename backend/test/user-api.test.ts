@@ -8,6 +8,7 @@ const api = supertest(app);
 
 beforeAll(async () => { await testMongodb.connect(); });
 beforeEach(async () => {
+  await testMongodb.clear();
   const passwordHash = await bcrypt.hash('secret', 10);
 
   const initialUsers = [
