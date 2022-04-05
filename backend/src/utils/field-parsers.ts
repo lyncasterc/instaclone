@@ -1,4 +1,5 @@
-import { NewUser } from '../types';
+import validDataUrl from 'valid-data-url';
+import { NewUser, ProofedUpdatedUser } from '../types';
 
 const isString = (text: unknown): text is string => typeof text === 'string' || text instanceof String;
 
@@ -42,6 +43,30 @@ const toNewUser = ({
   return newUser;
 };
 
+// defines the fields that may be present in the body of a PUT request to update a user.
+interface UnknownUpdateUserFields {
+  fullName?: unknown,
+  email?: unknown,
+  username?: unknown,
+  password?: unknown,
+  image?: unknown,
+}
+
+const proofUpdatedUser = ({
+  fullName, username, email, password, image,
+}: UnknownUpdateUserFields): ProofedUpdatedUser => {
+  const user: ProofedUpdatedUser = {};
+
+  if (fullName) user.fullName = parseStringField(fullName, 'full name');
+  if (username) user.username = parseStringField(username, 'username');
+  if (email) user.email = parseStringField(email, 'email');
+  if (password) user.password = parseStringField(password, 'password');
+  if (image) user.image = parseDataURIField(image);
+
+  return user;
+};
+
 export default {
   toNewUser,
+  proofUpdatedUser,
 };
