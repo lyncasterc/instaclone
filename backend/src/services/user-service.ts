@@ -24,7 +24,9 @@ const addUser = async (user: NewUser) => {
   const passwordHash = await bcyrpt.hash(user.password, 10);
 
   const newUser = new User({
-    ...user,
+    fullName: user.fullName,
+    username: user.username,
+    email: user.email,
     passwordHash,
   });
 
