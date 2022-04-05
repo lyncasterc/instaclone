@@ -2,6 +2,7 @@ import express from 'express';
 import userService from '../services/user-service';
 import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
+import cloudinary from '../utils/cloudinary';
 
 const router = express.Router();
 
@@ -30,7 +31,22 @@ router.post('/', async (req, res) => {
     res.status(400).send({ error: logger.getErrorMessage(error) });
   }
 });
+// TODO: update this to require authorization token.
+router.put('/:id', async (req, res) => {
+  try {
+    const user = fieldParsers.proofUpdatedUser(req.body);
+    if (user.image) {
+      const imageUrl = await cloudinary.upload(user.image);
+      console.log('imageUrl: ', imageUrl);
 
-// router.pat
+      user.image = imageUrl;
+    }
+    const updatedUser = await userService.updateUserById(user, req.params.id);
+
+    res.status(200).send(updatedUser);
+  } catch (error) {
+    res.status(400).send({ error: logger.getErrorMessage(error) });
+  }
+});
 
 export default router;
