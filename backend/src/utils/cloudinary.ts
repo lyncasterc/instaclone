@@ -9,4 +9,11 @@ cloudinary.config({
   api_secret: config.CLOUDINARY_API_SECRET,
 });
 
-export default cloudinary;
+const upload = async (resource: string) => {
+  const response = await cloudinary.uploader.upload(resource);
+  return response.secure_url;
+};
+
+export default {
+  upload,
+};
