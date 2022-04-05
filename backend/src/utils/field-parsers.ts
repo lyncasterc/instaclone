@@ -10,6 +10,18 @@ const parseStringField = (param: unknown, fieldKey: string) => {
   return param;
 };
 
+const parseDataURIField = (param: unknown) => {
+  if (param) {
+    if (!isString(param) || !validDataUrl(param)) {
+      throw new Error('Malformatted image');
+    }
+
+    return param;
+  }
+
+  return undefined;
+};
+
 interface NewUserUnknownFields {
   fullName: unknown,
   email: unknown,
