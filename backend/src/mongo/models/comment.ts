@@ -5,6 +5,7 @@ const commentSchema = new mongoose.Schema(
     post: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Post',
+      required: [true, 'Comment must have a post.'],
     },
     comment: {
       type: String,
