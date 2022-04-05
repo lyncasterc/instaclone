@@ -1,6 +1,6 @@
 import bcyrpt from 'bcrypt';
 import { User } from '../mongo';
-import { NewUser } from '../types';
+import { NewUser, ProofedUpdatedUser } from '../types';
 
 const getUsers = async () => {
   // TODO: figure out if post id is populated by default.
@@ -34,8 +34,26 @@ const addUser = async (user: NewUser) => {
   return savedNewUser;
 };
 
+const updateUserById = async (user: ProofedUpdatedUser, id: string) => {
+  let passwordHash;
+  const updatedUser: any = { ...user };
+
+  if (user.password) {
+    passwordHash = await bcyrpt.hash(user.password, 10);
+    updatedUser.passwordHash = passwordHash;
+  }
+
+  delete updatedUser.password;
+
+  const savedUpdatedUser = await User.findByIdAndUpdate(id, updatedUser, { new: true })
+    .populate('posts', { image: 1 });
+
+  return savedUpdatedUser;
+};
+
 export default {
   getUsers,
   getUserById,
   addUser,
+  updateUserById,
 };
