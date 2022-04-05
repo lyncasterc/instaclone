@@ -153,4 +153,47 @@ describe('When there are multiple users in the database', () => {
       expect(errorMessage).toMatch(/incorrect or missing/i);
     });
   });
+
+  describe('When updating a user', () => {
+    // TODO: update all of these to require authorization token.
+    test('updating user with valid updates succeeds with 200 code', async () => {
+      const targetUser = (await testHelpers.usersInDB())[0];
+
+      const updatedUserFields = {
+        username: 'bobbybo',
+      };
+
+      const response = await api
+        .put(`/api/users/${targetUser.id}`)
+        .send(updatedUserFields)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const returnedUser = response.body;
+      expect(returnedUser.username).toEqual(updatedUserFields.username);
+    });
+
+    test('updating password should update the user passwordHash field with encypted new password', async () => {
+      const targetUser = (await testHelpers.usersInDB())[0];
+
+      const updatedUserFields = {
+        password: 'coolnewpassword',
+      };
+
+      const response = await api
+        .put(`/api/users/${targetUser.id}`)
+        .send(updatedUserFields)
+        .expect(200);
+
+      const returnedUser = response.body;
+      const isPasswordUpdated = await bcrypt.compare(
+        updatedUserFields.password,
+        returnedUser.passwordHash,
+      );
+
+      expect(isPasswordUpdated).toBe(true);
+    });
+  });
+
+  // TODO: Write tests to check if post/comment fields are populated when fetching user/users.
 });
