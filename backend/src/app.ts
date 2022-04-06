@@ -22,4 +22,5 @@ app.use(middleware.tokenExtractor);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
 
+app.use(middleware.errorHandler);
 export default app;
