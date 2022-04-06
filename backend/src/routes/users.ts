@@ -24,7 +24,7 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res) => {
   try {
-    const newUser = fieldParsers.toNewUser(req.body);
+    const newUser = fieldParsers.proofNewUserFields(req.body);
     const savedNewUser = await userService.addUser(newUser);
     res.status(201).send(savedNewUser);
   } catch (error) {
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 // TODO: update this to require authorization token.
 router.put('/:id', async (req, res) => {
   try {
-    const user = fieldParsers.proofUpdatedUser(req.body);
+    const user = fieldParsers.proofUpdateUserFields(req.body);
     if (user.image) {
       cloudinary.upload(user.image)
         .then((imageUrl) => {

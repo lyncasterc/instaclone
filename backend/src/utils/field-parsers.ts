@@ -30,7 +30,7 @@ interface NewUserUnknownFields {
   password: unknown,
 }
 
-const toNewUser = ({
+const proofNewUserFields = ({
   fullName, email, username, password,
 }: NewUserUnknownFields): NewUser => {
   const newUser: NewUser = {
@@ -52,7 +52,7 @@ interface UnknownUpdateUserFields {
   image?: unknown,
 }
 
-const proofUpdatedUser = ({
+const proofUpdateUserFields = ({
   fullName, username, email, password, image,
 }: UnknownUpdateUserFields): ProofedUpdatedUser => {
   const user: ProofedUpdatedUser = {};
@@ -67,6 +67,7 @@ const proofUpdatedUser = ({
 };
 
 export default {
-  toNewUser,
-  proofUpdatedUser,
+  proofNewUserFields,
+  proofUpdateUserFields,
+  proofLogInFields,
 };
