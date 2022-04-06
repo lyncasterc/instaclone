@@ -4,6 +4,7 @@ import userService from '../services/user-service';
 import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
 import cloudinary from '../utils/cloudinary';
+import { ProofedUpdatedUser } from '../types';
 
 const router = express.Router();
 
@@ -32,9 +33,8 @@ router.post('/', async (req, res) => {
     res.status(400).send({ error: logger.getErrorMessage(error) });
   }
 });
-// TODO: update this to require authorization token.
-// TODO: refactor this to use multiple try/catches, remove the promise chaining
-router.put('/:id', async (req, res) => {
+
+router.put('/:id', async (req, res, next) => {
   const decodedToken = !req.token
     ? false
     : jwt.verify(
@@ -49,23 +49,28 @@ router.put('/:id', async (req, res) => {
     return res.status(401).send({ error: 'Unauthorized request.' });
   }
 
+  let user: ProofedUpdatedUser;
   try {
-    const user = fieldParsers.proofUpdateUserFields(req.body);
-    if (user.image) {
-      cloudinary.upload(user.image)
-        .then((imageUrl) => {
-          user.image = imageUrl;
-        })
-        .catch((error) => {
-          logger.error(logger.getErrorMessage(error));
-          return res.status(500).send({ error: 'Something went wrong!' });
-        });
-    }
-    const updatedUser = await userService.updateUserById(user, req.params.id);
-
-    return res.status(200).send(updatedUser);
+    user = fieldParsers.proofUpdateUserFields(req.body);
   } catch (error) {
     return res.status(400).send({ error: logger.getErrorMessage(error) });
+  }
+
+  try {
+    if (user.image) {
+      const imageUrl = await cloudinary.upload(user.image);
+      user.image = imageUrl;
+    }
+  } catch (error) {
+    logger.error(logger.getErrorMessage(error));
+    return res.status(500).send({ error: 'Something went wrong uploading the photo!' });
+  }
+
+  try {
+    const updatedUser = await userService.updateUserById(user, req.params.id);
+    return res.status(200).send(updatedUser);
+  } catch (error) {
+    return next(error);
   }
 });
 
