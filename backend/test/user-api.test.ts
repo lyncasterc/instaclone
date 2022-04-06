@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import app from '../src/app';
 import { testMongodb, User } from '../src/mongo';
 import testHelpers from './test-helpers';
+import { User as UserType } from '../src/types';
 
 const api = supertest(app);
 
@@ -155,10 +156,24 @@ describe('When there are multiple users in the database', () => {
   });
 
   describe('When updating a user', () => {
-    // TODO: update all of these to require authorization token.
-    test('updating user with valid updates succeeds with 200 code', async () => {
-      const targetUser = (await testHelpers.usersInDB())[0];
+    let targetUser: UserType;
+    let token: string;
 
+    beforeEach(async () => {
+      // eslint-disable-next-line prefer-destructuring
+      targetUser = (await testHelpers.usersInDB())[0];
+
+      const response = await api
+        .post('/api/login')
+        .send({
+          username: targetUser.username,
+          password: 'secret',
+        });
+
+      token = response.body.token;
+    });
+
+    test('update request without token fails with 401 error code', async () => {
       const updatedUserFields = {
         username: 'bobbybo',
       };
@@ -166,6 +181,39 @@ describe('When there are multiple users in the database', () => {
       const response = await api
         .put(`/api/users/${targetUser.id}`)
         .send(updatedUserFields)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body.error).toContain('token missing or invalid.');
+      expect(targetUser.username).not.toBe(updatedUserFields.username);
+    });
+
+    test('if the id parameter and token id do not match, fails with 401 error code', async () => {
+      const ids = (await testHelpers.usersInDB()).map((user) => user.id);
+      const differentId = ids.find((id) => id !== targetUser.id);
+
+      const updatedUserFields = {
+        username: 'bobbybo',
+      };
+      console.log('test token:', token);
+      const response = await api
+        .put(`/api/users/${differentId}`)
+        .send(updatedUserFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(401);
+
+      expect(response.body.error).toContain('Unauthorized request.');
+    });
+
+    test('updating user with valid updates and token succeeds with 200 code', async () => {
+      const updatedUserFields = {
+        username: 'bobbybo',
+      };
+
+      const response = await api
+        .put(`/api/users/${targetUser.id}`)
+        .send(updatedUserFields)
+        .set('Authorization', `bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
@@ -174,8 +222,6 @@ describe('When there are multiple users in the database', () => {
     });
 
     test('updating password should update the user passwordHash field with encypted new password', async () => {
-      const targetUser = (await testHelpers.usersInDB())[0];
-
       const updatedUserFields = {
         password: 'coolnewpassword',
       };
@@ -183,6 +229,7 @@ describe('When there are multiple users in the database', () => {
       const response = await api
         .put(`/api/users/${targetUser.id}`)
         .send(updatedUserFields)
+        .set('Authorization', `bearer ${token}`)
         .expect(200);
 
       const returnedUser = response.body;

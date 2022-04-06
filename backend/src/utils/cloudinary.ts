@@ -13,7 +13,11 @@ const upload = async (resource: string) => {
   const response = await cloudinary.uploader.upload(resource);
   return response.secure_url;
 };
+// cloudinary.uploader.destroy();
 
+// TODO: write function for deleting an image.
+// may need to store the public id in the database as well?
+// create image schema
 export default {
   upload,
 };
