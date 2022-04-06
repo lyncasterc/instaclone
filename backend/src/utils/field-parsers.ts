@@ -66,6 +66,20 @@ const proofUpdateUserFields = ({
   return user;
 };
 
+interface UnknownLogInFields {
+  username: unknown,
+  password: unknown,
+}
+
+const proofLogInFields = ({ username, password }: UnknownLogInFields) => {
+  const loginFields = {
+    username: parseStringField(username, 'username'),
+    password: parseStringField(password, 'password'),
+  };
+
+  return loginFields;
+};
+
 export default {
   proofNewUserFields,
   proofUpdateUserFields,
