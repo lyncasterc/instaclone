@@ -36,10 +36,14 @@ router.put('/:id', async (req, res) => {
   try {
     const user = fieldParsers.proofUpdatedUser(req.body);
     if (user.image) {
-      const imageUrl = await cloudinary.upload(user.image);
-      console.log('imageUrl: ', imageUrl);
-
-      user.image = imageUrl;
+      cloudinary.upload(user.image)
+        .then((imageUrl) => {
+          user.image = imageUrl;
+        })
+        .catch((error) => {
+          logger.error(logger.getErrorMessage(error));
+          res.status(500).send({ error: 'Something went wrong!' });
+        });
     }
     const updatedUser = await userService.updateUserById(user, req.params.id);
 
