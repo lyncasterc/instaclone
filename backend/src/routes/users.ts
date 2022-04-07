@@ -1,10 +1,11 @@
 import express from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+// import jwt, { JwtPayload } from 'jsonwebtoken';
 import userService from '../services/user-service';
 import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
 import cloudinary from '../utils/cloudinary';
 import { ProofedUpdatedUser } from '../types';
+import { authenticator } from '../utils/middleware';
 
 const router = express.Router();
 
@@ -34,21 +35,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res, next) => {
-  const decodedToken = !req.token
-    ? false
-    : jwt.verify(
-      req.token,
-      process.env.SECRET as string,
-    ) as JwtPayload;
-
-  if (!decodedToken || !decodedToken.id) {
-    return res.status(401).send({ error: 'token missing or invalid.' });
-  }
-  if (decodedToken.id !== req.params.id) {
-    return res.status(401).send({ error: 'Unauthorized request.' });
-  }
-
+router.put('/:id', authenticator({ matchUser: true }), async (req, res, next) => {
   let user: ProofedUpdatedUser;
   try {
     user = fieldParsers.proofUpdateUserFields(req.body);
