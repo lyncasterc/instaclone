@@ -13,7 +13,7 @@ options:
   that the user id in request params is equal to
   the decoded token's id
 */
-export const authenticator = ({ matchUser }: AuthenticatorOptions) => (
+export const authenticator = ({ matchUser = false }: AuthenticatorOptions = {}) => (
   req: Request,
   res: Response,
   next: NextFunction,
