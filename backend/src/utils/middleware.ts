@@ -9,7 +9,8 @@ interface AuthenticatorOptions {
 /* when used on an individual route,
 authenticates the request by checking if jwt is present and valid.
 options:
-  - matchUser -> if set to true, will verify that the user id in request params is equal to
+  - matchUser -> if set to true, authenticator will verify
+  that the user id in request params is equal to
   the decoded token's id
 */
 export const authenticator = ({ matchUser }: AuthenticatorOptions) => (
