@@ -19,7 +19,7 @@ const isErrorWithMessage = (maybeError: unknown): maybeError is ErrorWithMessage
     && typeof (maybeError as Record<string, unknown>).message === 'string'
 );
 
-function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
+const toErrorWithMessage = (maybeError: unknown): ErrorWithMessage => {
   if (isErrorWithMessage(maybeError)) return maybeError;
 
   try {
@@ -27,7 +27,7 @@ function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
   } catch {
     return new Error(String(maybeError));
   }
-}
+};
 
 const getErrorMessage = (maybeError: unknown) => toErrorWithMessage(maybeError).message;
 
