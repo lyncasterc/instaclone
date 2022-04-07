@@ -1,15 +1,46 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import logger from './logger';
 
-const tokenExtractor = (req: Request, _res: Response, next: NextFunction) => {
+interface AuthenticatorOptions {
+  matchUser?: boolean,
+}
+
+export const authenticator = ({ matchUser }: AuthenticatorOptions) => (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  let token;
+  let decodedToken;
   const authorization = req.get('authorization');
   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    req.token = authorization.substring(7);
+    token = authorization.substring(7);
   }
-  next();
+
+  if (token) {
+    decodedToken = jwt.verify(
+      token,
+      process.env.SECRET as string,
+    ) as JwtPayload;
+  }
+
+  if (!token || !decodedToken || !decodedToken.id) {
+    return res.status(401).send({
+      error: 'token missing or invalid.',
+    });
+  }
+
+  if (matchUser && decodedToken.id !== req.params.id) {
+    return res.status(401).send({ error: 'Unauthorized request.' });
+  }
+
+  req.userToken = decodedToken;
+
+  return next();
 };
 
-const errorHandler = (error: Error, _req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (error: Error, _req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV !== 'test') {
     logger.error(error.message);
   }
@@ -31,9 +62,4 @@ const errorHandler = (error: Error, _req: Request, res: Response, next: NextFunc
   }
 
   return next(error);
-};
-
-export default {
-  tokenExtractor,
-  errorHandler,
 };
