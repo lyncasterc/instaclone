@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { User } from '../src/mongo';
+import { User, Post } from '../src/mongo';
 import { NewUser } from '../src/types';
 
 const usersInDB = async () => {
@@ -19,7 +19,13 @@ const createTestUser = async (user: NewUser) => {
   return savedUser;
 };
 
+const postsInDB = async () => {
+  const posts = await Post.find({});
+  return posts.map((post) => post.toJSON());
+};
+
 export default {
   usersInDB,
   createTestUser,
+  postsInDB,
 };
