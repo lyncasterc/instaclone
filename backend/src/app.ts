@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import mongodbConnect from './mongo';
 import config from './utils/config';
+import postRouter from './routes/posts';
 import userRouter from './routes/users';
 import loginRouter from './routes/login';
 import { errorHandler } from './utils/middleware';
@@ -18,6 +19,7 @@ app.use(express.static('build'));
 app.use(express.json());
 app.use(morgan('dev'));
 
+app.use('/api/posts', postRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
 
