@@ -1,7 +1,8 @@
 import supertest from 'supertest';
 import app from '../src/app';
 import { testMongodb, Post } from '../src/mongo';
-import testHelpers from './test-helpers';
+import testHelpers from './helpers/test-helpers';
+import testDataUri from './helpers/test-data-uri';
 import { User } from '../src/types';
 
 const api = supertest(app);

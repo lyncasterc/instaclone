@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import bcrypt from 'bcrypt';
 import app from '../src/app';
 import { testMongodb, User } from '../src/mongo';
-import testHelpers from './test-helpers';
+import testHelpers from './helpers/test-helpers';
 import { User as UserType } from '../src/types';
 
 const api = supertest(app);
