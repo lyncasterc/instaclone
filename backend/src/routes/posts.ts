@@ -4,6 +4,7 @@ import { authenticator } from '../utils/middleware';
 import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
 import cloudinary from '../utils/cloudinary';
+import { User } from '../mongo';
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.get('/:id', authenticator(), async (req, res) => {
 
 router.post('/', authenticator(), async (req, res, next) => {
   let post;
+  const user = await User.findById(req.userToken!.id);
 
   try {
     post = fieldParsers.proofPostFields(req.body);
@@ -33,6 +35,8 @@ router.post('/', authenticator(), async (req, res, next) => {
 
   try {
     const savedPost = await postService.addPost(post, req.userToken!.id);
+    user.posts = [...user.posts, savedPost];
+    await user.save();
     return res.status(201).send(savedPost);
   } catch (error) {
     logger.error(logger.getErrorMessage(error));
