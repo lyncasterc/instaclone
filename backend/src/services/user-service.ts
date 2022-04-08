@@ -12,7 +12,8 @@ const getUsers = async () => {
 };
 
 const getUserById = async (id: string) => {
-  const user = await User.findById(id);
+  const user = await User.findById(id)
+    .populate('posts', { image: 1 });
   return user;
 };
 
