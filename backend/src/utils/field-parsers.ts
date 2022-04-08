@@ -16,10 +16,7 @@ const parseDataURIField = (param: unknown) => {
     throw new Error('Malformatted or missing image');
   }
 
-    return param;
-  }
-
-  return undefined;
+  return param;
 };
 
 interface NewUserUnknownFields {
@@ -79,8 +76,24 @@ const proofLogInFields = ({ username, password }: UnknownLogInFields) => {
   return loginFields;
 };
 
+interface UnknownPostFields {
+  caption: unknown,
+  image: unknown,
+}
+
+const proofPostFields = ({ caption, image }: UnknownPostFields) => {
+  const postFields = {
+    caption: parseStringField(caption, 'caption'),
+    image: parseDataURIField(image),
+  };
+
+  return postFields;
+};
+
+// TODO: change to named exports.
 export default {
   proofNewUserFields,
   proofUpdateUserFields,
   proofLogInFields,
+  proofPostFields,
 };
