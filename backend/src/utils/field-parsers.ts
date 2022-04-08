@@ -12,10 +12,9 @@ const parseStringField = (param: unknown, fieldKey: string) => {
 };
 
 const parseDataURIField = (param: unknown) => {
-  if (param) {
-    if (!isString(param) || !validDataUrl(param)) {
-      throw new Error('Malformatted image');
-    }
+  if (!param || !isString(param) || !validDataUrl(param)) {
+    throw new Error('Malformatted or missing image');
+  }
 
     return param;
   }
