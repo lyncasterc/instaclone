@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import app from '../src/app';
-import testHelpers from './test-helpers';
+import testHelpers from './helpers/test-helpers';
 import { testMongodb } from '../src/mongo';
 import { User } from '../src/types';
 
