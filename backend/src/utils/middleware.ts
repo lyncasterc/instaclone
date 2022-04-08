@@ -48,8 +48,10 @@ export const authenticator = ({ matchUser = false }: AuthenticatorOptions = {}) 
 };
 
 export const errorHandler = (error: Error, _req: Request, res: Response, next: NextFunction) => {
+  const errorMessage = logger.getErrorMessage(error);
+
   if (process.env.NODE_ENV !== 'test') {
-    logger.error(error.message);
+    logger.error(errorMessage);
   }
 
   if (error.name === 'CastError') {
@@ -57,7 +59,7 @@ export const errorHandler = (error: Error, _req: Request, res: Response, next: N
   }
 
   if (error.name === 'ValidationError') {
-    return res.status(400).send({ error: error.message });
+    return res.status(400).send({ error: errorMessage });
   }
 
   if (error.name === 'JsonWebTokenError') {
