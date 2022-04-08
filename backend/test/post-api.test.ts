@@ -54,10 +54,12 @@ describe('when there are posts in the database', () => {
     test('request without token fails with 401 error code ', async () => {
       const targetPost = (await testHelpers.postsInDB())[0];
 
-      await api
+      const response = await api
         .get(`/api/posts/${targetPost.id}`)
         .expect(401)
         .expect('Content-Type', /application\/json/);
+
+      expect(response.body.error).toMatch(/token missing or invalid/i);
     });
 
     test('post is returned in JSON', async () => {
@@ -82,6 +84,53 @@ describe('when there are posts in the database', () => {
 
       expect(targetPost.id).toBe(fetchedPost.id);
       expect(targetPost.caption).toBe(fetchedPost.caption);
+    });
+  });
+
+  describe('when creating posts', () => {
+    test('request without token fails with 401 error code.', async () => {
+      const response = await api
+        .post('/api/posts')
+        .expect(401)
+        .send({
+          caption: 'caption',
+          image: 'image',
+        })
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body.error).toMatch(/token missing or invalid/i);
+    });
+
+    test('request with missing required field fails with 401 error code', async () => {
+      console.log('data uri: ', testDataUri, 'type: ', typeof testDataUri);
+      const invalidPostFields = {
+        image: testDataUri,
+      };
+
+      const response = await api
+        .post('/api/posts')
+        .send(invalidPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(400);
+
+      expect(response.body.error).toMatch(/incorrect or missing/i);
+    });
+
+    test('can post a valid post', async () => {
+      const startPosts = await testHelpers.postsInDB();
+      const validPostFields = {
+        caption: 'blue square',
+        image: testDataUri,
+      };
+      await api
+        .post('/api/posts')
+        .send(validPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(201);
+
+      const endPosts = await testHelpers.postsInDB();
+
+      expect(endPosts).toHaveLength(startPosts.length + 1);
     });
   });
 });
