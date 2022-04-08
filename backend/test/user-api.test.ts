@@ -195,7 +195,6 @@ describe('When there are multiple users in the database', () => {
       const updatedUserFields = {
         username: 'bobbybo',
       };
-      console.log('test token:', token);
       const response = await api
         .put(`/api/users/${differentId}`)
         .send(updatedUserFields)
