@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { User, Post } from '../src/mongo';
-import { NewUser } from '../src/types';
+import { User, Post } from '../../src/mongo';
+import { NewUser } from '../../src/types';
 
 const usersInDB = async () => {
   const users = await User.find({});
