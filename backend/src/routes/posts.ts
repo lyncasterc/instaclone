@@ -15,12 +15,17 @@ router.get('/:id', authenticator(), async (req, res) => {
 
 router.post('/', authenticator(), async (req, res, next) => {
   let post;
+  console.log('entry');
 
   try {
     post = fieldParsers.proofPostFields(req.body);
   } catch (error) {
+    logger.error(logger.getErrorMessage(error));
+
     return res.status(400).send({ error: logger.getErrorMessage(error) });
   }
+
+  console.log('before image upload');
 
   try {
     const imageUrl = await cloudinary.upload(post.image);
@@ -30,10 +35,13 @@ router.post('/', authenticator(), async (req, res, next) => {
     return res.status(500).send({ error: 'Something went wrong uploading the photo!' });
   }
 
+  console.log('before saving post');
+
   try {
     const savedPost = await postService.addPost(post, req.userToken!.id);
     return res.status(201).send(savedPost);
   } catch (error) {
+    logger.error(logger.getErrorMessage(error));
     // TODO: destroy the image if saving post fails?
     return next(error);
   }
