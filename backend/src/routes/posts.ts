@@ -26,6 +26,7 @@ router.post('/', authenticator(), async (req, res, next) => {
     const imageUrl = await cloudinary.upload(post.image);
     post.image = imageUrl;
   } catch (error) {
+    logger.error(logger.getErrorMessage(error));
     return res.status(500).send({ error: 'Something went wrong uploading the photo!' });
   }
 
