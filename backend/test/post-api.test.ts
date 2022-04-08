@@ -102,7 +102,6 @@ describe('when there are posts in the database', () => {
     });
 
     test('request with missing required field fails with 401 error code', async () => {
-      console.log('data uri: ', testDataUri, 'type: ', typeof testDataUri);
       const invalidPostFields = {
         image: testDataUri,
       };
