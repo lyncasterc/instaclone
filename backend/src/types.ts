@@ -38,6 +38,11 @@ export interface NewUser {
   image?: string,
 }
 
+export interface NewPost {
+  caption: string,
+  image: string,
+}
+
 export interface ProofedUpdatedUser {
   fullName?: string,
   username?: string,
