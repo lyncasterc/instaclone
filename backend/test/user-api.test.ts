@@ -4,6 +4,7 @@ import app from '../src/app';
 import { testMongodb, User } from '../src/mongo';
 import testHelpers from './helpers/test-helpers';
 import { User as UserType } from '../src/types';
+import testDataUri from './helpers/test-data-uri';
 
 const api = supertest(app);
 
@@ -242,4 +243,53 @@ describe('When there are multiple users in the database', () => {
   });
 
   // TODO: Write tests to check if post/comment fields are populated when fetching user/users.
+
+  describe('When user creates a post', () => {
+    let targetUser: UserType;
+
+    beforeEach(async () => {
+      // eslint-disable-next-line prefer-destructuring
+      targetUser = (await testHelpers.usersInDB())[0];
+      const post = {
+        caption: 'a blue, square',
+        image: testDataUri,
+      };
+
+      const response = await api
+        .post('/api/login')
+        .send({ username: targetUser.username, password: 'secret' });
+
+      const { token } = response.body;
+
+      await api
+        .post('/api/posts')
+        .set('Authorization', `bearer ${token}`)
+        .send(post);
+    });
+
+    test('post is added to the user posts array', async () => {
+      const response = await api
+        .get(`/api/users/${targetUser.id}`)
+        .expect(200);
+
+      const fetchedUser = response.body;
+      expect(fetchedUser.posts).toHaveLength(1);
+    });
+
+    // TODO: update this as needed as you decide what exactly needs to be populated.
+    test('fetched user has a populated posts array', async () => {
+      const response = await api
+        .get(`/api/users/${targetUser.id}`)
+        .expect(200);
+
+      const fetchedUser = response.body;
+      expect(fetchedUser.posts).toBeDefined();
+
+      const userPost = fetchedUser.posts[0];
+
+      expect(userPost.image).toBeDefined();
+      expect(typeof userPost.image).toBe('string');
+      expect(userPost.image).toMatch(/https:\/\/res.cloudinary.com/);
+    });
+  });
 });
