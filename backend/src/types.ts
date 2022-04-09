@@ -43,10 +43,17 @@ export interface NewPost {
   image: string,
 }
 
+// TODO: add followers, following to this
 export interface ProofedUpdatedUser {
   fullName?: string,
   username?: string,
   email?: string,
   password?: string,
   image?: string,
+}
+
+export interface ProofedUpdatedPost {
+  caption?: string,
+  comments?: string[] // ref,
+  likes?: string[] // ref -> User
 }
