@@ -3,7 +3,7 @@ import { NewUser, ProofedUpdatedUser } from '../types';
 
 const isString = (text: unknown): text is string => typeof text === 'string' || text instanceof String;
 
-const parseStringField = (param: unknown, fieldKey: string) => {
+export const parseStringField = (param: unknown, fieldKey: string) => {
   if (!param || !isString(param)) {
     throw new Error(`incorrect or missing ${fieldKey}`);
   }
