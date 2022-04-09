@@ -28,7 +28,6 @@ beforeEach(async () => {
 
   token = response.body.token;
 
-  // NOTE: the image field in real posts must be in base-64 encoded data url format.
   const initialPosts = [
     {
       creator: testUser.id,
@@ -85,6 +84,8 @@ describe('when there are posts in the database', () => {
       expect(targetPost.id).toBe(fetchedPost.id);
       expect(targetPost.caption).toBe(fetchedPost.caption);
     });
+
+    // TODO: write test checking that image is populated, (potentially other fields in the future)
   });
 
   describe('when creating posts', () => {
@@ -101,7 +102,7 @@ describe('when there are posts in the database', () => {
       expect(response.body.error).toMatch(/token missing or invalid/i);
     });
 
-    test('request with missing required field fails with 401 error code', async () => {
+    test('request with missing required field fails with 400 error code', async () => {
       const invalidPostFields = {
         image: testDataUri,
       };
@@ -130,6 +131,110 @@ describe('when there are posts in the database', () => {
       const endPosts = await testHelpers.postsInDB();
 
       expect(endPosts).toHaveLength(startPosts.length + 1);
+    });
+  });
+
+  describe('when updating posts', () => {
+    test('request without token fails with 401 error code', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+      const updatedPostFields = {
+        caption: 'new caption',
+      };
+
+      const response = await api
+        .put(`/api/posts/${targetPost.id}`)
+        .send(updatedPostFields)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body.error).toMatch(/token missing or invalid/i);
+    });
+
+    test('when updating the caption and user making request is not creator of post, fails with 401 error code', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+      const differentUser = await testHelpers.createTestUser({
+        username: 'dobbybo',
+        email: 'b@email.com',
+        fullName: 'Dob Bob',
+        password: 'secret',
+      });
+
+      const tokenResponse = await api
+        .post('/api/login')
+        .send({
+          username: differentUser.username,
+          password: 'secret',
+        });
+
+      const wrongUserToken = tokenResponse.body.token;
+
+      const updatedPostFields = {
+        caption: 'new caption',
+      };
+
+      const response = await api
+        .put(`/api/posts/${targetPost.id}`)
+        .send(updatedPostFields)
+        .set('Authorization', `bearer ${wrongUserToken}`)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body.error).toMatch(/unauthorized/i);
+    });
+
+    test('valid request succeeds with 200 code', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+
+      const updatedPostFields = {
+        caption: 'new caption',
+      };
+
+      await api
+        .put(`/api/posts/${targetPost.id}`)
+        .send(updatedPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+    });
+
+    test('valid request returns updated post', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+
+      const updatedPostFields = {
+        caption: 'new caption',
+      };
+
+      const response = await api
+        .put(`/api/posts/${targetPost.id}`)
+        .send(updatedPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const returnedPost = response.body;
+
+      expect(returnedPost.caption).toBe(updatedPostFields.caption);
+    });
+
+    // TODO: update this for other populated creator/comment fields that may be needed?
+    test('returned updated post has populated creator', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+
+      const updatedPostFields = {
+        caption: 'new caption',
+      };
+
+      const response = await api
+        .put(`/api/posts/${targetPost.id}`)
+        .send(updatedPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const returnedPost = response.body;
+
+      expect(returnedPost.creator.username).toBeDefined();
+
+      expect(returnedPost.creator.username).toBe(testUser.username);
     });
   });
 });
