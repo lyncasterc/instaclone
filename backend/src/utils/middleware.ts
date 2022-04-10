@@ -2,18 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import logger from './logger';
 
-interface AuthenticatorOptions {
-  matchUser?: boolean,
-}
-
-/* when used on an individual route,
-authenticates the request by checking if jwt is present and valid.
-options:
-  - matchUser -> if set to true, authenticator will verify
-  that the user id in request params is equal to
-  the decoded token's id
-*/
-export const authenticator = ({ matchUser = false }: AuthenticatorOptions = {}) => (
+export const authenticator = () => (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -36,10 +25,6 @@ export const authenticator = ({ matchUser = false }: AuthenticatorOptions = {}) 
     return res.status(401).send({
       error: 'token missing or invalid.',
     });
-  }
-
-  if (matchUser && decodedToken.id !== req.params.id) {
-    return res.status(401).send({ error: 'Unauthorized request.' });
   }
 
   req.userToken = decodedToken;
