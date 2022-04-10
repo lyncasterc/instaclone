@@ -35,18 +35,24 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', authenticator({ matchUser: true }), async (req, res, next) => {
-  let user: ProofedUpdatedUser;
+router.put('/:id', authenticator(), async (req, res, next) => {
+  let userFields: ProofedUpdatedUser;
+
+  // Blocking users from updating personal information of another user
+  if (['email', 'image', 'username', 'fullName', 'password'].some((field) => field in req.body)) {
+    if (req.params.id !== req.userToken!.id) return res.status(401).send({ error: 'Unauthorized' });
+  }
+
   try {
-    user = fieldParsers.proofUpdateUserFields(req.body);
+    userFields = fieldParsers.proofUpdateUserFields(req.body);
   } catch (error) {
     return res.status(400).send({ error: logger.getErrorMessage(error) });
   }
 
   try {
-    if (user.image) {
-      const imageUrl = await cloudinary.upload(user.image);
-      user.image = imageUrl;
+    if (userFields.image) {
+      const imageUrl = await cloudinary.upload(userFields.image);
+      userFields.image = imageUrl;
     }
   } catch (error) {
     logger.error(logger.getErrorMessage(error));
@@ -54,7 +60,7 @@ router.put('/:id', authenticator({ matchUser: true }), async (req, res, next) =>
   }
 
   try {
-    const updatedUser = await userService.updateUserById(user, req.params.id);
+    const updatedUser = await userService.updateUserById(userFields, req.params.id);
     return res.status(200).send(updatedUser);
   } catch (error) {
     return next(error);
