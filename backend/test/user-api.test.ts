@@ -159,6 +159,7 @@ describe('When there are multiple users in the database', () => {
   describe('When updating a user', () => {
     let targetUser: UserType;
     let token: string;
+    jest.setTimeout(15000);
 
     beforeEach(async () => {
       // eslint-disable-next-line prefer-destructuring
@@ -189,20 +190,21 @@ describe('When there are multiple users in the database', () => {
       expect(targetUser.username).not.toBe(updatedUserFields.username);
     });
 
-    test('if the id parameter and token id do not match, fails with 401 error code', async () => {
+    test('if the user id request parameter and token id do not match when request is updating protected information, fails with 401 error code', async () => {
       const ids = (await testHelpers.usersInDB()).map((user) => user.id);
       const differentId = ids.find((id) => id !== targetUser.id);
 
       const updatedUserFields = {
         username: 'bobbybo',
       };
+
       const response = await api
         .put(`/api/users/${differentId}`)
         .send(updatedUserFields)
         .set('Authorization', `bearer ${token}`)
         .expect(401);
 
-      expect(response.body.error).toContain('Unauthorized request.');
+      expect(response.body.error).toMatch(/unauthorized/i);
     });
 
     test('updating user with valid updates and token succeeds with 200 code', async () => {
@@ -240,9 +242,70 @@ describe('When there are multiple users in the database', () => {
 
       expect(isPasswordUpdated).toBe(true);
     });
+
+    test('user can not follow themselves', async () => {
+      const response = await api
+        .put(`/api/users/${targetUser.id}/follow`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(400);
+
+      const nonUpdatedUser = (await testHelpers.usersInDB())
+        .find((user) => user.id === targetUser.id);
+
+      expect(response.body.error).toMatch(/you can't follow yourself/i);
+      expect(nonUpdatedUser.followers).toHaveLength(0);
+    });
+
+    test('user can not follow user they already follow', async () => {
+      const users = (await testHelpers.usersInDB());
+      const differentUser = users.find((user) => user.id !== targetUser.id);
+
+      await api
+        .put(`/api/users/${differentUser.id}/follow`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+
+      const response = await api
+        .put(`/api/users/${differentUser.id}/follow`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(400);
+
+      expect(response.body.error).toMatch(/you already follow that user/i);
+    });
+
+    test('user can be followed', async () => {
+      const users = (await testHelpers.usersInDB());
+      const differentUser = users.find((user) => user.id !== targetUser.id);
+
+      const response = await api
+        .put(`/api/users/${differentUser.id}/follow`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+
+      const returnedUser = response.body;
+
+      expect(returnedUser.followers).toHaveLength(1);
+      expect(returnedUser.followers[0].id).toBe(targetUser.id);
+    });
+
+    test('following a user adds that user to the requesting user following list', async () => {
+      const users = (await testHelpers.usersInDB());
+      const differentUser = users.find((user) => user.id !== targetUser.id);
+
+      await api
+        .put(`/api/users/${differentUser.id}/follow`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+
+      const updatedTargetUser = (await testHelpers.usersInDB())
+        .find((user) => user.id === targetUser.id);
+
+      expect(updatedTargetUser.following).toHaveLength(1);
+      expect(updatedTargetUser.following[0].toString()).toBe(differentUser.id.toString());
+    });
   });
 
-  // TODO: Write tests to check if post/comment fields are populated when fetching user/users.
+  // TODO: Write tests to check if comment fields are populated when fetching user/users.
 
   describe('When user creates a post', () => {
     let targetUser: UserType;
