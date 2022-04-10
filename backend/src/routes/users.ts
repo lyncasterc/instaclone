@@ -1,5 +1,4 @@
 import express from 'express';
-// import jwt, { JwtPayload } from 'jsonwebtoken';
 import userService from '../services/user-service';
 import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
@@ -67,6 +66,23 @@ router.put('/:id', authenticator(), async (req, res, next) => {
   }
 });
 
+router.put('/:id/follow', authenticator(), async (req, res, next) => {
+  if (req.params.id === req.userToken!.id) return res.status(400).send({ error: 'You can\'t follow yourself!' });
+
+  try {
+    const followedUser = await userService.followUserById(req.userToken!.id, req.params.id);
+    return res.status(200).send(followedUser);
+  } catch (error) {
+    const errorMessage = logger.getErrorMessage(error);
+    logger.error(errorMessage);
+    const errorResponseObj = { error: errorMessage };
+
+    if (/user not found/i.test(errorMessage)) return res.status(404).send(errorResponseObj);
+    if (/you already follow that user/i.test(errorMessage)) return res.status(400).send(errorResponseObj);
+
+    return next(error);
+  }
+});
 // TODO: write a delete route
 
 export default router;
