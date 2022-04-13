@@ -3,11 +3,11 @@ import { Global } from '@mantine/core';
 function GlobalStyles() {
   return (
     <Global
-      styles={{
+      styles={(theme) => ({
         body: {
-          backgroundColor: '#fafafa',
+          backgroundColor: theme.colors.gray[0],
         },
-      }}
+      })}
     />
   );
 }
