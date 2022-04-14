@@ -1,12 +1,12 @@
 import { useField } from 'formik';
 import {
-  TextInput as MantineTextInput,
+  TextInput,
   TextInputProps,
   createStyles,
 } from '@mantine/core';
 import { CircleX, CircleCheck } from 'tabler-icons-react';
 
-interface CustomTextInputProps extends TextInputProps {
+interface FormikInputProps extends TextInputProps {
   name: string,
 }
 
@@ -21,7 +21,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function TextInput({ name, ...props }: CustomTextInputProps) {
+function FormikTextInput({ name, ...props }: FormikInputProps) {
   const [
     field,
     meta,
@@ -55,7 +55,7 @@ function TextInput({ name, ...props }: CustomTextInputProps) {
   };
 
   return (
-    <MantineTextInput
+    <TextInput
       classNames={{
         root: classes.root,
         filledVariant: classes.filled,
@@ -67,4 +67,4 @@ function TextInput({ name, ...props }: CustomTextInputProps) {
   );
 }
 
-export default TextInput;
+export default FormikTextInput;
