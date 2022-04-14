@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { BrowserRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
+import { Provider } from 'react-redux';
 import App from './app/App';
 import reportWebVitals from './reportWebVitals';
+import { store } from './app/store';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,7 +19,11 @@ ReactDOM.render(
         primaryColor: 'instaBlue',
       }}
     >
-      <App />
+      <BrowserRouter>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </BrowserRouter>
     </MantineProvider>
   </React.StrictMode>,
   document.getElementById('root'),
