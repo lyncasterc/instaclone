@@ -49,6 +49,8 @@ router.put('/:id', authenticator(), async (req, res, next) => {
   const updatedPostFields = req.body;
 
   try {
+    // TODO: this check will not be necessary,
+    // the only thing that will be updated for now on a post will be the capton
     if (updatedPostFields.caption) updatedPostFields.caption = parseStringField(updatedPostFields.caption, 'caption');
   } catch (error) {
     logger.error(logger.getErrorMessage(error));

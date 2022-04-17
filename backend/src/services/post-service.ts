@@ -31,6 +31,7 @@ const updatePostById = async (
 
     updatedPost.caption = updatedPostFields.caption;
   }
+  // FIXME: this is not how commenting or liking will work. remove it
   if (updatedPostFields.comments) updatedPost.comments = updatedPostFields.comments;
   if (updatedPostFields.likes) updatedPost.likes = updatedPostFields.likes;
 
