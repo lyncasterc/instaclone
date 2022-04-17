@@ -22,16 +22,16 @@ const customRender = (
   options?: Omit<RenderOptions, 'wrapper'>,
 ) => render(ui, { wrapper: Providers, ...options });
 
-// for rendering components reliant on React Router
-// and accessing the history object
+/* for rendering components reliant on React Router
+ and accessing the history object to assert pathname */
 export const renderWithHistory = (children: ReactNode) => {
   const history = createMemoryHistory();
-  const wrapper = customRender(
+  const view = customRender(
     <Router location={history.location} navigator={history}>
       {children}
     </Router>,
   );
-  return { ...wrapper, history };
+  return { ...view, history };
 };
 
 export * from '@testing-library/react';
