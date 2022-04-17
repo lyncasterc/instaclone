@@ -1,31 +1,28 @@
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
-  // Center,
   Container,
   Title,
+  Text,
+  Anchor,
 } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import FormikTextInput from '../../common/components/FormikTextInput';
 import { NewUserFields } from '../../app/types';
 import { useAddUserMutation } from '../../app/apiSlice';
 import FormContainer from '../../common/components/FormContainer';
 import Button from '../../common/components/Button';
+import { useStyles } from '../auth/Login';
 
+// TODO: redirect user to feed if already logged in
+// TODO: login user after signup
 function SignUp() {
   const [addUser] = useAddUserMutation();
+  const { classes } = useStyles();
 
-  // FIXME: make this properly centered
   return (
     <Container
-      sx={{
-        // backgroundColor: 'red',
-        height: '80vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-      fluid
+      className={classes.container}
     >
       <Formik
         initialValues={{
@@ -121,6 +118,17 @@ function SignUp() {
               text="Sign Up"
               disabled={!dirty || !isValid}
             />
+
+            <Text sx={{ marginTop: 10 }}>
+              Have an account?
+              {' '}
+              <Anchor
+                component={Link}
+                to="/login"
+              >
+                Log in
+              </Anchor>
+            </Text>
           </FormContainer>
         )
       }
