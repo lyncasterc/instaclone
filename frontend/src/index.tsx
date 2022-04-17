@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Provider } from 'react-redux';
 import App from './app/App';
+import theme from './app/theme';
 import reportWebVitals from './reportWebVitals';
 import { store } from './app/store';
 
@@ -12,12 +13,7 @@ ReactDOM.render(
   <React.StrictMode>
     <MantineProvider
       withNormalizeCSS
-      theme={{
-        colors: {
-          instaBlue: ['#B3CAD9', '#95BBD3', '#75AED2', '#51A3D9', '#289CE7', '#1681C7', '#0095F6', '#2471A3', '#2C6388', '#305872'],
-        },
-        primaryColor: 'instaBlue',
-      }}
+      theme={theme}
     >
       <BrowserRouter>
         <Provider store={store}>
