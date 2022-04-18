@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from './selector-dispatch-hooks';
-import { selectCurrentUser, setAuthedUser } from '../../features/authSlice';
+import { selectCurrentUser, setAuthedUser } from '../../features/auth/authSlice';
 import { useLoginMutation } from '../../app/apiSlice';
 import type { LoginFields } from '../../app/types';
 

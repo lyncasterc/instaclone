@@ -4,7 +4,7 @@ import {
   ThunkAction,
   AnyAction,
 } from '@reduxjs/toolkit';
-import type { RootState } from '../app/store';
+import type { RootState } from '../../app/store';
 
 export interface AuthState {
   token: string | null,

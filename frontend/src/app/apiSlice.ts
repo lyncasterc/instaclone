@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { User, NewUserFields, LoginFields } from './types';
-import type { AuthState } from '../features/authSlice';
+import type { AuthState } from '../features/auth/authSlice';
 
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
