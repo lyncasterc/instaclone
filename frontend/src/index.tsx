@@ -8,6 +8,10 @@ import App from './app/App';
 import theme from './app/theme';
 import reportWebVitals from './reportWebVitals';
 import { store } from './app/store';
+import { initAuthedUser } from './features/auth/authSlice';
+/*  TODO: create a /validendpoint token to verify that the token is valid?
+if valid, setAuthedUser */
+store.dispatch(initAuthedUser());
 
 ReactDOM.render(
   <React.StrictMode>
