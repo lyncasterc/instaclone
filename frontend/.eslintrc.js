@@ -33,7 +33,8 @@ module.exports = {
         'state',
       ]
     }],
-    'react/jsx-props-no-spreading': ['error', {'custom': 'ignore'}]
+    'react/jsx-props-no-spreading': ['error', {'custom': 'ignore'}],
+    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/test/**/*.[jt]s?(x)'] }]
   },
   settings: {
     react: {
