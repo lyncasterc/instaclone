@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import mongodbConnect from './mongo';
-import config from './utils/config';
+import /* mongodbConnect, */ { testMongodb } from './mongo';
+// import config from './utils/config';
 import postRouter from './routes/posts';
 import userRouter from './routes/users';
 import loginRouter from './routes/login';
@@ -12,7 +12,8 @@ const { NODE_ENV } = process.env;
 const app = express();
 
 if (NODE_ENV === 'development') {
-  mongodbConnect(config.DEV_MONGODB_URI!);
+  // mongodbConnect(config.DEV_MONGODB_URI!);
+  testMongodb.connect();
 }
 app.use(cors());
 app.use(express.static('build'));

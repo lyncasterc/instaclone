@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from './selector-dispatch-hooks';
-import { selectCurrentUser, setAuthedUser } from '../../features/auth/authSlice';
+import { selectCurrentUser, setAuthedUser, removeCurrentUser } from '../../features/auth/authSlice';
 import { useLoginMutation } from '../../app/apiSlice';
 import type { LoginFields } from '../../app/types';
 
 const useAuth = () => {
   const user = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [loginMutation, { isLoading }] = useLoginMutation();
 
   const login = async (loginFields: LoginFields) => {
@@ -23,7 +25,13 @@ const useAuth = () => {
     }
   };
 
-  return [useMemo(() => (user), [user]), { login, isLoading }] as const;
+  const logout = () => {
+    localStorage.removeItem('instacloneSCToken');
+    dispatch(removeCurrentUser());
+    navigate('/login');
+  };
+
+  return [useMemo(() => (user), [user]), { login, logout, isLoading }] as const;
 };
 
 export default useAuth;
