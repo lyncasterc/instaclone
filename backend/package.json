@@ -10,7 +10,7 @@
     "start": "cross-env NODE_ENV=production node src/index.ts",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "start:test": "cross-env NODE_ENV=test node src/index.ts",
-    "start:dev": "cross-env NODE_ENV=development ts-node src/index.ts",
+    "start:dev": "cross-env NODE_ENV=development ts-node --files src/index.ts",
     "docker:mongo": "docker-compose -f docker-compose.dev.yml up",
     "lint": "eslint .",
     "build:ui": "rm -rf build && cd ../frontend && npm run build && mv build ../backend"
