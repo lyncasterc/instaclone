@@ -48,6 +48,8 @@ jobs:
         run: npm install
       - name: lint
         run: npm run lint
+      - name: test
+        run: npm test
       # - name: install backend dependencies (for cypress to run)
       #   run: |
       #     cd ../backend
