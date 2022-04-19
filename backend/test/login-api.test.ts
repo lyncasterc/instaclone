@@ -67,7 +67,7 @@ describe('unsuccessful login', () => {
       .send(nonExistingUser)
       .expect(401)
       .expect('Content-Type', /application\/json/);
-    expect(response.body.error).toContain('invalid username or password');
+    expect(response.body.error).toMatch(/invalid username or password/i);
   });
 
   test('login with wrong password responds with 401 error code', async () => {
@@ -89,6 +89,6 @@ describe('unsuccessful login', () => {
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.error).toContain('invalid username or password');
+    expect(response.body.error).toMatch(/invalid username or password/i);
   });
 });
