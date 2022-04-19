@@ -1,24 +1,30 @@
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { useState } from 'react';
 import {
   Container,
   Title,
   Text,
   Anchor,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormikTextInput from '../../common/components/FormikTextInput';
 import { NewUserFields } from '../../app/types';
 import { useAddUserMutation } from '../../app/apiSlice';
+import useAuth from '../../common/hooks/useAuth';
 import FormContainer from '../../common/components/FormContainer';
 import Button from '../../common/components/Button';
 import { useStyles } from '../auth/Login';
+import getErrorMessage from '../../common/utils/getErrorMessage';
 
 // TODO: redirect user to feed if already logged in
 // TODO: login user after signup
 function SignUp() {
+  const [errorMessage, setErrorMessage] = useState('');
   const [addUser] = useAddUserMutation();
+  const [, { login }] = useAuth();
   const { classes } = useStyles();
+  const navigate = useNavigate();
 
   return (
     <Container
@@ -32,9 +38,18 @@ function SignUp() {
           password: '',
         }}
         onSubmit={async (values: NewUserFields) => {
-          console.log('boop');
-
-          await addUser(values);
+          try {
+            await addUser(values).unwrap();
+            await login({
+              username: values.username,
+              password: values.password,
+            });
+            navigate('/');
+          } catch (error) {
+            const message = getErrorMessage(error);
+            console.error(message);
+            setErrorMessage(message);
+          }
         }}
         validationSchema={Yup.object({
           email: Yup.string()
@@ -118,6 +133,10 @@ function SignUp() {
               text="Sign Up"
               disabled={!dirty || !isValid}
             />
+
+            {
+              errorMessage && <Text sx={{ color: 'red', marginTop: 10 }}>{errorMessage}</Text>
+            }
 
             <Text sx={{ marginTop: 10 }}>
               Have an account?
