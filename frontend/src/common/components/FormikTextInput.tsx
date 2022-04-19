@@ -37,6 +37,7 @@ function FormikTextInput({ name, ...props }: FormikInputProps) {
           strokeWidth={1.5}
           size={25}
           color="red"
+          data-testid="redx"
         />
       );
     }
@@ -47,7 +48,6 @@ function FormikTextInput({ name, ...props }: FormikInputProps) {
           strokeWidth={1.5}
           size={25}
           color="#868E96"
-          data-testid="redx"
         />
       );
     }
