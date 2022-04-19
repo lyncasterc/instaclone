@@ -27,7 +27,7 @@ const isErrorWithMessage = (maybeError: unknown): maybeError is ErrorWithMessage
     && typeof (maybeError as Record<string, unknown>).message === 'string'
 );
 
-const toErrorWithMessage = (maybeError: unknown): ErrorWithMessage => {
+export const toErrorWithMessage = (maybeError: unknown): ErrorWithMessage => {
   if (isErrorResponse(maybeError)) return new Error(maybeError.data.error);
   if (isErrorWithMessage(maybeError)) return maybeError;
 
