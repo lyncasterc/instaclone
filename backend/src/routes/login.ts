@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 
     if (!isUserValidated) {
       return res.status(401).send({
-        error: 'invalid username or password.',
+        error: 'Invalid username or password.',
       });
     }
 
