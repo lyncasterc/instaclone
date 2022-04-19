@@ -73,7 +73,6 @@ test('error is displayed on unsuccessful login', async () => {
   await waitFor(() => {
     const token = localStorage.getItem('instacloneSCToken');
     expect(token).toBeNull();
-    // screen.debug();
-    // expect(screen.getByText(/invalid username or password/i)).toBeVisible();
+    expect(screen.getByText(/invalid username or password/i)).toBeVisible();
   });
 });
