@@ -1,11 +1,30 @@
-import React from 'react';
-import GlobalStyles from '../common/GlobalStyles';
+// import { useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Damion from '../common/components/Damion';
+import GlobalStyles from '../common/components/GlobalStyles';
+import Login from '../features/auth/Login';
+import SignUp from '../features/users/SignUp';
+import Home from '../features/users/Home';
+import RequireAuth from '../features/auth/RequireAuth';
 
 function App() {
   return (
     <>
       <GlobalStyles />
-      <p>Hello World</p>
+      <Damion />
+
+      <Routes>
+        <Route
+          path="/"
+          element={(
+            <RequireAuth>
+              <Home />
+            </RequireAuth>
+        )}
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
     </>
   );
 }
