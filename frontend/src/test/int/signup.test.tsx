@@ -1,6 +1,5 @@
 import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
-import { setupServer } from 'msw/node';
 import { MemoryRouter } from 'react-router-dom';
 import {
   render,
@@ -11,41 +10,9 @@ import App from '../../app/App';
 import { apiSlice } from '../../app/apiSlice';
 import { removeCurrentUser } from '../../features/auth/authSlice';
 import { store } from '../../app/store';
+import server from '../mocks/server';
+import { fakeUser } from '../mocks/handlers';
 import '@testing-library/jest-dom/extend-expect';
-import { NewUserFields, LoginFields } from '../../app/types';
-
-const fakeUser = {
-  id: '1',
-  fullName: 'Bob Dob',
-  username: 'bobbydob',
-  email: 'bob@dob.com',
-  passwordHash: 'secrethashstash',
-  image: undefined,
-  posts: [],
-  followers: [],
-  following: [],
-};
-
-const server = setupServer(
-  rest.post<NewUserFields>('/api/users', (req, res, ctx) => {
-    const userFields = req.body;
-    return res(ctx.status(201), ctx.json({
-      id: fakeUser.id,
-      fullName: userFields.fullName,
-      username: userFields.username,
-      email: userFields.email,
-      passwordHash: fakeUser.passwordHash,
-      image: fakeUser.image,
-      posts: fakeUser.posts,
-      followers: fakeUser.followers,
-      following: fakeUser.following,
-    }));
-  }),
-  rest.post<LoginFields>('/api/login', (req, res, ctx) => res(ctx.status(200), ctx.json({
-    username: req.body.username,
-    token: 'supersecrettoken',
-  }))),
-);
 
 beforeAll(() => server.listen());
 afterEach(() => {
