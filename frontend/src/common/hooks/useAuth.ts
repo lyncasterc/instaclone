@@ -4,6 +4,7 @@ import { useAppSelector, useAppDispatch } from './selector-dispatch-hooks';
 import { selectCurrentUser, setAuthedUser, removeCurrentUser } from '../../features/auth/authSlice';
 import { useLoginMutation } from '../../app/apiSlice';
 import type { LoginFields } from '../../app/types';
+import { toErrorWithMessage } from '../utils/getErrorMessage';
 
 const useAuth = () => {
   const user = useAppSelector(selectCurrentUser);
@@ -21,7 +22,7 @@ const useAuth = () => {
       localStorage.setItem('instacloneSCToken', JSON.stringify(tokenInfo));
       dispatch(setAuthedUser(tokenInfo));
     } catch (error) {
-      console.log(error);
+      throw toErrorWithMessage(error) as Error;
     }
   };
 
