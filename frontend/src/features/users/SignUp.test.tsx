@@ -3,22 +3,12 @@ import '@testing-library/jest-dom/extend-expect';
 import userEvent from '@testing-library/user-event';
 import {
   screen,
-  renderWithHistory,
-  // waitFor,
-  // prettyDOM,
-} from '../../common/utils/test-utils';
+  renderWithRouter,
+} from '../../test/utils/test-utils';
 import SignUp from './SignUp';
 
-test('login page can be reached from signup', async () => {
-  const { history } = renderWithHistory(<SignUp />);
-  const user = userEvent.setup();
-  await user.click(screen.getByText(/log in/i));
-
-  expect(history.location.pathname).toBe('/login');
-});
-
 test('button is disabled if all fields are not filled in', async () => {
-  renderWithHistory(<SignUp />);
+  renderWithRouter(<SignUp />);
   const user = userEvent.setup();
   const signupFields = {
     email: 'fake@email.com',
@@ -32,7 +22,7 @@ test('button is disabled if all fields are not filled in', async () => {
 });
 
 test('button is not disabled if all fields are filled in', async () => {
-  renderWithHistory(<SignUp />);
+  renderWithRouter(<SignUp />);
   const user = userEvent.setup();
   const signupFields = {
     email: 'fake@email.com',
@@ -50,7 +40,7 @@ test('button is not disabled if all fields are filled in', async () => {
 });
 
 test('red x is rendered when user clears a field', async () => {
-  renderWithHistory(<SignUp />);
+  renderWithRouter(<SignUp />);
   const user = userEvent.setup();
 
   const usernameInput = screen.getByPlaceholderText(/username/i);
