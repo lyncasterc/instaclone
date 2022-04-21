@@ -92,3 +92,16 @@ test('error is displayed on unsuccessful signup', async () => {
     expect(screen.getByText(/That username is already taken/i)).toBeVisible();
   });
 });
+
+test('user is redirected to home page if they visit the signup page and are already logged in', async () => {
+  const fakeTokenInfo = {
+    username: 'bobbydob',
+    token: 'supersecrettoken',
+  };
+  mockLogin({ fakeTokenInfo });
+
+  renderWithRouter(<App />, { route: '/signup' });
+
+  expect(screen.queryByText(/don't have an account?/i)).toBeNull();
+  expect(screen.getByText(fakeTokenInfo.username)).toBeVisible();
+});
