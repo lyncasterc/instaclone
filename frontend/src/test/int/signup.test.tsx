@@ -1,11 +1,10 @@
-import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
-import { MemoryRouter } from 'react-router-dom';
 import {
-  render,
   screen,
   waitFor,
-} from '../../common/utils/test-utils';
+  mockLogin,
+  renderWithRouter,
+} from '../utils/test-utils';
 import App from '../../app/App';
 import { apiSlice } from '../../app/apiSlice';
 import { removeCurrentUser } from '../../features/auth/authSlice';
@@ -23,19 +22,15 @@ afterEach(() => {
 });
 afterAll(() => server.close());
 
+const signupFields = {
+  email: fakeUser.email,
+  username: fakeUser.username,
+  fullName: fakeUser.fullName,
+  password: 'secret',
+};
+
 test('user can signup successfully', async () => {
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
-  const user = userEvent.setup();
-  const signupFields = {
-    email: fakeUser.email,
-    username: fakeUser.username,
-    fullName: fakeUser.fullName,
-    password: 'secret',
-  };
+  const { user } = renderWithRouter(<App />);
 
   await user.click(screen.getByText(/sign up/i));
   await user.type(screen.getByPlaceholderText(/email/i), signupFields.email);
@@ -64,19 +59,7 @@ test('error is displayed on unsuccessful signup', async () => {
     rest.post('/api/users', (req, res, ctx) => res(ctx.status(400), ctx.json({ error: 'That username is already taken!' }))),
   );
 
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
-
-  const user = userEvent.setup();
-  const signupFields = {
-    email: fakeUser.email,
-    username: fakeUser.username,
-    fullName: fakeUser.fullName,
-    password: 'secret',
-  };
+  const { user } = renderWithRouter(<App />);
 
   await user.click(screen.getByText(/sign up/i));
   await user.type(screen.getByPlaceholderText(/email/i), signupFields.email);
