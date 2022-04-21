@@ -1,11 +1,9 @@
-import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
 import { rest } from 'msw';
 import {
-  render,
+  renderWithRouter,
   screen,
   waitFor,
-} from '../../common/utils/test-utils';
+} from '../utils/test-utils';
 import App from '../../app/App';
 import { apiSlice } from '../../app/apiSlice';
 import { removeCurrentUser } from '../../features/auth/authSlice';
@@ -23,17 +21,13 @@ afterEach(() => {
 });
 afterAll(() => server.close());
 
+const loginFields = {
+  username: fakeUser.username,
+  password: 'secret',
+};
+
 test('user can login successfully', async () => {
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
-  const user = userEvent.setup();
-  const loginFields = {
-    username: fakeUser.username,
-    password: 'secret',
-  };
+  const { user } = renderWithRouter(<App />);
 
   await user.type(screen.getByPlaceholderText(/username/i), loginFields.username);
   await user.type(screen.getByPlaceholderText(/password/i), loginFields.password);
@@ -54,17 +48,7 @@ test('error is displayed on unsuccessful login', async () => {
     rest.post('/api/login', (req, res, ctx) => res(ctx.status(401), ctx.json({ error: 'Invalid username or password' }))),
   );
 
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
-
-  const user = userEvent.setup();
-  const loginFields = {
-    username: fakeUser.username,
-    password: 'secret',
-  };
+  const { user } = renderWithRouter(<App />);
 
   await user.type(screen.getByPlaceholderText(/username/i), loginFields.username);
   await user.type(screen.getByPlaceholderText(/password/i), loginFields.password);
