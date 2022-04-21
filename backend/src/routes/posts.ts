@@ -8,6 +8,7 @@ import { User } from '../mongo';
 
 const router = express.Router();
 
+// TODO: remove authenticator from this. instagram allows this.
 router.get('/:id', authenticator(), async (req, res) => {
   const post = await postService.getPost(req.params.id);
   if (!post) return res.status(404).end();
