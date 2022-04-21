@@ -6,8 +6,10 @@ import Login from '../features/auth/Login';
 import SignUp from '../features/users/SignUp';
 import Home from '../features/users/Home';
 import RequireAuth from '../features/auth/RequireAuth';
+import useAuth from '../common/hooks/useAuth';
 
 function App() {
+  const [user] = useAuth();
   return (
     <>
       <GlobalStyles />
@@ -22,8 +24,8 @@ function App() {
             </RequireAuth>
         )}
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={user ? <Home /> : <Login />} />
+        <Route path="/signup" element={user ? <Home /> : <SignUp />} />
       </Routes>
     </>
   );
