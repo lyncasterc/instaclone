@@ -17,8 +17,6 @@ import Button from '../../common/components/Button';
 import { useStyles } from '../auth/Login';
 import getErrorMessage from '../../common/utils/getErrorMessage';
 
-// TODO: redirect user to feed if already logged in
-// TODO: login user after signup
 function SignUp() {
   const [errorMessage, setErrorMessage] = useState('');
   const [addUser] = useAddUserMutation();
