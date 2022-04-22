@@ -35,7 +35,6 @@ interface LocationState {
   path: string,
 }
 
-// TODO: redirect user to feed if already logged in
 function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [, { login }] = useAuth();
