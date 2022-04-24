@@ -21,6 +21,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    // TODO: populate fields? frontend needs the image and posts of the logged in user.
     const user = await User.findOne({ username: loginFields.username });
     const isUserValidated = !user
       ? false
