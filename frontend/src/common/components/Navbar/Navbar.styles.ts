@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/core';
 
-export default createStyles(() => ({
+export default createStyles((theme) => ({
   navContainer: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -10,6 +10,8 @@ export default createStyles(() => ({
     padding: '10px 20px',
     position: 'fixed',
     top: 0,
+    borderBottom: `1px solid ${theme.colors.gray[4]}`,
+
   },
   navBrandTitle: {
     fontSize: '2rem',
