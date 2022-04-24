@@ -18,5 +18,5 @@ test('Login and Signup buttons are displayed when not logged in', () => {
   renderWithRouter(<Navbar />);
   expect(screen.queryByText(/log in/i)).toBeNull();
   expect(screen.queryByText(/sign up/i)).toBeNull();
-  expect(screen.getByTestId('profile')).toBeVisible();
+  expect(screen.getByTestId('usermenu')).toBeVisible();
 });
