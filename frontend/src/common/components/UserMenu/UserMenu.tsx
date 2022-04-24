@@ -26,6 +26,7 @@ function UserMenu() {
   return (
     <Menu
       control={avatar}
+      data-testid="usermenu"
     >
       <Menu.Item icon={<UserCircle size={18} />}>Profile</Menu.Item>
       <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
