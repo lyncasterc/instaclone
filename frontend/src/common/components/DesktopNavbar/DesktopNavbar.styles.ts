@@ -2,7 +2,7 @@ import { createStyles } from '@mantine/core';
 
 export default createStyles((theme) => ({
   navContainer: {
-    display: 'flex',
+    display: 'none',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -12,6 +12,9 @@ export default createStyles((theme) => ({
     top: 0,
     borderBottom: `1px solid ${theme.colors.gray[4]}`,
 
+    [`@media (min-width: ${theme.breakpoints.md}px)`]: {
+      display: 'flex',
+    },
   },
   navBrandTitle: {
     fontSize: '2rem',

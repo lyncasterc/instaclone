@@ -11,5 +11,9 @@ export default createStyles((theme) => ({
     position: 'fixed',
     bottom: 0,
     borderTop: `1px solid ${theme.colors.gray[4]}`,
+
+    [`@media (min-width: ${theme.breakpoints.md}px)`]: {
+      display: 'none',
+    },
   },
 }));
