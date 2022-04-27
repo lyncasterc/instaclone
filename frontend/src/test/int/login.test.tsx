@@ -41,6 +41,7 @@ test('user can login successfully', async () => {
   });
 
   expect(screen.getByText(fakeUser.username)).toBeVisible();
+  expect(screen.getByTestId('home-nav')).toBeVisible();
 });
 
 test('error is displayed on unsuccessful login', async () => {

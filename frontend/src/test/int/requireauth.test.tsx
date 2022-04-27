@@ -11,7 +11,7 @@ test('redirects user to login form when not logged in', () => {
     <App />,
   );
 
-  expect(screen.getByText(/log in/i)).toBeVisible();
+  expect(screen.getByText(/Don't have an account/i)).toBeVisible();
 });
 
 test('logged in user is taken to home page', async () => {
