@@ -11,7 +11,7 @@ import useStyles from './DesktopNavbar.styles';
 import useAuth from '../../hooks/useAuth';
 import UserMenu from '../UserMenu/UserMenu';
 
-function Navbar() {
+function DesktopNavbar() {
   const [user] = useAuth();
   const { classes } = useStyles();
 
@@ -96,4 +96,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default DesktopNavbar;
