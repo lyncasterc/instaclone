@@ -7,7 +7,7 @@ import {
   SquarePlus,
 } from 'tabler-icons-react';
 import { Link } from 'react-router-dom';
-import useStyles from './Navbar.styles';
+import useStyles from './DesktopNavbar.styles';
 import useAuth from '../../hooks/useAuth';
 import UserMenu from '../UserMenu/UserMenu';
 
@@ -20,7 +20,7 @@ function Navbar() {
       className={classes.navBarButtonGroup}
     >
       {
-        (user ? (
+        (!user ? (
           <>
             <Button
               component={Link}

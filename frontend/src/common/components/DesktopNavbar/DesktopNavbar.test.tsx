@@ -1,6 +1,6 @@
 import { renderWithRouter, screen, mockLogin } from '../../../test/utils/test-utils';
 import '@testing-library/jest-dom/extend-expect';
-import Navbar from './Navbar';
+import Navbar from './DesktopNavbar';
 
 test('Login and Signup buttons are displayed when not logged in', () => {
   renderWithRouter(<Navbar />);
