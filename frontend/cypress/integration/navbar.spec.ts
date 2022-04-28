@@ -28,6 +28,8 @@ it('when logged in on desktop, desktop nav is rendered and visible', () => {
   cy.login({ username: user.username, password: user.password });
 
   cy.get('[data-cy="desktop-nav"]').should('be.visible');
+  cy.get('[data-testid="home-nav"]').should('not.be.visible');
+  cy.get('[data-cy="bottom-nav"]').should('not.be.visible');
 });
 
 it('when logged on mobile, mobile navs are rendered and visible', () => {
