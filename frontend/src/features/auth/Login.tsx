@@ -26,7 +26,7 @@ export const useStyles = createStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '40vh',
+    // height: '40vh',
     padding: 50,
   },
 }));

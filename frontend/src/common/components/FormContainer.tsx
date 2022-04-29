@@ -5,11 +5,11 @@ import { ReactNode } from 'react';
 const useStyles = createStyles(() => ({
   box: {
     // backgroundColor: 'white',
-    width: 350,
-    // maxWidth: '300px',
+    width: 320,
     // padding: '25px 15px',
     // border: '1px solid',
     // borderColor: theme.colors.gray[4],
+    // borderColor: 'red',
   },
   form: {
     display: 'flex',

@@ -69,7 +69,7 @@ function SignUp() {
               order={1}
               sx={{
                 fontFamily: 'Damion',
-                fontSize: '3.5rem',
+                fontSize: '3rem',
               }}
               mb="sm"
             >
@@ -81,6 +81,7 @@ function SignUp() {
               sx={(theme) => ({
                 color: theme.colors.gray[6],
                 fontSize: 17,
+                width: '80%',
               })}
               mb="sm"
             >
