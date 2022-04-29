@@ -23,9 +23,15 @@ const customRender = (
   options?: Omit<RenderOptions, 'wrapper'>,
 ) => render(ui, { wrapper: Providers, ...options });
 
-/* For rendering components reliant on React Router.
-  When given a 'route', it will push that route to history stack and starts the app from that route.
-*/
+/**
+ * Renders a component wrapped inside BrowserRouter for use in RTL tests.
+ * @param {ReactElement} ui - React component being tested.
+ * @param {{route: string}} options - optional options object.
+ * @param {string} options.route - sets the initial pathname. Defaults to '/'.
+ * @example
+ * // renders <SomeComponent> and destructures UserEvent object.
+ * const { user } = renderWithRouter(<SomeComponent />);
+ */
 export const renderWithRouter = (
   ui: ReactElement,
   { route = '/' } = {},
@@ -45,7 +51,13 @@ export const renderWithRouter = (
 interface MockLogInOptions {
   fakeTokenInfo: { username: string, token: string }
 }
-// Mocks a logged in state on the browser and Redux store, for use in React unit/integration tests
+
+/**
+ * Mocks a logged in state in the DOM and Redux.
+ * @param {{ username: string, token: string }} fakeTokenInfo - The mock token object
+ * @param {string} fakeTokenInfo.username - The test user's username
+ * @param {string} fakeTokenInfo.token - The mock token. Can be any string.
+ */
 export const mockLogin = ({ fakeTokenInfo }: MockLogInOptions) => {
   localStorage.setItem('instacloneSCToken', JSON.stringify(fakeTokenInfo));
   store.dispatch(initAuthedUser());

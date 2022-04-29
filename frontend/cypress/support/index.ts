@@ -27,14 +27,18 @@ declare global {
     interface Chainable {
       /**
        * Custom Cypress command to create a test user.
-       * @param newUserFields - contains four required string fields: fullName, username, password, email
+       * @param newUserFields - Object containing required new user fields.
+       * @param {string} newUserFields.email - Test user's email address.
+       * @param {string} newUserFields.fullName - Test user's full name.
+       * @param {string} newUserFields.username - Test user's username.
+       * @param {string} newUserFields.password - Test user's password.
        */
       createUser(newUserFields: NewUserFields): Chainable<Element>,
       /**
        * Custom Cypress command to log in a test user.
        *
        * Saves token to localStorage and redirects to homepage ('/') after logging in.
-       * @param loginFields - contains two required string fields: username, password
+       * @param loginFields - Object containing username and password fields.
        */
       login(loginFields: LoginFields): Chainable<Element>
     }
