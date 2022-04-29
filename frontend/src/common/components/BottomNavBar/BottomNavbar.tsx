@@ -9,6 +9,7 @@ import { Avatar, Group } from '@mantine/core';
 import useStyles from './BottomNavbar.styles';
 
 // TODO: add user prop
+// TODO: render a blank bar when not logged in
 function BottomNavBar() {
   const { classes } = useStyles();
 
@@ -16,6 +17,7 @@ function BottomNavBar() {
     <Group
       className={classes.container}
       position="apart"
+      data-cy="bottom-nav"
     >
 
       <Link

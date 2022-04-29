@@ -67,6 +67,7 @@ function DesktopNavbar() {
   return (
     <div
       className={classes.navContainer}
+      data-cy="desktop-nav"
     >
       <div>
 
