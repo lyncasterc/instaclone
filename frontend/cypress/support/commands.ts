@@ -23,3 +23,29 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('createUser', ({
+  fullName, email, username, password,
+}) => {
+  cy.request({
+    url: 'http://localhost:3001/api/users',
+    method: 'POST',
+    body: {
+      fullName, email, username, password,
+    },
+  });
+});
+
+Cypress.Commands.add('login', ({
+  username, password,
+}) => {
+  cy.request({
+    url: 'http://localhost:3001/api/login',
+    method: 'POST',
+    body: {
+      username, password,
+    },
+  }).then((res) => {
+    localStorage.setItem('instacloneSCToken', JSON.stringify(res.body));
+  });
+  cy.visit('http://localhost:3000');
+});
