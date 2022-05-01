@@ -50,19 +50,19 @@ jobs:
         run: npm run lint
       - name: test
         run: npm test
-      # - name: install backend dependencies (for cypress to run)
-      #   run: |
-      #     cd ../backend
-      #     npm install
-      # - name: cypress tests
-      #   env:
-      #       PORT: 3001
-      #   uses: cypress-io/github-action@v2
-      #   with: 
-      #     # project: ./frontend
-      #     start: npm run server:dev
-      #     wait-on: http://localhost:3001
-      #     working-directory: ./frontend
+      - name: install backend dependencies (for cypress to run)
+        run: |
+          cd ../backend
+          npm install
+      - name: cypress tests
+        env:
+            PORT: 3001
+        uses: cypress-io/github-action@v2
+        with: 
+          # project: ./frontend
+          start: npm run server:dev
+          wait-on: http://localhost:3001
+          working-directory: ./frontend
 
   build:
     runs-on: ubuntu-20.04
