@@ -55,14 +55,11 @@ jobs:
           cd ../backend
           npm install
       - name: cypress tests
-        env:
-            PORT: 3001
         uses: cypress-io/github-action@v2
         with: 
           # # project: ./frontend
-          start: npm run server:dev
+          start: npm run server:dev, npm start
           wait-on: 'http://localhost:3001/health, http://localhost:3000'
-          wait-on-timeout: 200
           working-directory: ./frontend
 
   build:
