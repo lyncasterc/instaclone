@@ -62,7 +62,7 @@ jobs:
           # project: ./frontend
           start: npm run server:dev
           wait-on: 'http://localhost:3000, http://localhost:3001'
-          wait-on-timeout: 120
+          # wait-on-timeout: 120
           working-directory: ./frontend
 
   build:
