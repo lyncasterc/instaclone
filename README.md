@@ -30,7 +30,7 @@ handles data-fetching and caching. Here's an [example of data-fetching logic usi
 - Searching for users.
 - Instant notifications and direct messaging with [Socket.io](https://socket.io/get-started/).
 ### To run on your machine:
-- clone this repo, then run `git checkout dev` to switch to the dev branch.
+- clone this repo, run `npm i`, then run `git checkout dev` to switch to the dev branch.
 - Run `cd frontend` to switch to the `frontend` directory.
 - run `npm run server:dev` to run the backend server. This also starts up an in-memory MongoDB server.
 - In a different terminal in the `frontend` directory, run `npm start.` 
