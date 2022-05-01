@@ -32,7 +32,7 @@ const signupFields = {
 test('user can signup successfully', async () => {
   const { user } = renderWithRouter(<App />);
 
-  await user.click(screen.getByText(/sign up/i));
+  await user.click(screen.getByText('Sign up'));
   await user.type(screen.getByPlaceholderText(/email/i), signupFields.email);
   await user.type(screen.getByPlaceholderText(/username/i), signupFields.username);
   await user.type(screen.getByPlaceholderText(/password/i), signupFields.password);
@@ -61,7 +61,7 @@ test('error is displayed on unsuccessful signup', async () => {
 
   const { user } = renderWithRouter(<App />);
 
-  await user.click(screen.getByText(/sign up/i));
+  await user.click(screen.getByText('Sign up'));
   await user.type(screen.getByPlaceholderText(/email/i), signupFields.email);
   await user.type(screen.getByPlaceholderText(/username/i), signupFields.username);
   await user.type(screen.getByPlaceholderText(/password/i), signupFields.password);
@@ -88,3 +88,5 @@ test('user is redirected to home page if they visit the signup page and are alre
   expect(screen.queryByText(/don't have an account?/i)).toBeNull();
   expect(screen.getByText(fakeTokenInfo.username)).toBeVisible();
 });
+
+// TODO: int - in Login or Signup, test that navbar isnt rendered

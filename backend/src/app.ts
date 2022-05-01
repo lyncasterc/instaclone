@@ -6,6 +6,7 @@ import /* mongodbConnect, */ { testMongodb } from './mongo';
 import postRouter from './routes/posts';
 import userRouter from './routes/users';
 import loginRouter from './routes/login';
+import testRouter from './routes/tests';
 import { errorHandler } from './utils/middleware';
 
 const { NODE_ENV } = process.env;
@@ -15,6 +16,11 @@ if (NODE_ENV === 'development') {
   // mongodbConnect(config.DEV_MONGODB_URI!);
   testMongodb.connect();
 }
+
+app.get('/health', (_req, res) => {
+  res.send('ok');
+});
+
 app.use(cors());
 app.use(express.static('build'));
 app.use(express.json());
@@ -23,6 +29,6 @@ app.use(morgan('dev'));
 app.use('/api/posts', postRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
-
+if (NODE_ENV !== 'production') app.use('/api/test', testRouter);
 app.use(errorHandler);
 export default app;

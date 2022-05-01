@@ -1,0 +1,13 @@
+#getting users
+GET http://localhost:3001/api/users
+
+###
+#getting single user
+
+@userid = 6261e15971baa31d9e7b0963
+GET http://localhost:3001/api/users/{{userid}}
+
+###
+#getting post
+@postid = 
+GET http://localhost:3001/api/users/{{{{postid}}}}

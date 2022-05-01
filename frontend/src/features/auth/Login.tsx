@@ -26,7 +26,7 @@ export const useStyles = createStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '40vh',
+    // height: '40vh',
     padding: 50,
   },
 }));
@@ -35,7 +35,6 @@ interface LocationState {
   path: string,
 }
 
-// TODO: redirect user to feed if already logged in
 function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [, { login }] = useAuth();
