@@ -59,10 +59,11 @@ jobs:
             PORT: 3001
         uses: cypress-io/github-action@v2
         with: 
-          # project: ./frontend
-          start: npm run server:dev, npm start
-          wait-on: 'http://localhost:3000, http://localhost:3001'
-          # wait-on-timeout: 120
+          command: npm run cypress:tests
+          # # project: ./frontend
+          # start: npm run server:dev, npm start
+          # wait-on: 'http://localhost:3000, http://localhost:3001'
+          # # wait-on-timeout: 120
           working-directory: ./frontend
 
   build:
