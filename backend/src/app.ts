@@ -16,6 +16,11 @@ if (NODE_ENV === 'development') {
   // mongodbConnect(config.DEV_MONGODB_URI!);
   testMongodb.connect();
 }
+
+app.get('/health', (_req, res) => {
+  res.send('ok');
+});
+
 app.use(cors());
 app.use(express.static('build'));
 app.use(express.json());
