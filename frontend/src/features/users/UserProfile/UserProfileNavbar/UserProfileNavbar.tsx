@@ -1,5 +1,6 @@
 import { Title } from '@mantine/core';
 import { ChevronLeft } from 'tabler-icons-react';
+import { useNavigate } from 'react-router-dom';
 import baseStyles from '../../../../common/utils/mobile-nav-styles';
 import useStyles from './UserProfileNavbar.styles';
 
@@ -11,9 +12,20 @@ interface UserProfileNavbarProps {
 function UserProfileNavbar({ isCurrentUserProfile, username }: UserProfileNavbarProps) {
   const { classes: baseClasses } = baseStyles();
   const { classes } = useStyles();
+  const navigate = useNavigate();
+
+  // TODO: write tests for the going back logic when possible
+  const handleGoBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate('/', { replace: true });
+    }
+  };
+
   return (
     <nav
-      className={`${baseClasses.baseStyles} ${classes.container}`}
+      className={`${classes.container} ${baseClasses.baseStyles}`}
     >
       {
         isCurrentUserProfile && (
@@ -21,6 +33,7 @@ function UserProfileNavbar({ isCurrentUserProfile, username }: UserProfileNavbar
             className={`${classes.backBtn}`}
             size={35}
             strokeWidth={1.5}
+            onClick={handleGoBack}
           />
         )
       }
