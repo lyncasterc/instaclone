@@ -1,12 +1,14 @@
 import { createStyles } from '@mantine/core';
 
-export default createStyles(() => ({
+export default createStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 44,
+    [`@media (min-width: ${theme.breakpoints.md}px)`]: {
+      display: 'none',
+    },
   },
   backBtn: {
     position: 'fixed',
