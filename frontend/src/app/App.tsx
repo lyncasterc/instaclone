@@ -13,6 +13,7 @@ import RequireAuth from '../features/auth/RequireAuth';
 import useAuth from '../common/hooks/useAuth';
 import DesktopNavbar from '../common/components/DesktopNavbar/DesktopNavbar';
 import BottomNavBar from '../common/components/BottomNavBar/BottomNavbar';
+import UserProfile from '../features/users/UserProfile/UserProfile';
 
 function App() {
   const [user] = useAuth();
@@ -42,6 +43,7 @@ function App() {
         />
         <Route path="/login" element={user ? <Home /> : <Login />} />
         <Route path="/signup" element={user ? <Home /> : <SignUp />} />
+        <Route path="/:username" element={<UserProfile />} />
       </Routes>
     </>
   );
