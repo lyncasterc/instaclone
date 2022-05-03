@@ -11,9 +11,13 @@ import useStyles from './DesktopNavbar.styles';
 import useAuth from '../../hooks/useAuth';
 import UserMenu from '../UserMenu/UserMenu';
 
-function DesktopNavbar() {
+interface DesktopNavbarProps {
+  displayOnMobile?: boolean,
+}
+
+function DesktopNavbar({ displayOnMobile }: DesktopNavbarProps) {
   const [user] = useAuth();
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
 
   const rightNavSection = () => (
     <div
@@ -65,8 +69,8 @@ function DesktopNavbar() {
   );
 
   return (
-    <div
-      className={classes.navContainer}
+    <nav
+      className={cx(classes.navContainer, { [classes.hideOnMobile]: !displayOnMobile })}
       data-cy="desktop-nav"
     >
       <div>
@@ -93,8 +97,12 @@ function DesktopNavbar() {
 
       </div>
 
-    </div>
+    </nav>
   );
 }
+
+DesktopNavbar.defaultProps = {
+  displayOnMobile: false,
+};
 
 export default DesktopNavbar;
