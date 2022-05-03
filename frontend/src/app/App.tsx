@@ -21,11 +21,12 @@ function App() {
     <>
       <GlobalStyles />
       <Damion />
+
       {
         !(/\/signup|\/login/.test(location.pathname)) && (
           <>
             <DesktopNavbar />
-            <BottomNavBar />
+            { user && <BottomNavBar />}
           </>
         )
       }
