@@ -1,7 +1,6 @@
 import {
   Routes,
   Route,
-  useLocation,
 } from 'react-router-dom';
 // import { Container } from '@mantine/core';
 import Damion from '../common/components/Damion';
@@ -11,23 +10,22 @@ import SignUp from '../features/users/SignUp';
 import Home from '../features/users/Home/Home';
 import RequireAuth from '../features/auth/RequireAuth';
 import useAuth from '../common/hooks/useAuth';
-import DesktopNavbar from '../common/components/DesktopNavbar/DesktopNavbar';
-import BottomNavBar from '../common/components/BottomNavBar/BottomNavbar';
+import DesktopNavbar from '../common/components/Navbars/DesktopNavbar/DesktopNavbar';
+import BottomNavBar from '../common/components/Navbars/BottomNavbar/BottomNavbar';
 import UserProfile from '../features/users/UserProfile/UserProfile';
 
 function App() {
   const [user] = useAuth();
-  const location = useLocation();
   return (
     <>
       <GlobalStyles />
       <Damion />
 
       {
-        !(/\/signup|\/login/.test(location.pathname)) && (
+        user && (
           <>
             <DesktopNavbar />
-            { user && <BottomNavBar />}
+            <BottomNavBar />
           </>
         )
       }
