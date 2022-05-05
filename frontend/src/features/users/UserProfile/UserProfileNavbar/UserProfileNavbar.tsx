@@ -1,7 +1,7 @@
 import { Title } from '@mantine/core';
 import { ChevronLeft } from 'tabler-icons-react';
 import { useNavigate } from 'react-router-dom';
-import baseStyles from '../../../../common/utils/mobile-nav-styles';
+import baseStyles from '../../../../common/components/Navbars/mobile-nav-styles';
 import useStyles from './UserProfileNavbar.styles';
 
 interface UserProfileNavbarProps {
