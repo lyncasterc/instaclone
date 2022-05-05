@@ -9,6 +9,7 @@ function GlobalStyles() {
         },
         body: {
           backgroundColor: theme.colors.gray[0],
+          color: theme.colors.instaDark[6],
           width: '100%',
         },
       })}
