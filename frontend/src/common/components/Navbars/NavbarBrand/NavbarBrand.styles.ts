@@ -1,10 +1,10 @@
 import { createStyles } from '@mantine/core';
 
-export default createStyles(() => ({
+export default createStyles((theme) => ({
   navBrandTitle: {
     fontSize: '2rem',
     fontFamily: 'Damion',
-    color: 'black',
+    color: theme.colors.instaDark[6],
   },
   navBrandLink: {
     textDecoration: 'none',
