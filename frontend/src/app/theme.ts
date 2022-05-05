@@ -1,4 +1,4 @@
-import { MantineProviderProps } from '@mantine/core';
+import { MantineProviderProps, Tuple } from '@mantine/core';
 
 const theme: MantineProviderProps['theme'] = {
   colors: {
@@ -7,5 +7,13 @@ const theme: MantineProviderProps['theme'] = {
   },
   primaryColor: 'instaBlue',
 };
+
+type CustomColors = 'instaBlue' | 'instaDark';
+
+declare module '@mantine/core' {
+  export interface MantineThemeColorsOverride {
+    colors: Record<CustomColors, Tuple<string, 10>>;
+  }
+}
 
 export default theme;
