@@ -1,7 +1,5 @@
 import { createStyles } from '@mantine/core';
 
-// TODO: make buttons less tall on mobile
-
 export default createStyles((theme) => ({
   navContainer: {
     justifyContent: 'space-between',
