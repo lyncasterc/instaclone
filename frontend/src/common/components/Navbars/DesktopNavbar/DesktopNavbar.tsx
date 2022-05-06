@@ -1,4 +1,4 @@
-import { Button } from '@mantine/core';
+import { Button, Container } from '@mantine/core';
 import {
   Home,
   SquarePlus,
@@ -77,15 +77,20 @@ function DesktopNavbar({ displayOnMobile }: DesktopNavbarProps) {
       className={cx(classes.navContainer, { [classes.hideOnMobile]: !displayOnMobile })}
       data-cy="desktop-nav"
     >
-      <div>
-        <NavbarBrand />
-      </div>
-
-      <div>
+      <Container
+        size="md"
+        className={classes.navInnerContainer}
+      >
         <div>
-          {rightNavSection()}
+          <NavbarBrand />
         </div>
-      </div>
+
+        <div>
+          <div>
+            {rightNavSection()}
+          </div>
+        </div>
+      </Container>
     </nav>
   );
 }

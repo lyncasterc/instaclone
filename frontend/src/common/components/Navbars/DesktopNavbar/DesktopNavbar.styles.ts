@@ -2,16 +2,21 @@ import { createStyles } from '@mantine/core';
 
 export default createStyles((theme) => ({
   navContainer: {
-    justifyContent: 'space-between',
     alignItems: 'center',
     display: 'flex',
     backgroundColor: 'white',
     width: '100%',
-    padding: '0 16px',
     height: 44,
     position: 'sticky',
+    zIndex: 5,
     top: 0,
     borderBottom: `1px solid ${theme.colors.gray[4]}`,
+  },
+  navInnerContainer: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    display: 'flex',
+    width: '100%',
   },
   navBarButtonGroup: {
     display: 'flex',
