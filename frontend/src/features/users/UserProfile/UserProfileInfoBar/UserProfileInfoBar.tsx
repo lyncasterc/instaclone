@@ -28,13 +28,11 @@ function UserProfileInfoBar({
         className={classes.item}
       >
         <Text
-          size="sm"
           weight={600}
         >
           {numberFormatter(postCount)}
         </Text>
         <Text
-          size="sm"
           className={classes.itemLabel}
         >
           posts
@@ -45,13 +43,11 @@ function UserProfileInfoBar({
         className={classes.item}
       >
         <Text
-          size="sm"
           weight={600}
         >
           {numberFormatter(followerCount)}
         </Text>
         <Text
-          size="sm"
           className={classes.itemLabel}
         >
           followers
@@ -62,13 +58,11 @@ function UserProfileInfoBar({
         className={classes.item}
       >
         <Text
-          size="sm"
           weight={600}
         >
           {numberFormatter(followingCount)}
         </Text>
         <Text
-          size="sm"
           className={classes.itemLabel}
         >
           following
