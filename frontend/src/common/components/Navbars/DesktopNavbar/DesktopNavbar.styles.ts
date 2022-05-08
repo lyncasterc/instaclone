@@ -6,7 +6,7 @@ export default createStyles((theme) => ({
     display: 'flex',
     backgroundColor: 'white',
     width: '100%',
-    height: 44,
+    height: 60,
     position: 'sticky',
     zIndex: 5,
     top: 0,
