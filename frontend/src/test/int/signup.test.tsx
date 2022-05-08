@@ -88,5 +88,3 @@ test('user is redirected to home page if they visit the signup page and are alre
   expect(screen.queryByText(/don't have an account?/i)).toBeNull();
   expect(screen.getByText(fakeTokenInfo.username)).toBeVisible();
 });
-
-// TODO: int - in Login or Signup, test that navbar isnt rendered
