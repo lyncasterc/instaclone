@@ -22,7 +22,7 @@ function UserProfileInfo({
   isCurrentUserLoggedIn,
 }: UserProfileInfoProps) {
   const { classes, cx } = useStyles();
-  const isMediumScreenOrWider = useMediaQuery('(min-width: 1000px)');
+  const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
 
   const buttons = () => {
     if (isCurrentUserProfile) {

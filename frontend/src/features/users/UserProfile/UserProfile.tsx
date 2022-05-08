@@ -9,10 +9,11 @@ import useAuth from '../../../common/hooks/useAuth';
 function UserProfile() {
   const { username } = useParams();
   const [user] = useAuth();
-  const isMediumScreenOrWider = useMediaQuery('(min-width: 1000px)');
+  const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
 
   const isCurrentUserProfile = user !== null && user === username;
   // TODO: add logic for verifying that username exists
+  // and then remove type assertion from line 31
 
   const fakeUser = {
     id: '1',
