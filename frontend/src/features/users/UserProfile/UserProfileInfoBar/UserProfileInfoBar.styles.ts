@@ -4,10 +4,12 @@ export default createStyles((theme) => ({
   container: {
     borderBottom: `1px solid ${theme.colors.gray[4]}`,
     padding: '10px 0',
+    marginBottom: 20,
 
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
       borderBottom: 'none',
       justifyContent: 'flex-start',
+      marginBottom: 0,
     },
   },
   itemLabel: {
