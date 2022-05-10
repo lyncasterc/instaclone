@@ -3,6 +3,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import UserProfileNavbar from './UserProfileNavbar/UserProfileNavbar';
 import UserProfileInfo from './UserProfileInfo';
 import UserProfileInfoBar from './UserProfileInfoBar/UserProfileInfoBar';
+import UserProfileImageGrid from './UserProfileImageGrid/UserProfileImageGrid';
 import DesktopNavbar from '../../../common/components/Navbars/DesktopNavbar/DesktopNavbar';
 import useAuth from '../../../common/hooks/useAuth';
 
@@ -49,6 +50,8 @@ function UserProfile() {
           />
         )
       }
+
+      <UserProfileImageGrid />
 
     </>
   );
