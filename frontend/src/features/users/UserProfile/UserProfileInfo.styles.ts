@@ -7,7 +7,7 @@ export default createStyles((theme) => ({
     paddingBottom: 16,
 
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
-      padding: '30px 20px',
+      padding: '30px 16px',
     },
   },
   buttonRoot: {
