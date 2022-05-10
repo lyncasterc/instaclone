@@ -8,9 +8,13 @@ function GlobalStyles() {
           boxSizing: 'border-box',
         },
         body: {
-          backgroundColor: theme.colors.gray[0],
+          backgroundColor: 'white',
           color: theme.colors.instaDark[6],
           width: '100%',
+
+          [`@media (min-width: ${theme.breakpoints.md}px)`]: {
+            backgroundColor: theme.colors.gray[0],
+          },
         },
       })}
     />
