@@ -6,9 +6,5 @@ export default createStyles(() => ({
   },
   grid: {
     gap: 3,
-
-    '*': {
-      border: '1px solid red',
-    },
   },
 }));
