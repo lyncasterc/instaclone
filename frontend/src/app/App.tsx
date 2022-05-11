@@ -25,7 +25,7 @@ function App() {
         user && (
           <>
             <DesktopNavbar />
-            <BottomNavBar />
+            <BottomNavBar user={user} />
           </>
         )
       }
