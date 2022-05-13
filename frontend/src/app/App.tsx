@@ -1,8 +1,9 @@
 import {
   Routes,
   Route,
+  useLocation,
 } from 'react-router-dom';
-// import { Container } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import Damion from '../common/components/Damion';
 import GlobalStyles from '../common/components/GlobalStyles';
 import Login from '../features/auth/Login';
@@ -13,9 +14,19 @@ import useAuth from '../common/hooks/useAuth';
 import DesktopNavbar from '../common/components/Navbars/DesktopNavbar/DesktopNavbar';
 import BottomNavBar from '../common/components/Navbars/BottomNavbar/BottomNavbar';
 import UserProfile from '../features/users/UserProfile/UserProfile';
+import Test from '../test';
+
+interface LocationState {
+  background: string,
+}
 
 function App() {
   const [user] = useAuth();
+  const location = useLocation();
+  const state = location.state as LocationState;
+  const background = state && state.background;
+  const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
+
   return (
     <>
       <GlobalStyles />
@@ -30,7 +41,7 @@ function App() {
         )
       }
 
-      <Routes>
+      <Routes location={background || location}>
         <Route
           path="/"
           element={(
@@ -42,7 +53,17 @@ function App() {
         <Route path="/login" element={user ? <Home /> : <Login />} />
         <Route path="/signup" element={user ? <Home /> : <SignUp />} />
         <Route path="/:username" element={<UserProfile />} />
+        {/* TODO: add post view route here when not on desktop */}
       </Routes>
+
+      {/* TODO: replace <Test> with real modal image component */}
+      {
+        background && isMediumScreenOrWider && (
+          <Routes>
+            <Route path="/p/:postId" element={<Test />} />
+          </Routes>
+        )
+      }
     </>
   );
 }
