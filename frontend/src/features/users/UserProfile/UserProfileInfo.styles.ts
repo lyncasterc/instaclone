@@ -19,6 +19,11 @@ export default createStyles((theme) => ({
     borderColor: theme.colors.gray[4],
     color: theme.colors.instaDark[6],
   },
+  editButtonRoot: {
+    [`@media (min-width: ${theme.breakpoints.md}px)`]: {
+      width: 'inherit',
+    },
+  },
 
   // main section -> container holding avatar and name/buttons
   mainSection: {
