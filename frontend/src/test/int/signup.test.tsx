@@ -3,21 +3,17 @@ import {
   screen,
   waitFor,
   mockLogin,
+  mockLogout,
   renderWithRouter,
 } from '../utils/test-utils';
 import App from '../../app/App';
-import { apiSlice } from '../../app/apiSlice';
-import { removeCurrentUser } from '../../features/auth/authSlice';
-import { store } from '../../app/store';
 import server from '../mocks/server';
 import { fakeUser } from '../mocks/handlers';
 import '@testing-library/jest-dom/extend-expect';
 
 beforeAll(() => server.listen());
 afterEach(() => {
-  store.dispatch(apiSlice.util.resetApiState());
-  store.dispatch(removeCurrentUser());
-  localStorage.removeItem('instacloneSCToken');
+  mockLogout();
   server.resetHandlers();
 });
 afterAll(() => server.close());
