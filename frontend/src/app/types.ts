@@ -5,11 +5,19 @@ export interface NewUserFields {
   password: string,
 }
 
+// export interface UpdatedUserFields {
+//   name?: string,
+//   name?: string,
+
+//   // bio?: string,
+// }
+
 export interface User {
   id: string,
   fullName: string,
   username: string,
   email: string,
+  bio?: string,
   passwordHash: string,
   image?: string,
   posts?: string[],
