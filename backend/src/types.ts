@@ -23,6 +23,7 @@ export interface User {
   fullName: string,
   username: string,
   email: string,
+  bio?: string,
   passwordHash: string,
   image?: string,
   posts?: string[], // ref
@@ -48,6 +49,7 @@ export interface ProofedUpdatedUser {
   username?: string,
   email?: string,
   password?: string,
+  bio?: string,
   image?: string,
   followers?: string[] // ref -> User
   following?: string[] // ref -> User

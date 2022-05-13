@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+// TODO: add bio field, website field?
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: [3, 'Username is too short!'],
     required: [true, 'Username is required!'],
+  },
+  bio: {
+    type: String,
   },
   passwordHash: {
     type: String,

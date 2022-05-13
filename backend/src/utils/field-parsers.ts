@@ -45,11 +45,12 @@ interface UnknownUpdateUserFields {
   email?: unknown,
   username?: unknown,
   password?: unknown,
+  bio?: unknown,
   image?: unknown,
 }
 
 const proofUpdateUserFields = ({
-  fullName, username, email, password, image,
+  fullName, username, email, password, image, bio,
 }: UnknownUpdateUserFields): ProofedUpdatedUser => {
   const user: ProofedUpdatedUser = {};
 
@@ -57,6 +58,7 @@ const proofUpdateUserFields = ({
   if (username) user.username = parseStringField(username, 'username');
   if (email) user.email = parseStringField(email, 'email');
   if (password) user.password = parseStringField(password, 'password');
+  if (bio) user.bio = parseStringField(bio, 'bio');
   if (image) user.image = parseDataURIField(image);
 
   return user;
