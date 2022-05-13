@@ -32,4 +32,5 @@ export const handlers = [
     username: req.body.username,
     token: 'supersecrettoken',
   }))),
+  rest.get('/api/users', (req, res, ctx) => res(ctx.status(200), ctx.json([fakeUser]))),
 ];
