@@ -6,7 +6,8 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import theme from '../../app/theme';
 import { store } from '../../app/store';
-import { initAuthedUser } from '../../features/auth/authSlice';
+import { initAuthedUser, removeCurrentUser } from '../../features/auth/authSlice';
+import { apiSlice } from '../../app/apiSlice';
 
 function Providers({ children }: { children: ReactNode }) {
   return (
@@ -61,6 +62,16 @@ interface MockLogInOptions {
 export const mockLogin = ({ fakeTokenInfo }: MockLogInOptions) => {
   localStorage.setItem('instacloneSCToken', JSON.stringify(fakeTokenInfo));
   store.dispatch(initAuthedUser());
+};
+
+/**
+ * Mocks a logged out state by resetting the `api`,
+ * clearing the `auth` state and removing the application's JWT token from DOM.
+ */
+export const mockLogout = () => {
+  store.dispatch(apiSlice.util.resetApiState());
+  store.dispatch(removeCurrentUser());
+  localStorage.removeItem('instacloneSCToken');
 };
 
 export * from '@testing-library/react';
