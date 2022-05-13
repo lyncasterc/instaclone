@@ -73,6 +73,7 @@ function UserProfileInfo({
     return (null);
   };
 
+  // TODO: replace lorem with real bio (have to add bio field to user backend?)
   const bio = () => (
     <div style={{ whiteSpace: 'pre-wrap' }}>
       <Text weight={600}>
@@ -116,9 +117,9 @@ function UserProfileInfo({
             isMediumScreenOrWider && (
               <>
                 <UserProfileInfoBar
-                  postCount={1000}
-                  followerCount={13560}
-                  followingCount={467003}
+                  postCount={user.posts?.length ?? 0}
+                  followerCount={user.followers?.length ?? 0}
+                  followingCount={user.following?.length ?? 0}
                 />
                 {bio()}
               </>
