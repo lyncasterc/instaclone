@@ -1,6 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  createEntityAdapter,
+  EntityState,
+  createSelector,
+} from '@reduxjs/toolkit';
 import type { User, NewUserFields, LoginFields } from './types';
 import type { AuthState } from '../features/auth/authSlice';
+// eslint-disable-next-line import/no-cycle
+import { RootState } from './store';
+
+// Normalizing users cache
+const usersAdapter = createEntityAdapter<User>({
+  selectId: (user) => user.username,
+});
 
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
@@ -15,6 +27,12 @@ export const apiSlice = createApi({
         body: newUserFields,
       }),
       // invalidatesTags: ['User'],
+    }),
+    getUsers: builder.query<EntityState<User>, void>({
+      query: () => '/users',
+      transformResponse: (response: User[]) => (
+        usersAdapter.setAll(usersAdapter.getInitialState(), response)
+      ),
     }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
