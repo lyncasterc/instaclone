@@ -43,10 +43,8 @@ const updateUserById = async (user: ProofedUpdatedUser, id: string) => {
   if (user.password) {
     passwordHash = await bcyrpt.hash(user.password, 10);
     updatedUser.passwordHash = passwordHash;
+    delete updatedUser.password;
   }
-
-  // FIXME: Pretty sure this can be in the if block above ^
-  delete updatedUser.password;
 
   const savedUpdatedUser = await User.findByIdAndUpdate(id, updatedUser, { new: true })
     .populate('posts', { image: 1 });
