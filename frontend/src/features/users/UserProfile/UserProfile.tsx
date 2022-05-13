@@ -16,10 +16,7 @@ function UserProfile() {
     (state) => selectUserByUsername(state, username),
   ) : undefined;
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
-
   const isCurrentUserProfile = user !== null && user === username;
-  // TODO: add logic for verifying that username exists
-  // and then remove type assertion from line 31
 
   if (selectedUser) {
     return (
@@ -49,7 +46,7 @@ function UserProfile() {
           )
         }
 
-      <UserProfileImageGrid />
+        <UserProfileImageGrid />
 
       </>
     );
