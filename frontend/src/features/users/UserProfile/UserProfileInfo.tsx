@@ -29,7 +29,7 @@ function UserProfileInfo({
       return (
         <Button
           classNames={{
-            root: classes.buttonRoot,
+            root: cx(classes.buttonRoot, classes.editButtonRoot),
             outline: classes.buttonOutline,
           }}
           variant="outline"
