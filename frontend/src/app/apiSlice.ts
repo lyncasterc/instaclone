@@ -44,4 +44,21 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useAddUserMutation, useLoginMutation } = apiSlice;
+export const {
+  useAddUserMutation,
+  useLoginMutation,
+  useGetUsersQuery,
+} = apiSlice;
+
+const selectUsersResult = apiSlice.endpoints.getUsers.select();
+const selectUsersData = createSelector(
+  selectUsersResult,
+  (usersResult) => usersResult.data,
+);
+
+export const {
+  selectAll: selectAllUsers,
+  selectById: selectUserByUsername,
+} = usersAdapter.getSelectors(
+  (state: RootState) => selectUsersData(state) ?? usersAdapter.getInitialState(),
+);
