@@ -5,12 +5,14 @@ export interface NewUserFields {
   password: string,
 }
 
-// export interface UpdatedUserFields {
-//   name?: string,
-//   name?: string,
-
-//   // bio?: string,
-// }
+export interface UpdatedUserFields {
+  fullName?: string,
+  username?: string,
+  email?: string,
+  password?: string,
+  bio?: string,
+  image?: string,
+}
 
 export interface User {
   id: string,
