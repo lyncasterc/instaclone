@@ -34,7 +34,7 @@ function UserProfileInfo({
           }}
           variant="outline"
           component={Link}
-          to="/"
+          to="/accounts/edit"
         >
           Edit Profile
         </Button>
