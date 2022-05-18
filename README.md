@@ -22,7 +22,7 @@ handles data-fetching and caching. Here's an [example of data-fetching logic usi
 - Integration tests using [Jest](https://jestjs.io/) and [supertest](https://github.com/visionmedia/supertest). [Example](https://github.com/lyncasterc/instaclone/blob/dev/backend/test/login-api.test.ts).
 
 ### Things to do:
-- Core functionality of the Instagram: 
+- Core functionality of Instagram: 
   - ~Create account, sign up, login~
   - Editing user, uploading avatar image, following/unfollowing users
   - Creating posts, liking posts, deleting posts
