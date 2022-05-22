@@ -4,7 +4,12 @@ import {
   EntityState,
   createSelector,
 } from '@reduxjs/toolkit';
-import type { User, NewUserFields, LoginFields } from './types';
+import type {
+  User,
+  NewUserFields,
+  LoginFields,
+  UpdatedUserFields,
+} from './types';
 import type { AuthState } from '../features/auth/authSlice';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from './store';
@@ -13,6 +18,11 @@ import { RootState } from './store';
 const usersAdapter = createEntityAdapter<User>({
   selectId: (user) => user.username,
 });
+
+interface EditUserMutationArg {
+  updatedUserFields: UpdatedUserFields,
+  id: string,
+}
 
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
@@ -34,6 +44,14 @@ export const apiSlice = createApi({
         usersAdapter.setAll(usersAdapter.getInitialState(), response)
       ),
     }),
+    editUser: builder.mutation<User, EditUserMutationArg>({
+      query: ({ updatedUserFields, id }) => ({
+        url: `/users/${id}`,
+        method: 'PUT',
+        body: updatedUserFields,
+      }),
+      // invalidatesTags: ['User'],
+    }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
         url: '/login',
@@ -48,6 +66,7 @@ export const {
   useAddUserMutation,
   useLoginMutation,
   useGetUsersQuery,
+  useEditUserMutation,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();
