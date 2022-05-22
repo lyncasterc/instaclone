@@ -14,6 +14,7 @@ import useAuth from '../common/hooks/useAuth';
 import DesktopNavbar from '../common/components/Navbars/DesktopNavbar/DesktopNavbar';
 import BottomNavBar from '../common/components/Navbars/BottomNavbar/BottomNavbar';
 import UserProfile from '../features/users/UserProfile/UserProfile';
+import UserProfileEdit from '../features/users/UserProfile/UserProfileEdit/UserProfileEdit';
 import Test from '../test';
 
 interface LocationState {
@@ -21,6 +22,7 @@ interface LocationState {
 }
 
 function App() {
+  // TODO: pass down user as props to components that need it?
   const [user] = useAuth();
   const location = useLocation();
   const state = location.state as LocationState;
@@ -53,6 +55,14 @@ function App() {
         <Route path="/login" element={user ? <Home /> : <Login />} />
         <Route path="/signup" element={user ? <Home /> : <SignUp />} />
         <Route path="/:username" element={<UserProfile />} />
+        <Route
+          path="/accounts/edit"
+          element={(
+            <RequireAuth>
+              <UserProfileEdit user={user} />
+            </RequireAuth>
+        )}
+        />
         {/* TODO: add post view route here when not on desktop */}
       </Routes>
 
