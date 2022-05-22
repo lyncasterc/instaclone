@@ -84,5 +84,6 @@ router.put('/:id/follow', authenticator(), async (req, res, next) => {
   }
 });
 // TODO: write a delete route
+// TODO: write unfollow route?
 
 export default router;
