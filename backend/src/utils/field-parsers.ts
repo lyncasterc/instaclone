@@ -1,5 +1,5 @@
 import validDataUrl from 'valid-data-url';
-import { NewUser, ProofedUpdatedUser } from '../types';
+import { NewUser, ProofedUpdatedUserFields } from '../types';
 
 const isString = (text: unknown): text is string => typeof text === 'string' || text instanceof String;
 
@@ -46,20 +46,20 @@ interface UnknownUpdateUserFields {
   username?: unknown,
   password?: unknown,
   bio?: unknown,
-  image?: unknown,
+  imageDataUrl?: unknown,
 }
 
 const proofUpdateUserFields = ({
-  fullName, username, email, password, image, bio,
-}: UnknownUpdateUserFields): ProofedUpdatedUser => {
-  const user: ProofedUpdatedUser = {};
+  fullName, username, email, password, imageDataUrl, bio,
+}: UnknownUpdateUserFields): ProofedUpdatedUserFields => {
+  const user: ProofedUpdatedUserFields = {};
 
   if (fullName) user.fullName = parseStringField(fullName, 'full name');
   if (username) user.username = parseStringField(username, 'username');
   if (email) user.email = parseStringField(email, 'email');
   if (password) user.password = parseStringField(password, 'password');
   if (bio) user.bio = parseStringField(bio, 'bio');
-  if (image) user.image = parseDataURIField(image);
+  if (imageDataUrl) user.imageDataUrl = parseDataURIField(imageDataUrl);
 
   return user;
 };
@@ -80,13 +80,13 @@ const proofLogInFields = ({ username, password }: UnknownLogInFields) => {
 
 interface UnknownPostFields {
   caption: unknown,
-  image: unknown,
+  imageDataUrl: unknown,
 }
 
-const proofPostFields = ({ caption, image }: UnknownPostFields) => {
+const proofPostFields = ({ caption, imageDataUrl }: UnknownPostFields) => {
   const postFields = {
     caption: parseStringField(caption, 'caption'),
-    image: parseDataURIField(image),
+    imageDataUrl: parseDataURIField(imageDataUrl),
   };
 
   return postFields;
