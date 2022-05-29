@@ -315,7 +315,7 @@ describe('When there are multiple users in the database', () => {
       targetUser = (await testHelpers.usersInDB())[0];
       const post = {
         caption: 'a blue, square',
-        image: testDataUri,
+        imageDataUrl: testDataUri,
       };
 
       const response = await api
@@ -351,8 +351,9 @@ describe('When there are multiple users in the database', () => {
       const userPost = fetchedUser.posts[0];
 
       expect(userPost.image).toBeDefined();
-      expect(typeof userPost.image).toBe('string');
-      expect(userPost.image).toMatch(/https:\/\/res.cloudinary.com/);
+      expect(typeof userPost.image.url).toBe('string');
+      expect(typeof userPost.image.publicId).toBe('string');
+      expect(userPost.image.url).toMatch(/https:\/\/res.cloudinary.com/);
     });
   });
 });
