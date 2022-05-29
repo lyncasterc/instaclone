@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { imageSchema } from './post';
 
 const userSchema = new mongoose.Schema({
   fullName: {
@@ -42,7 +43,7 @@ const userSchema = new mongoose.Schema({
       ref: 'User',
     },
   ],
-  image: String,
+  image: imageSchema,
 });
 
 userSchema.set('toJSON', {
