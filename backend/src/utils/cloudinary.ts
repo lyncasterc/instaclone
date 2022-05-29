@@ -11,7 +11,10 @@ cloudinary.config({
 
 const upload = async (resource: string) => {
   const response = await cloudinary.uploader.upload(resource);
-  return response.secure_url;
+  return {
+    url: response.secure_url,
+    publicId: response.public_id,
+  };
 };
 // cloudinary.uploader.destroy();
 
