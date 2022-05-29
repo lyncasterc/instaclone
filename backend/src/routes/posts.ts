@@ -5,6 +5,7 @@ import fieldParsers, { parseStringField } from '../utils/field-parsers';
 import logger from '../utils/logger';
 import cloudinary from '../utils/cloudinary';
 import { User } from '../mongo';
+import { NewPostFields, Image } from '../types';
 
 const router = express.Router();
 
@@ -16,26 +17,29 @@ router.get('/:id', authenticator(), async (req, res) => {
 });
 
 router.post('/', authenticator(), async (req, res, next) => {
-  let post;
+  let newPostFields: NewPostFields;
+  let image: Image | undefined;
   const user = await User.findById(req.userToken!.id);
 
   try {
-    post = fieldParsers.proofPostFields(req.body);
+    newPostFields = fieldParsers.proofPostFields(req.body);
   } catch (error) {
     logger.error(logger.getErrorMessage(error));
     return res.status(400).send({ error: logger.getErrorMessage(error) });
   }
 
   try {
-    const imageUrl = await cloudinary.upload(post.image);
-    post.image = imageUrl;
+    image = await cloudinary.upload(newPostFields.imageDataUrl);
   } catch (error) {
     logger.error(logger.getErrorMessage(error));
     return res.status(500).send({ error: 'Something went wrong uploading the photo!' });
   }
 
   try {
-    const savedPost = await postService.addPost(post, req.userToken!.id);
+    const savedPost = await postService.addPost({
+      caption: newPostFields.caption,
+      image,
+    }, req.userToken!.id);
     user.posts = [...user.posts, savedPost];
     await user.save();
     return res.status(201).send(savedPost);
