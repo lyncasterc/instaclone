@@ -11,7 +11,12 @@ export interface UpdatedUserFields {
   email?: string,
   password?: string,
   bio?: string,
-  image?: string,
+  imageDataUrl?: string,
+}
+
+export interface Image {
+  url: string,
+  publicId: string
 }
 
 export interface User {
@@ -21,7 +26,7 @@ export interface User {
   email: string,
   bio?: string,
   passwordHash: string,
-  image?: string,
+  image?: Image,
   posts?: string[],
   followers?: string[],
   following?: string[],
