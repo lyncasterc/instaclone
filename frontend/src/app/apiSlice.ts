@@ -49,6 +49,7 @@ export const apiSlice = createApi({
       transformResponse: (response: User[]) => (
         usersAdapter.setAll(usersAdapter.getInitialState(), response)
       ),
+      providesTags: ['User'],
     }),
     editUser: builder.mutation<User, EditUserMutationArg>({
       query: ({ updatedUserFields, id }) => ({
@@ -56,7 +57,14 @@ export const apiSlice = createApi({
         method: 'PUT',
         body: updatedUserFields,
       }),
-      // invalidatesTags: ['User'],
+      invalidatesTags: ['User'],
+    }),
+    deleteUserImage: builder.mutation<User, string>({
+      query: (id) => ({
+        url: `/users/${id}/image`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
     }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
@@ -73,6 +81,7 @@ export const {
   useLoginMutation,
   useGetUsersQuery,
   useEditUserMutation,
+  useDeleteUserImageMutation,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();
