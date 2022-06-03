@@ -27,6 +27,12 @@ interface EditUserMutationArg {
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
+    prepareHeaders: (headers, { getState }) => {
+      const { token } = (getState() as RootState).auth;
+      if (token) headers.set('authorization', `bearer ${token}`);
+
+      return headers;
+    },
   }),
   tagTypes: ['User', 'Post'],
   endpoints: (builder) => ({
