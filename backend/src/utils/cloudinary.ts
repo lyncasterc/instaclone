@@ -16,11 +16,12 @@ const upload = async (resource: string) => {
     publicId: response.public_id,
   };
 };
-// cloudinary.uploader.destroy();
 
-// TODO: write function for deleting an image.
-// may need to store the public id in the database as well?
-// create image schema
+const destroy = async (publicId: string) => {
+  await cloudinary.uploader.destroy(publicId);
+};
+
 export default {
   upload,
+  destroy,
 };
