@@ -75,6 +75,17 @@ router.put('/:id', authenticator(), async (req, res, next) => {
   }
 });
 
+router.delete('/:id/image', authenticator(), async (req, res, next) => {
+  if (req.params.id !== req.userToken!.id) return res.status(401).send({ error: 'Unauthorized' });
+
+  try {
+    const updatedUser = await userService.deleteUserImage(req.params.id);
+    return res.status(204).send(updatedUser);
+  } catch (error) {
+    return next(error);
+  }
+});
+
 router.put('/:id/follow', authenticator(), async (req, res, next) => {
   if (req.params.id === req.userToken!.id) return res.status(400).send({ error: 'You can\'t follow yourself!' });
 

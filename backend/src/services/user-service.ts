@@ -2,6 +2,7 @@ import bcyrpt from 'bcrypt';
 import { ObjectId } from 'mongoose';
 import { User } from '../mongo';
 import { NewUser, UpdatedUserFields } from '../types';
+import cloudinary from '../utils/cloudinary';
 
 const getUsers = async () => {
   // TODO: decide which are and populate the fields that should be populated.
@@ -70,10 +71,20 @@ const followUserById = async (followerId: string, followedUserId: string) => {
   return followedUser;
 };
 
+const deleteUserImage = async (id: string) => {
+  const user = await User.findById(id);
+  cloudinary.destroy(user.image.publicId);
+  user.image = null;
+  await user.save();
+
+  return user;
+};
+
 export default {
   getUsers,
   getUserById,
   addUser,
   updateUserById,
   followUserById,
+  deleteUserImage,
 };
