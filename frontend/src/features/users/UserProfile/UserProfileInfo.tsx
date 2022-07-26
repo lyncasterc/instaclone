@@ -94,7 +94,7 @@ function UserProfileInfo({
     >
       <div className={classes.mainSection}>
         <Avatar
-          src={user.image}
+          src={user.image?.url}
           radius="xl"
           classNames={{
             root: classes.avatarRoot,
