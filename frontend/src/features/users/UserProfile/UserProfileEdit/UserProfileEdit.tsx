@@ -6,14 +6,17 @@ import {
   Avatar,
   Text,
   UnstyledButton,
+  Loader,
 } from '@mantine/core';
-import { Formik, Form, FormikHelpers } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormikTextInput from '../../../../common/components/FormikTextInput';
 import { useAppSelector } from '../../../../common/hooks/selector-dispatch-hooks';
+import useAuth from '../../../../common/hooks/useAuth';
 import {
   selectUserByUsername,
   useEditUserMutation,
+  useDeleteUserImageMutation,
 } from '../../../../app/apiSlice';
 import useStyles from './UserProfileEdit.styles';
 import { UpdatedUserFields } from '../../../../app/types';
@@ -27,29 +30,48 @@ interface UserProfileEditProps {
 function UserProfileEdit({ user }: UserProfileEditProps) {
   const userObject = useAppSelector((state) => selectUserByUsername(state, user as string));
   const { classes } = useStyles();
-  const [editUser] = useEditUserMutation();
-  const [avatarPreview, setAvatarPreview] = useState(userObject?.image);
+  const [editUser, { isLoading: isUpdating }] = useEditUserMutation();
+  const [updateImage, { isLoading: isImageUpdating }] = useEditUserMutation();
+  const [deleteUserImage, { isLoading: isDeleting }] = useDeleteUserImageMutation();
   const [modalOpened, setModalOpened] = useState(false);
-
-  const handleFileInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    setFieldValue: FormikHelpers<void>['setFieldValue'],
-  ) => {
-    if (!e.target.files) return;
-
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      if (fileReader.readyState === 2) {
-        setFieldValue('image', fileReader.result);
-        setAvatarPreview(fileReader.result as string);
-        setModalOpened(false);
-      }
-    };
-    fileReader.readAsDataURL(e.target.files[0]);
-  };
+  const [, { updateTokenUsername }] = useAuth();
 
   if (userObject) {
     const { id } = userObject;
+    const handleFileInputChange = (
+      e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+      if (!e.target.files) return;
+
+      const fileReader = new FileReader();
+      fileReader.onload = async () => {
+        if (fileReader.readyState === 2) {
+          try {
+            await updateImage(
+              {
+                updatedUserFields: {
+                  imageDataUrl: fileReader.result as string,
+                },
+                id: userObject.id,
+              },
+            ).unwrap();
+            setModalOpened(false);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      };
+      fileReader.readAsDataURL(e.target.files[0]);
+    };
+
+    const onRemoveBtnClick = async () => {
+      try {
+        await deleteUserImage(userObject.id).unwrap();
+        setModalOpened(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     return (
       <Container
@@ -59,7 +81,6 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
         <Formik
           initialValues={{
             email: userObject?.email ?? '',
-            image: userObject?.image,
             name: userObject?.fullName ?? '',
             username: userObject?.username ?? '',
             bio: userObject?.bio ?? '',
@@ -67,6 +88,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
           onSubmit={async (values: UpdatedUserFields) => {
             try {
               await editUser({ updatedUserFields: values, id }).unwrap();
+              if (values.username) updateTokenUsername(values.username);
             } catch (error) {
               console.log(error);
             }
@@ -80,19 +102,23 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
               .required(),
             bio: Yup.string()
               .notRequired(),
-            image: Yup.string()
-              .notRequired(),
           })}
         >
           {
-            ({ isValid, getFieldProps, setFieldValue }) => (
-              <Form>
+            ({
+              isValid,
+              getFieldProps,
+              setFieldValue,
+              dirty,
+            }) => (
+              <Form className={classes.form}>
                 <ChangeAvatarModal
                   opened={modalOpened}
                   onClose={() => setModalOpened(false)}
                   handleFileInputChange={handleFileInputChange}
                   setFieldValue={setFieldValue}
                   setModalOpened={setModalOpened}
+                  onRemoveBtnClick={onRemoveBtnClick}
                 />
 
                 <div
@@ -100,40 +126,71 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                 >
 
                   <UnstyledButton
-                    onClick={() => (!userObject.image ? setModalOpened(true) : null)}
+                    onClick={() => (userObject.image && setModalOpened(true))}
+                    data-testid="avatar"
                   >
                     <label htmlFor="imageUpload">
-                      <Avatar
-                        radius="xl"
-                        size="md"
-                        classNames={{
-                          root: classes.avatarRoot,
-                        }}
-                        src={avatarPreview || null}
-                      >
-                        <img
-                          className={classes.placeholderIcon}
-                          src={placeholderIcon}
-                          alt="Placeholder icon"
-                        />
-                      </Avatar>
+                      <div className={classes.loadingAvatar}>
+
+                        <Avatar
+                          radius="xl"
+                          size="md"
+                          classNames={{
+                            root: classes.avatarRoot,
+                          }}
+                          src={userObject.image?.url || null}
+                        >
+                          <div data-testid="avatar-image">
+                            <img
+                              className={classes.placeholderIcon}
+                              src={placeholderIcon}
+                              alt={`${userObject.username}'s profile`}
+                            />
+                          </div>
+                        </Avatar>
+                        {
+                        (isImageUpdating || isDeleting) && (
+                          <Loader
+                            className={classes.loader}
+                            color="gray"
+                            sx={{
+                              opacity: isImageUpdating ? 1 : 0.5,
+                            }}
+                          />
+                        )
+                      }
+                      </div>
                     </label>
                   </UnstyledButton>
-                  {/* TODO: should be !userObject.image */}
+
+                  <div className={classes.usernameAvatarRight} id="usernameAvatarRight">
+                    <Text
+                      size="xl"
+                    >
+                      {user}
+                    </Text>
+                    <UnstyledButton
+                      onClick={() => (userObject.image && setModalOpened(true))}
+                    >
+                      <label htmlFor="imageUpload">
+                        <Text size="sm" className={classes.changeAvatarText}>
+                          Change Profile Photo
+                        </Text>
+                      </label>
+                    </UnstyledButton>
+                  </div>
                   {
-                      userObject.image && (
+                      !userObject.image && (
                         <input
                           type="file"
                           name="image"
                           id="imageUpload"
                           style={{ display: 'none' }}
-                          onChange={(e) => handleFileInputChange(e, setFieldValue)}
+                          onChange={(e) => handleFileInputChange(e)}
                           accept="image/gif, image/png, image/jpeg"
                         />
                       )
-                    }
-
-                  <Text size="xl">{user}</Text>
+                  }
                 </div>
 
                 <FormikTextInput
@@ -143,6 +200,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                   classNames={{
                     label: classes.inputLabel,
                     input: classes.input,
+                    root: classes.formControlRoot,
                   }}
                 />
 
@@ -153,6 +211,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                   classNames={{
                     label: classes.inputLabel,
                     input: classes.input,
+                    root: classes.formControlRoot,
                   }}
                 />
 
@@ -161,6 +220,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                   classNames={{
                     label: classes.inputLabel,
                     input: classes.input,
+                    root: classes.formControlRoot,
                   }}
                   {...getFieldProps('bio')}
                   autosize
@@ -175,14 +235,25 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                   classNames={{
                     label: classes.inputLabel,
                     input: classes.input,
+                    root: classes.formControlRoot,
                   }}
                 />
 
                 <Button
                   type="submit"
-                  disabled={!isValid}
+                  disabled={!isValid || !dirty}
+                  size="xs"
+                  className={classes.submitButton}
                 >
-                  Submit
+                  {
+                    isUpdating ? (
+                      <Loader
+                        color="white"
+                        size="xs"
+                        variant="dots"
+                      />
+                    ) : 'Submit'
+                  }
                 </Button>
               </Form>
             )
