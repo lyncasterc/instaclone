@@ -66,7 +66,7 @@ export const mockLogin = ({ fakeTokenInfo }: MockLogInOptions) => {
 
 /**
  * Mocks a logged out state by resetting the `api`,
- * clearing the `auth` state and removing the application's JWT token from DOM.
+ * clearing the `auth` state and removing the application's JWT token from `localStorage`.
  */
 export const mockLogout = () => {
   store.dispatch(apiSlice.util.resetApiState());
