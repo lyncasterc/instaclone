@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from './selector-dispatch-hooks';
-import { selectCurrentUser, setAuthedUser, removeCurrentUser } from '../../features/auth/authSlice';
+import {
+  selectCurrentUser,
+  setAuthedUser,
+  removeCurrentUser,
+  updateAuthedUsername,
+} from '../../features/auth/authSlice';
 import { useLoginMutation } from '../../app/apiSlice';
 import type { LoginFields } from '../../app/types';
 import { toErrorWithMessage } from '../utils/getErrorMessage';
@@ -32,7 +37,20 @@ const useAuth = () => {
     navigate('/login');
   };
 
-  return [useMemo(() => (user), [user]), { login, logout, isLoading }] as const;
+  /**
+   * Calls the `updateAuthedUsername` thunk defined in `authSlice.ts` to update JWT username.
+   * @param {string} username -The new username
+   */
+  const updateTokenUsername = (username: string) => {
+    dispatch(updateAuthedUsername(username));
+  };
+
+  return [useMemo(() => (user), [user]), {
+    login,
+    logout,
+    isLoading,
+    updateTokenUsername,
+  }] as const;
 };
 
 export default useAuth;
