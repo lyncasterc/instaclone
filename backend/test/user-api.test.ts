@@ -356,4 +356,36 @@ describe('When there are multiple users in the database', () => {
       expect(userPost.image.url).toMatch(/https:\/\/res.cloudinary.com/);
     });
   });
+
+  test('user profile image can be posted and deleted', async () => {
+    const initalUser = (await testHelpers.usersInDB())[0];
+    const tokenResponse = await api
+      .post('/api/login')
+      .send({
+        username: initalUser.username,
+        password: 'secret',
+      });
+    const { token } = tokenResponse.body;
+
+    await api
+      .put(`/api/users/${initalUser.id}`)
+      .set('Authorization', `bearer ${token}`)
+      .send({ imageDataUrl: testDataUri })
+      .expect(200);
+
+    const userWithImage = (await testHelpers.usersInDB()).find((user) => user.id === initalUser.id);
+
+    expect(userWithImage.image).toBeDefined();
+    expect(typeof userWithImage.image.url).toBe('string');
+    expect(typeof userWithImage.image.publicId).toBe('string');
+
+    await api
+      .delete(`/api/users/${initalUser.id}/image`)
+      .set('Authorization', `bearer ${token}`)
+      .expect(204);
+
+    const endUser = (await testHelpers.usersInDB()).find((user) => user.id === initalUser.id);
+
+    expect(endUser.image).toBeNull();
+  });
 });
