@@ -1,13 +1,18 @@
 import { rest } from 'msw';
-import { NewUserFields, LoginFields } from '../../app/types';
+import {
+  NewUserFields,
+  LoginFields,
+  UpdatedUserFields,
+} from '../../app/types';
 
 export const fakeUser = {
   id: '1',
   fullName: 'Bob Dob',
   username: 'bobbydob',
   email: 'bob@dob.com',
+  bio: '',
   passwordHash: 'secrethashstash',
-  image: undefined,
+  image: null,
   posts: [],
   followers: [],
   following: [],
@@ -31,6 +36,16 @@ export const handlers = [
   rest.post<LoginFields>('/api/login', (req, res, ctx) => res(ctx.status(200), ctx.json({
     username: req.body.username,
     token: 'supersecrettoken',
+  }))),
+  rest.put<UpdatedUserFields>('/api/users/:id', (req, res, ctx) => res(ctx.status(200), ctx.json({
+    ...fakeUser,
+    fullName: req.body.fullName ?? fakeUser.fullName,
+    username: req.body.username ?? fakeUser.username,
+    email: req.body.email ?? fakeUser.email,
+    bio: req.body.bio ?? fakeUser.bio,
+    image: req.body.imageDataUrl
+      ? { url: req.body.imageDataUrl, publicId: 'fakepublicid' }
+      : fakeUser.image,
   }))),
   rest.get('/api/users', (req, res, ctx) => res(ctx.status(200), ctx.json([fakeUser]))),
 ];
