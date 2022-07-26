@@ -13,13 +13,15 @@ interface ChangeAvatarModalProps extends ModalProps {
     e: React.ChangeEvent<HTMLInputElement>,
     setFieldValue: FormikHelpers<void>['setFieldValue']
   ) => void,
-  setModalOpened: (value: React.SetStateAction<boolean>) => void
+  setModalOpened: (value: React.SetStateAction<boolean>) => void,
+  onRemoveBtnClick: () => void,
 }
 
 function ChangeAvatarModal({
   handleFileInputChange,
   setFieldValue,
   setModalOpened,
+  onRemoveBtnClick,
   ...props
 }: ChangeAvatarModalProps) {
   const { cx, classes } = useStyles();
@@ -59,6 +61,7 @@ function ChangeAvatarModal({
 
       <UnstyledButton
         className={cx(classes.modalBtn, classes.modalRemoveBtn)}
+        onClick={onRemoveBtnClick}
       >
         Remove Current Photo
       </UnstyledButton>
