@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useMediaQuery } from '@mantine/hooks';
-import UserProfileNavbar from './UserProfileNavbar/UserProfileNavbar';
+import GoBackNavbar from '../../../common/components/Navbars/GoBackNavbar/GoBackNavbar';
 import UserProfileInfo from './UserProfileInfo';
 import UserProfileInfoBar from './UserProfileInfoBar/UserProfileInfoBar';
 import UserProfileImageGrid from './UserProfileImageGrid/UserProfileImageGrid';
@@ -16,15 +16,15 @@ function UserProfile() {
     (state) => selectUserByUsername(state, username),
   ) : undefined;
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
-  const isCurrentUserProfile = user !== null && user === username;
+  const isCurrentUserProfile = user != null && user === username;
 
   if (selectedUser) {
     return (
       <>
         {
         user ? (
-          <UserProfileNavbar
-            username={username as string}
+          <GoBackNavbar
+            text={username as string}
             isCurrentUserProfile={isCurrentUserProfile}
           />
         ) : (
@@ -34,7 +34,7 @@ function UserProfile() {
         <UserProfileInfo
           user={selectedUser}
           isCurrentUserProfile={isCurrentUserProfile}
-          isCurrentUserLoggedIn={user === null}
+          isCurrentUserLoggedIn={user != null}
         />
         {
           !isMediumScreenOrWider && (
