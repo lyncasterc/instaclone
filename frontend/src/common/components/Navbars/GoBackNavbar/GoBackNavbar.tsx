@@ -1,15 +1,15 @@
 import { Title } from '@mantine/core';
 import { ChevronLeft } from 'tabler-icons-react';
 import { useNavigate } from 'react-router-dom';
-import baseStyles from '../../../../common/components/Navbars/mobile-nav-styles';
-import useStyles from './UserProfileNavbar.styles';
+import baseStyles from '../mobile-nav-styles';
+import useStyles from './GoBackNavbar.styles';
 
-interface UserProfileNavbarProps {
+interface GoBackNavbarProps {
   isCurrentUserProfile?: boolean,
-  username: string
+  text: string
 }
 
-function UserProfileNavbar({ isCurrentUserProfile, username }: UserProfileNavbarProps) {
+function GoBackNavbar({ isCurrentUserProfile, text }: GoBackNavbarProps) {
   const { classes: baseClasses } = baseStyles();
   const { classes } = useStyles();
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ function UserProfileNavbar({ isCurrentUserProfile, username }: UserProfileNavbar
       className={`${classes.container} ${baseClasses.baseStyles}`}
     >
       {
-        isCurrentUserProfile && (
+        !isCurrentUserProfile && (
           <ChevronLeft
             className={`${classes.backBtn}`}
             size={35}
@@ -37,13 +37,13 @@ function UserProfileNavbar({ isCurrentUserProfile, username }: UserProfileNavbar
           />
         )
       }
-      <Title order={4} className={`${classes.username}`}>{username}</Title>
+      <Title order={4} className={`${classes.text}`}>{text}</Title>
     </nav>
   );
 }
 
-UserProfileNavbar.defaultProps = {
+GoBackNavbar.defaultProps = {
   isCurrentUserProfile: false,
 };
 
-export default UserProfileNavbar;
+export default GoBackNavbar;

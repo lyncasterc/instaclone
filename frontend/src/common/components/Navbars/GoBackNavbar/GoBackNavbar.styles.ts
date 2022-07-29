@@ -15,7 +15,7 @@ export default createStyles((theme) => ({
     left: 10,
     marginRight: 'auto',
   },
-  username: {
+  text: {
     fontSize: '1rem',
   },
 }));
