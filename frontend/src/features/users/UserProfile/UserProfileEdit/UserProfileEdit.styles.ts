@@ -4,15 +4,12 @@ export default createStyles((theme) => ({
   container: {
     minHeight: '100vh',
     padding: '20px 20px',
-    border: `1px solid ${theme.colors.gray[4]}`,
-    borderBottom: 'none',
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
       marginTop: 60,
       minHeight: 0,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      border: 'none',
     },
   },
   inputLabel: {
