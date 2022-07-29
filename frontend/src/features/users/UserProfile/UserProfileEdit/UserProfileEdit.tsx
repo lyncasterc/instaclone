@@ -22,6 +22,7 @@ import useStyles from './UserProfileEdit.styles';
 import { UpdatedUserFields } from '../../../../app/types';
 import placeholderIcon from '../../../../assets/placeholder-icon.jpeg';
 import ChangeAvatarModal from './ChangeAvatarModal/ChangeAvatarModal';
+import GoBackNavbar from '../../../../common/components/Navbars/GoBackNavbar/GoBackNavbar';
 
 interface UserProfileEditProps {
   user: string | null
@@ -74,37 +75,39 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
     };
 
     return (
-      <Container
-        size="md"
-        className={classes.container}
-      >
-        <Formik
-          initialValues={{
-            email: userObject?.email ?? '',
-            name: userObject?.fullName ?? '',
-            username: userObject?.username ?? '',
-            bio: userObject?.bio ?? '',
-          }}
-          onSubmit={async (values: UpdatedUserFields) => {
-            try {
-              await editUser({ updatedUserFields: values, id }).unwrap();
-              if (values.username) updateTokenUsername(values.username);
-            } catch (error) {
-              console.log(error);
-            }
-          }}
-          validationSchema={Yup.object({
-            email: Yup.string()
-              .required(),
-            name: Yup.string()
-              .required(),
-            username: Yup.string()
-              .required(),
-            bio: Yup.string()
-              .notRequired(),
-          })}
+      <>
+        <GoBackNavbar text="Edit Profile" />
+        <Container
+          size="md"
+          className={classes.container}
         >
-          {
+          <Formik
+            initialValues={{
+              email: userObject?.email ?? '',
+              name: userObject?.fullName ?? '',
+              username: userObject?.username ?? '',
+              bio: userObject?.bio ?? '',
+            }}
+            onSubmit={async (values: UpdatedUserFields) => {
+              try {
+                await editUser({ updatedUserFields: values, id }).unwrap();
+                if (values.username) updateTokenUsername(values.username);
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+            validationSchema={Yup.object({
+              email: Yup.string()
+                .required(),
+              name: Yup.string()
+                .required(),
+              username: Yup.string()
+                .required(),
+              bio: Yup.string()
+                .notRequired(),
+            })}
+          >
+            {
             ({
               isValid,
               getFieldProps,
@@ -258,8 +261,9 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
               </Form>
             )
           }
-        </Formik>
-      </Container>
+          </Formik>
+        </Container>
+      </>
     );
   }
 
