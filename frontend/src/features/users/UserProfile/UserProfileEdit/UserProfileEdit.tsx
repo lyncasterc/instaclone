@@ -8,7 +8,11 @@ import {
   UnstyledButton,
   Loader,
 } from '@mantine/core';
-import { Formik, Form } from 'formik';
+import {
+  Formik,
+  Form,
+  FormikHelpers,
+} from 'formik';
 import * as Yup from 'yup';
 import FormikTextInput from '../../../../common/components/FormikTextInput';
 import { useAppSelector } from '../../../../common/hooks/selector-dispatch-hooks';
@@ -88,10 +92,15 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
               username: userObject?.username ?? '',
               bio: userObject?.bio ?? '',
             }}
-            onSubmit={async (values: UpdatedUserFields) => {
+            onSubmit={async (
+              values: UpdatedUserFields,
+              actions: FormikHelpers<UpdatedUserFields>,
+            ) => {
               try {
                 await editUser({ updatedUserFields: values, id }).unwrap();
                 if (values.username) updateTokenUsername(values.username);
+                triggerAlert('Profile saved.');
+                actions.resetForm({ values });
               } catch (error) {
                 console.log(error);
               }
