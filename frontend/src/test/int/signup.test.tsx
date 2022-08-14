@@ -25,6 +25,8 @@ const signupFields = {
   password: 'secret',
 };
 
+jest.setTimeout(10000);
+
 test('user can signup successfully', async () => {
   const { user } = renderWithRouter(<App />);
 

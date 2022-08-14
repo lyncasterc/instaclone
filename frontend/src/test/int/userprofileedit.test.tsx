@@ -97,7 +97,7 @@ test('when clicking on avatar, modal does not appear if user does not have an im
   });
 });
 
-test.only('when clicking on avatar, modal does appear if user has an image', async () => {
+test('when clicking on avatar, modal does appear if user has an image', async () => {
   server.use(
     rest.get('/api/users', (req, res, ctx) => res(ctx.status(200), ctx.json([{
       ...fakeUser,
@@ -111,8 +111,10 @@ test.only('when clicking on avatar, modal does appear if user has an image', asy
   store.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
+  const avatar = await screen.findByTestId('avatar');
+  await user.click(avatar);
+
   await waitFor(async () => {
-    await user.click(screen.getByTestId('avatar'));
     expect(screen.getByText(/remove current photo/i)).toBeVisible();
   });
 });
