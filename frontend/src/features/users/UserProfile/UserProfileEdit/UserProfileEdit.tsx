@@ -27,6 +27,7 @@ import { UpdatedUserFields } from '../../../../app/types';
 import placeholderIcon from '../../../../assets/placeholder-icon.jpeg';
 import ChangeAvatarModal from './ChangeAvatarModal/ChangeAvatarModal';
 import GoBackNavbar from '../../../../common/components/Navbars/GoBackNavbar/GoBackNavbar';
+import UserProfileAlert from '../UserProfileAlert/UserProfileAlert';
 
 interface UserProfileEditProps {
   user: string | null
@@ -39,6 +40,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
   const [updateImage, { isLoading: isImageUpdating }] = useEditUserMutation();
   const [deleteUserImage, { isLoading: isDeleting }] = useDeleteUserImageMutation();
   const [modalOpened, setModalOpened] = useState(false);
+  const [alertText, setAlertText] = useState('');
   const [, { updateTokenUsername }] = useAuth();
 
   if (userObject) {
@@ -60,7 +62,8 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                 id: userObject.id,
               },
             ).unwrap();
-            setModalOpened(false);
+            if (modalOpened) setModalOpened(false);
+            setAlertText('Profile photo added.');
           } catch (error) {
             console.log(error);
           }
@@ -73,6 +76,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
       try {
         await deleteUserImage(userObject.id).unwrap();
         setModalOpened(false);
+        setAlertText('Photo photo removed.');
       } catch (error) {
         console.error(error);
       }
@@ -80,7 +84,17 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
 
     return (
       <>
+        {(alertText && !modalOpened) && (
+          <UserProfileAlert alertText={alertText} setAlertText={setAlertText} />
+        )}
         <GoBackNavbar text="Edit Profile" />
+        <ChangeAvatarModal
+          opened={modalOpened}
+          onClose={() => setModalOpened(false)}
+          handleFileInputChange={handleFileInputChange}
+          setModalOpened={setModalOpened}
+          onRemoveBtnClick={onRemoveBtnClick}
+        />
         <Container
           size="md"
           className={classes.container}
@@ -101,8 +115,6 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                 setAlertText('Profile saved.');
                 actions.resetForm({ values });
                 if (values.username) updateTokenUsername(values.username);
-                triggerAlert('Profile saved.');
-                actions.resetForm({ values });
               } catch (error) {
                 console.log(error);
               }
@@ -122,19 +134,9 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
             ({
               isValid,
               getFieldProps,
-              setFieldValue,
               dirty,
             }) => (
               <Form className={classes.form}>
-                <ChangeAvatarModal
-                  opened={modalOpened}
-                  onClose={() => setModalOpened(false)}
-                  handleFileInputChange={handleFileInputChange}
-                  setFieldValue={setFieldValue}
-                  setModalOpened={setModalOpened}
-                  onRemoveBtnClick={onRemoveBtnClick}
-                />
-
                 <div
                   className={classes.usernameAvatarContainer}
                 >
