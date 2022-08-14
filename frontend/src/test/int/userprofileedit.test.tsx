@@ -60,6 +60,9 @@ test('user with an image can upload a new one', async () => {
 
   await waitFor(async () => {
     expect(avatarImage).not.toHaveAttribute('src', oldImage);
+
+    // Asserts that UserProfileAlert appears on screen, indicating successful image upload.
+    expect(screen.getByText(/profile photo added/i)).toBeVisible();
   });
 });
 
@@ -94,7 +97,7 @@ test('when clicking on avatar, modal does not appear if user does not have an im
   });
 });
 
-test('when clicking on avatar, modal does appear if user has an image', async () => {
+test.only('when clicking on avatar, modal does appear if user has an image', async () => {
   server.use(
     rest.get('/api/users', (req, res, ctx) => res(ctx.status(200), ctx.json([{
       ...fakeUser,
