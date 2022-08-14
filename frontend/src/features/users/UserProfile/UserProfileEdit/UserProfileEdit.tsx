@@ -98,6 +98,8 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
             ) => {
               try {
                 await editUser({ updatedUserFields: values, id }).unwrap();
+                setAlertText('Profile saved.');
+                actions.resetForm({ values });
                 if (values.username) updateTokenUsername(values.username);
                 triggerAlert('Profile saved.');
                 actions.resetForm({ values });
