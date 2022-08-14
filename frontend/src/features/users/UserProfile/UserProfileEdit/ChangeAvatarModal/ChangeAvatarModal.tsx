@@ -4,14 +4,11 @@ import {
   Divider,
   UnstyledButton,
 } from '@mantine/core';
-import { FormikHelpers } from 'formik';
 import useStyles from './ChangeAvatarModal.styles';
 
 interface ChangeAvatarModalProps extends ModalProps {
-  setFieldValue: FormikHelpers<void>['setFieldValue'],
   handleFileInputChange: (
     e: React.ChangeEvent<HTMLInputElement>,
-    setFieldValue: FormikHelpers<void>['setFieldValue']
   ) => void,
   setModalOpened: (value: React.SetStateAction<boolean>) => void,
   onRemoveBtnClick: () => void,
@@ -19,7 +16,6 @@ interface ChangeAvatarModalProps extends ModalProps {
 
 function ChangeAvatarModal({
   handleFileInputChange,
-  setFieldValue,
   setModalOpened,
   onRemoveBtnClick,
   ...props
@@ -53,7 +49,7 @@ function ChangeAvatarModal({
         name="image"
         id="modalImageUpload"
         style={{ display: 'none' }}
-        onChange={(e) => handleFileInputChange(e, setFieldValue)}
+        onChange={(e) => handleFileInputChange(e)}
         accept="image/gif, image/png, image/jpeg"
       />
 
