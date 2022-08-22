@@ -20,8 +20,8 @@ import useAuth from '../../../../common/hooks/useAuth';
 import {
   selectUserByUsername,
   useEditUserMutation,
-  useDeleteUserImageMutation,
 } from '../../../../app/apiSlice';
+import useUserProfileImageUpload from '../../../../common/hooks/useUserProfileImageUpload';
 import useStyles from './UserProfileEdit.styles';
 import { UpdatedUserFields } from '../../../../app/types';
 import placeholderIcon from '../../../../assets/placeholder-icon.jpeg';
@@ -37,51 +37,17 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
   const userObject = useAppSelector((state) => selectUserByUsername(state, user as string));
   const { classes } = useStyles();
   const [editUser, { isLoading: isUpdating }] = useEditUserMutation();
-  const [updateImage, { isLoading: isImageUpdating }] = useEditUserMutation();
-  const [deleteUserImage, { isLoading: isDeleting }] = useDeleteUserImageMutation();
-  const [modalOpened, setModalOpened] = useState(false);
   const [alertText, setAlertText] = useState('');
+  const [handleFileInputChange, onRemoveBtnClick, {
+    isDeleting,
+    isImageUpdating,
+    modalOpened,
+    setModalOpened,
+  }] = useUserProfileImageUpload(setAlertText);
   const [, { updateTokenUsername }] = useAuth();
 
   if (userObject) {
-    const { id } = userObject;
-    const handleFileInputChange = (
-      e: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-      if (!e.target.files) return;
-
-      const fileReader = new FileReader();
-      fileReader.onload = async () => {
-        if (fileReader.readyState === 2) {
-          try {
-            await updateImage(
-              {
-                updatedUserFields: {
-                  imageDataUrl: fileReader.result as string,
-                },
-                id: userObject.id,
-              },
-            ).unwrap();
-            if (modalOpened) setModalOpened(false);
-            setAlertText('Profile photo added.');
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      };
-      fileReader.readAsDataURL(e.target.files[0]);
-    };
-
-    const onRemoveBtnClick = async () => {
-      try {
-        await deleteUserImage(userObject.id).unwrap();
-        setModalOpened(false);
-        setAlertText('Photo photo removed.');
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
+    const { id: userId } = userObject;
     return (
       <>
         {(alertText && !modalOpened) && (
@@ -91,9 +57,9 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
         <ChangeAvatarModal
           opened={modalOpened}
           onClose={() => setModalOpened(false)}
-          handleFileInputChange={handleFileInputChange}
+          handleFileInputChange={(e) => handleFileInputChange(e, userId)}
           setModalOpened={setModalOpened}
-          onRemoveBtnClick={onRemoveBtnClick}
+          onRemoveBtnClick={() => onRemoveBtnClick(userId)}
         />
         <Container
           size="md"
@@ -111,7 +77,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
               actions: FormikHelpers<UpdatedUserFields>,
             ) => {
               try {
-                await editUser({ updatedUserFields: values, id }).unwrap();
+                await editUser({ updatedUserFields: values, id: userId }).unwrap();
                 setAlertText('Profile saved.');
                 actions.resetForm({ values });
                 if (values.username) updateTokenUsername(values.username);
@@ -202,7 +168,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                           name="image"
                           id="imageUpload"
                           style={{ display: 'none' }}
-                          onChange={(e) => handleFileInputChange(e)}
+                          onChange={(e) => handleFileInputChange(e, userId)}
                           accept="image/gif, image/png, image/jpeg"
                         />
                       )
