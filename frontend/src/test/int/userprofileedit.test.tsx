@@ -23,7 +23,7 @@ beforeEach(() => {
   mockLogin({ fakeTokenInfo });
 });
 afterEach(() => {
-  mockLogout();
+  mockLogout({ resetApiState: true });
   server.resetHandlers();
 });
 afterAll(() => server.close());

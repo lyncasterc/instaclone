@@ -12,7 +12,7 @@ import server from '../mocks/server';
 
 beforeAll(() => server.listen());
 afterEach(() => {
-  mockLogout();
+  mockLogout({ resetApiState: true });
   server.resetHandlers();
 });
 afterAll(() => server.close());

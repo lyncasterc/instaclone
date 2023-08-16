@@ -14,7 +14,7 @@ import { store } from '../../app/store';
 
 beforeAll(() => server.listen());
 afterEach(() => {
-  mockLogout();
+  mockLogout({ resetApiState: true });
   server.resetHandlers();
 });
 afterAll(() => server.close());
