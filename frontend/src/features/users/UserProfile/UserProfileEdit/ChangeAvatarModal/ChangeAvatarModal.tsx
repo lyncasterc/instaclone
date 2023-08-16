@@ -34,6 +34,7 @@ function ChangeAvatarModal({
         inner: classes.inner,
       }}
       padding={0}
+      data-testid="change-avatar-modal"
     >
 
       <UnstyledButton

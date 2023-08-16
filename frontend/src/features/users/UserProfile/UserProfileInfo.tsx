@@ -1,21 +1,32 @@
+import { useState } from 'react';
 import {
   Avatar,
   Text,
   Container,
   Button,
+  UnstyledButton,
+  Loader,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 import useStyles from './UserProfileInfo.styles';
 import { User } from '../../../app/types';
 import UserProfileInfoBar from './UserProfileInfoBar/UserProfileInfoBar';
+import useUserProfileImageUpload from '../../../common/hooks/useUserProfileImageUpload';
+import placeholderIcon from '../../../assets/placeholder-icon.jpeg';
+import ChangeAvatarModal from './UserProfileEdit/ChangeAvatarModal/ChangeAvatarModal';
+import UserProfileAlert from './UserProfileAlert/UserProfileAlert';
 
 interface UserProfileInfoProps {
-  user: User,
-  isCurrentUserLoggedIn: boolean,
-  isCurrentUserProfile?: boolean,
+  user: User;
+  isCurrentUserLoggedIn: boolean;
+  isCurrentUserProfile?: boolean;
 }
 
+/**
+ * Component that displays the user's profile image, username, and bio
+ * (top section above the user's posts in the user profile page)
+ */
 function UserProfileInfo({
   user,
   isCurrentUserProfile,
@@ -23,7 +34,14 @@ function UserProfileInfo({
 }: UserProfileInfoProps) {
   const { classes, cx } = useStyles();
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
-
+  const [alertText, setAlertText] = useState('');
+  const [
+    handleFileInputChange,
+    onRemoveBtnClick,
+    {
+      isDeleting, isImageUpdating, modalOpened, setModalOpened,
+    },
+  ] = useUserProfileImageUpload(setAlertText);
   const buttons = () => {
     if (isCurrentUserProfile) {
       return (
@@ -43,9 +61,7 @@ function UserProfileInfo({
 
     if (isCurrentUserLoggedIn) {
       return (
-        <div
-          className={classes.mainSectionButtonGroup}
-        >
+        <div className={classes.mainSectionButtonGroup}>
           <Button
             classNames={{
               root: classes.buttonRoot,
@@ -70,51 +86,91 @@ function UserProfileInfo({
       );
     }
 
-    return (null);
+    return null;
   };
 
   // TODO: replace lorem with real bio (have to add bio field to user backend?)
   const bio = () => (
     <div style={{ whiteSpace: 'pre-wrap' }}>
-      <Text weight={600}>
-        {user.fullName}
-      </Text>
+      <Text weight={600}>{user.fullName}</Text>
       <Text>
-        Lorem ipsum dolor
-        sit amet consectetur adipisicing elit.
-        Reprehenderit, facere?
+        {user.bio}
       </Text>
     </div>
   );
 
   return (
-    <Container
-      size="md"
-      className={classes.container}
-    >
-      <div className={classes.mainSection}>
-        <Avatar
-          src={user.image?.url}
-          radius="xl"
-          classNames={{
-            root: classes.avatarRoot,
-            placeholder: classes.avatarPlaceholder,
-          }}
-        />
+    <>
+      {alertText && !modalOpened && (
+        <UserProfileAlert alertText={alertText} setAlertText={setAlertText} />
+      )}
 
-        <div className={classes.mainSectionRight}>
-          <div
-            className={classes.mainSectionNameBtns}
+      <ChangeAvatarModal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        handleFileInputChange={(e) => handleFileInputChange(e, user.id)}
+        setModalOpened={setModalOpened}
+        onRemoveBtnClick={() => onRemoveBtnClick(user.id)}
+      />
+
+      <Container size="md" className={classes.container}>
+        <div className={classes.mainSection}>
+          <UnstyledButton
+            onClick={() => (user.image && isCurrentUserProfile) && setModalOpened(true)}
+            data-testid="profile-info-avatar"
           >
-            <Text
-              className={classes.mainSectionUsername}
-            >
-              {user.username}
-            </Text>
-            {buttons()}
-          </div>
-          {
-            isMediumScreenOrWider && (
+            <label htmlFor="imageUpload">
+              <div className={classes.loadingAvatar}>
+                <Avatar
+                  src={user.image?.url}
+                  radius="xl"
+                  classNames={{
+                    root: classes.avatarRoot,
+                  }}
+                >
+                  <div data-testid="avatar-image">
+                    <img
+                      src={placeholderIcon}
+                      alt={`${user.username}'s profile`}
+                      className={classes.placeholderIcon}
+                    />
+                  </div>
+                </Avatar>
+                {
+                  (isImageUpdating || isDeleting) && (
+                    <Loader
+                      className={classes.loader}
+                      color="gray"
+                      sx={{
+                        opacity: isImageUpdating ? 1 : 0.5,
+                      }}
+                    />
+                  )
+                }
+              </div>
+            </label>
+            {
+              (!user.image && isCurrentUserProfile) && (
+                <input
+                  type="file"
+                  name="image"
+                  id="imageUpload"
+                  style={{ display: 'none' }}
+                  onChange={(e) => handleFileInputChange(e, user.id)}
+                  accept="image/gif, image/png, image/jpeg"
+                />
+              )
+            }
+          </UnstyledButton>
+
+          <div className={classes.mainSectionRight}>
+            <div className={classes.mainSectionNameBtns}>
+              <Text className={classes.mainSectionUsername}>
+                {user.username}
+              </Text>
+              {buttons()}
+            </div>
+            {isMediumScreenOrWider && (
               <>
                 <UserProfileInfoBar
                   postCount={user.posts?.length ?? 0}
@@ -123,17 +179,13 @@ function UserProfileInfo({
                 />
                 {bio()}
               </>
-            )
-          }
+            )}
+          </div>
         </div>
 
-      </div>
-
-      {
-        !isMediumScreenOrWider && bio()
-      }
-
-    </Container>
+        {!isMediumScreenOrWider && bio()}
+      </Container>
+    </>
   );
 }
 

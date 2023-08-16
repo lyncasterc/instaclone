@@ -75,9 +75,8 @@ export default createStyles((theme) => ({
   followButtonRoot: {
     flexShrink: 2,
   },
-  // Avatar icon
-  avatarPlaceholder: {
-    backgroundColor: `${theme.colors.gray[1]}`,
+  placeholderIcon: {
+    width: '100%',
   },
   avatarRoot: {
     borderRadius: '50%',
@@ -88,5 +87,17 @@ export default createStyles((theme) => ({
       width: 150,
       height: 150,
     },
+  },
+  loader: {
+    zIndex: 5,
+    position: 'absolute',
+    top: 0,
+    width: 79,
+    height: 79,
+  },
+  loadingAvatar: {
+    position: 'relative',
+    top: 0,
+    left: 0,
   },
 }));

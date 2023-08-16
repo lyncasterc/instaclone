@@ -21,16 +21,16 @@ function UserProfileImageGrid() {
         className={classes.grid}
       >
         <GridImage
-          src="https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
-          alt="picture of MacBook Air"
+          src="https://picsum.photos/200/300"
+          alt=""
         />
         <GridImage
-          src="https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
-          alt="picture of MacBook Air"
+          src="https://picsum.photos/200/300"
+          alt=""
         />
         <GridImage
-          src="https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
-          alt="picture of MacBook Air"
+          src="https://picsum.photos/200/300"
+          alt=""
         />
       </SimpleGrid>
     </Container>
