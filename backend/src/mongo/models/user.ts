@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
+    maxlength: [150, 'Bio is too long!'],
   },
   passwordHash: {
     type: String,

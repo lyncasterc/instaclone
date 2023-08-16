@@ -7,11 +7,13 @@ import {
   Text,
   UnstyledButton,
   Loader,
+  TextareaProps,
 } from '@mantine/core';
 import {
   Formik,
   Form,
   FormikHelpers,
+  useField,
 } from 'formik';
 import * as Yup from 'yup';
 import FormikTextInput from '../../../../common/components/FormikTextInput';
@@ -33,6 +35,38 @@ interface UserProfileEditProps {
   user: string | null
 }
 
+interface BioTextAreaProps extends TextareaProps {
+  name: string,
+}
+function BioTextArea({ name, ...props }: BioTextAreaProps) {
+  const [field] = useField(name);
+
+  return (
+    <>
+      <Textarea
+        label="Bio"
+        {...field}
+        {...props}
+        autosize
+        minRows={2}
+        maxRows={4}
+        mb={5}
+      />
+      <Text
+        size="xs"
+        sx={{
+          color: field.value.length > 150 ? 'red' : '#737373',
+          fontWeight: field.value.length > 150 ? 'bold' : 'inherit',
+        }}
+      >
+        {field.value.length}
+        {' '}
+        / 150
+      </Text>
+    </>
+  );
+}
+
 function UserProfileEdit({ user }: UserProfileEditProps) {
   const userObject = useAppSelector((state) => selectUserByUsername(state, user as string));
   const { classes } = useStyles();
@@ -45,6 +79,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
     setModalOpened,
   }] = useUserProfileImageUpload(setAlertText);
   const [, { updateTokenUsername }] = useAuth();
+  // const [bioValue, setBioValue] = useState(userObject?.bio ?? '');
 
   if (userObject) {
     const { id: userId } = userObject;
@@ -93,13 +128,13 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
               username: Yup.string()
                 .required(),
               bio: Yup.string()
-                .notRequired(),
+                .notRequired()
+                .max(150),
             })}
           >
             {
             ({
               isValid,
-              getFieldProps,
               dirty,
             }) => (
               <Form className={classes.form}>
@@ -197,18 +232,15 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                   }}
                 />
 
-                <Textarea
-                  label="Bio"
-                  classNames={{
-                    label: classes.inputLabel,
-                    input: classes.input,
-                    root: classes.formControlRoot,
-                  }}
-                  {...getFieldProps('bio')}
-                  autosize
-                  minRows={2}
-                  maxRows={4}
-                />
+                <div className={classes.formControlRoot}>
+                  <BioTextArea
+                    name="bio"
+                    classNames={{
+                      label: classes.inputLabel,
+                      input: classes.input,
+                    }}
+                  />
+                </div>
 
                 <FormikTextInput
                   name="email"
