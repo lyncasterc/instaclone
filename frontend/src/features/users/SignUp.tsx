@@ -8,7 +8,7 @@ import {
   Anchor,
 } from '@mantine/core';
 import { Link, useNavigate } from 'react-router-dom';
-import FormikTextInput from '../../common/components/FormikTextInput';
+import SignUpLogInTextInput from '../../common/components/SignUpLogInTextInput/SignUpLogInTextInput';
 import { NewUserFields } from '../../app/types';
 import { useAddUserMutation } from '../../app/apiSlice';
 import useAuth from '../../common/hooks/useAuth';
@@ -88,7 +88,7 @@ function SignUp() {
               Sign up to see photos from people you don&apos;t really care about.
             </Title>
 
-            <FormikTextInput
+            <SignUpLogInTextInput
               name="email"
               placeholder="Email"
               variant="filled"
@@ -98,7 +98,7 @@ function SignUp() {
                 width: '80%',
               }}
             />
-            <FormikTextInput
+            <SignUpLogInTextInput
               name="fullName"
               placeholder="Full Name"
               variant="filled"
@@ -107,7 +107,7 @@ function SignUp() {
                 width: '80%',
               }}
             />
-            <FormikTextInput
+            <SignUpLogInTextInput
               name="username"
               placeholder="Username"
               variant="filled"
@@ -116,7 +116,7 @@ function SignUp() {
                 width: '80%',
               }}
             />
-            <FormikTextInput
+            <SignUpLogInTextInput
               name="password"
               placeholder="Password"
               variant="filled"

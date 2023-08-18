@@ -8,9 +8,12 @@ import { Link } from 'react-router-dom';
 import { Avatar, Group } from '@mantine/core';
 import useStyles from './BottomNavbar.styles';
 
-// TODO: add user prop
+interface BottomNavBarProps {
+  user: string | null,
+}
+
 // TODO: render a blank bar when not logged in
-function BottomNavBar() {
+function BottomNavBar({ user }: BottomNavBarProps) {
   const { classes } = useStyles();
 
   return (
@@ -62,7 +65,7 @@ function BottomNavBar() {
 
       <Avatar
         component={Link}
-        to="/"
+        to={`/${user}`}
         radius="xl"
       />
 

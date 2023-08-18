@@ -3,7 +3,7 @@ import userService from '../services/user-service';
 import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
 import cloudinary from '../utils/cloudinary';
-import { ProofedUpdatedUser } from '../types';
+import { Image, ProofedUpdatedUserFields } from '../types';
 import { authenticator } from '../utils/middleware';
 
 const router = express.Router();
@@ -35,10 +35,11 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', authenticator(), async (req, res, next) => {
-  let userFields: ProofedUpdatedUser;
+  let userFields: ProofedUpdatedUserFields;
+  let image: Image | undefined;
 
   // Blocking users from updating personal information of another user
-  if (['email', 'image', 'username', 'fullName', 'password'].some((field) => field in req.body)) {
+  if (['email', 'imageDataUrl', 'username', 'fullName', 'password'].some((field) => field in req.body)) {
     if (req.params.id !== req.userToken!.id) return res.status(401).send({ error: 'Unauthorized' });
   }
 
@@ -49,9 +50,8 @@ router.put('/:id', authenticator(), async (req, res, next) => {
   }
 
   try {
-    if (userFields.image) {
-      const imageUrl = await cloudinary.upload(userFields.image);
-      userFields.image = imageUrl;
+    if (userFields.imageDataUrl) {
+      image = await cloudinary.upload(userFields.imageDataUrl);
     }
   } catch (error) {
     logger.error(logger.getErrorMessage(error));
@@ -59,8 +59,28 @@ router.put('/:id', authenticator(), async (req, res, next) => {
   }
 
   try {
-    const updatedUser = await userService.updateUserById(userFields, req.params.id);
+    const updatedUser = await userService.updateUserById({
+      fullName: userFields.fullName,
+      username: userFields.username,
+      email: userFields.email,
+      password: userFields.password,
+      bio: userFields.bio,
+      followers: userFields.followers,
+      following: userFields.following,
+      image,
+    }, req.params.id);
     return res.status(200).send(updatedUser);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.delete('/:id/image', authenticator(), async (req, res, next) => {
+  if (req.params.id !== req.userToken!.id) return res.status(401).send({ error: 'Unauthorized' });
+
+  try {
+    const updatedUser = await userService.deleteUserImage(req.params.id);
+    return res.status(204).send(updatedUser);
   } catch (error) {
     return next(error);
   }
@@ -84,5 +104,6 @@ router.put('/:id/follow', authenticator(), async (req, res, next) => {
   }
 });
 // TODO: write a delete route
+// TODO: write unfollow route?
 
 export default router;

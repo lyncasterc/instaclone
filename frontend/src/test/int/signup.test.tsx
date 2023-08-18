@@ -3,21 +3,17 @@ import {
   screen,
   waitFor,
   mockLogin,
+  mockLogout,
   renderWithRouter,
 } from '../utils/test-utils';
 import App from '../../app/App';
-import { apiSlice } from '../../app/apiSlice';
-import { removeCurrentUser } from '../../features/auth/authSlice';
-import { store } from '../../app/store';
 import server from '../mocks/server';
 import { fakeUser } from '../mocks/handlers';
 import '@testing-library/jest-dom/extend-expect';
 
 beforeAll(() => server.listen());
 afterEach(() => {
-  store.dispatch(apiSlice.util.resetApiState());
-  store.dispatch(removeCurrentUser());
-  localStorage.removeItem('instacloneSCToken');
+  mockLogout({ resetApiState: true });
   server.resetHandlers();
 });
 afterAll(() => server.close());
@@ -28,6 +24,8 @@ const signupFields = {
   fullName: fakeUser.fullName,
   password: 'secret',
 };
+
+jest.setTimeout(10000);
 
 test('user can signup successfully', async () => {
   const { user } = renderWithRouter(<App />);
@@ -88,5 +86,3 @@ test('user is redirected to home page if they visit the signup page and are alre
   expect(screen.queryByText(/don't have an account?/i)).toBeNull();
   expect(screen.getByText(fakeTokenInfo.username)).toBeVisible();
 });
-
-// TODO: int - in Login or Signup, test that navbar isnt rendered

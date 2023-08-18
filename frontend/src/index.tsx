@@ -9,9 +9,11 @@ import theme from './app/theme';
 import reportWebVitals from './reportWebVitals';
 import { store } from './app/store';
 import { initAuthedUser } from './features/auth/authSlice';
+import { apiSlice } from './app/apiSlice';
 /*  TODO: create a /validendpoint token to verify that the token is valid?
 if valid, setAuthedUser */
 store.dispatch(initAuthedUser());
+store.dispatch(apiSlice.endpoints.getUsers.initiate());
 
 ReactDOM.render(
   <React.StrictMode>

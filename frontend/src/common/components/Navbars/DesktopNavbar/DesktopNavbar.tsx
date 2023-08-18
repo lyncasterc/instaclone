@@ -1,19 +1,21 @@
-import {
-  Title,
-  Button,
-} from '@mantine/core';
+import { Button, Container } from '@mantine/core';
 import {
   Home,
   SquarePlus,
 } from 'tabler-icons-react';
 import { Link } from 'react-router-dom';
 import useStyles from './DesktopNavbar.styles';
-import useAuth from '../../hooks/useAuth';
-import UserMenu from '../UserMenu/UserMenu';
+import useAuth from '../../../hooks/useAuth';
+import UserMenu from '../../UserMenu/UserMenu';
+import NavbarBrand from '../NavbarBrand/NavbarBrand';
 
-function DesktopNavbar() {
+interface DesktopNavbarProps {
+  displayOnMobile?: boolean,
+}
+
+function DesktopNavbar({ displayOnMobile }: DesktopNavbarProps) {
   const [user] = useAuth();
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
 
   const rightNavSection = () => (
     <div
@@ -25,6 +27,9 @@ function DesktopNavbar() {
             <Button
               component={Link}
               to="/login"
+              classNames={{
+                root: classes.buttonRoot,
+              }}
             >
               Log In
             </Button>
@@ -32,6 +37,9 @@ function DesktopNavbar() {
               variant="white"
               component={Link}
               to="/signup"
+              classNames={{
+                root: cx(classes.buttonRoot, classes.signupButtonRoot),
+              }}
             >
               Sign Up
             </Button>
@@ -65,36 +73,30 @@ function DesktopNavbar() {
   );
 
   return (
-    <div
-      className={classes.navContainer}
+    <nav
+      className={cx(classes.navContainer, { [classes.hideOnMobile]: !displayOnMobile })}
       data-cy="desktop-nav"
     >
-      <div>
-
-        <Link
-          to="/"
-          className={classes.navBrandLink}
-        >
-          <Title
-            order={1}
-            className={classes.navBrandTitle}
-          >
-            Instaclone
-          </Title>
-        </Link>
-
-      </div>
-
-      <div>
-
+      <Container
+        size="md"
+        className={classes.navInnerContainer}
+      >
         <div>
-          {rightNavSection()}
+          <NavbarBrand />
         </div>
 
-      </div>
-
-    </div>
+        <div>
+          <div>
+            {rightNavSection()}
+          </div>
+        </div>
+      </Container>
+    </nav>
   );
 }
+
+DesktopNavbar.defaultProps = {
+  displayOnMobile: false,
+};
 
 export default DesktopNavbar;

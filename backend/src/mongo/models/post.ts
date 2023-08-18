@@ -1,5 +1,18 @@
 import mongoose from 'mongoose';
 
+export const imageSchema = new mongoose.Schema(
+  {
+    url: {
+      type: String,
+      required: true,
+    },
+    publicId: {
+      type: String,
+      required: true,
+    },
+  },
+);
+
 const postSchema = new mongoose.Schema(
   {
     creator: {
@@ -12,7 +25,7 @@ const postSchema = new mongoose.Schema(
       maxlength: [2200, 'Caption can not be greater than 2200 characters.'],
     },
     image: {
-      type: String,
+      type: imageSchema,
       required: true,
     },
     comments: {

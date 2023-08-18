@@ -1,11 +1,12 @@
-import { Group, Title } from '@mantine/core';
+import { Group } from '@mantine/core';
 import { BrandMessenger } from 'tabler-icons-react';
 import { Link } from 'react-router-dom';
-import useStyles from './HomeNavbar.styles';
-import baseStyles from '../../../../common/utils/mobile-nav-styles';
+// import useStyles from './HomeNavbar.styles';
+import baseStyles from '../../../../common/components/Navbars/mobile-nav-styles';
+import NavbarBrand from '../../../../common/components/Navbars/NavbarBrand/NavbarBrand';
 
 function HomeNavbar() {
-  const { classes } = useStyles();
+  // const { classes } = useStyles();
   const { classes: baseClasses } = baseStyles();
 
   return (
@@ -14,17 +15,7 @@ function HomeNavbar() {
       className={`${baseClasses.baseStyles}`}
       data-testid="home-nav"
     >
-      <Link
-        to="/"
-        className={classes.navBrandLink}
-      >
-        <Title
-          order={1}
-          className={classes.navBrandTitle}
-        >
-          Instaclone
-        </Title>
-      </Link>
+      <NavbarBrand />
 
       <Link
         to="/"

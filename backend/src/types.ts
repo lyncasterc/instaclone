@@ -1,5 +1,10 @@
 // TODO: do the reference fields need to be of type string or their actual types?
 
+export interface Image {
+  url: string,
+  publicId: string,
+}
+
 export interface Comment {
   id: string,
   post: string, // ref
@@ -13,7 +18,7 @@ export interface Post {
   id: string,
   creator: string, // ref -> User
   caption?: string,
-  image: string,
+  image: Image,
   comments?: string[], // ref
   likes?: string[], // ref -> User
 }
@@ -23,8 +28,9 @@ export interface User {
   fullName: string,
   username: string,
   email: string,
+  bio?: string,
   passwordHash: string,
-  image?: string,
+  image?: Image,
   posts?: string[], // ref
   followers?: string[], // ref -> User
   following?: string[], //  ref -> User
@@ -35,22 +41,31 @@ export interface NewUser {
   username: string,
   email: string,
   password: string,
-  image?: string,
+}
+
+export interface NewPostFields {
+  caption: string,
+  imageDataUrl: string,
 }
 
 export interface NewPost {
   caption: string,
-  image: string,
+  image?: Image,
 }
 
-export interface ProofedUpdatedUser {
+export interface ProofedUpdatedUserFields {
   fullName?: string,
   username?: string,
   email?: string,
   password?: string,
-  image?: string,
+  bio?: string,
+  imageDataUrl?: string,
   followers?: string[] // ref -> User
   following?: string[] // ref -> User
+}
+
+export interface UpdatedUserFields extends Omit<ProofedUpdatedUserFields, 'imageDataUrl'> {
+  image?: Image,
 }
 
 export interface ProofedUpdatedPost {

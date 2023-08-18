@@ -4,8 +4,8 @@ import useAuth from '../../common/hooks/useAuth';
 
 function RequireAuth({ children }: { children: ReactElement }) {
   const [user] = useAuth();
-
   const location = useLocation();
+
   return user ? (children) : (<Navigate to="/login" state={{ path: location.pathname }} />);
 }
 
