@@ -14,7 +14,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 import type { LoginFields } from '../../app/types';
-import FormikTextInput from '../../common/components/FormikTextInput';
+import SignUpLogInTextInput from '../../common/components/SignUpLogInTextInput/SignUpLogInTextInput';
 import Button from '../../common/components/Button';
 import FormContainer from '../../common/components/FormContainer';
 import useAuth from '../../common/hooks/useAuth';
@@ -82,7 +82,7 @@ function Login() {
                 Instaclone
               </Title>
 
-              <FormikTextInput
+              <SignUpLogInTextInput
                 name="username"
                 placeholder="Username"
                 variant="filled"
@@ -91,7 +91,7 @@ function Login() {
                   width: '80%',
                 }}
               />
-              <FormikTextInput
+              <SignUpLogInTextInput
                 name="password"
                 placeholder="Password"
                 variant="filled"

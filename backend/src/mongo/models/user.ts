@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { imageSchema } from './post';
 
 const userSchema = new mongoose.Schema({
   fullName: {
@@ -16,6 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: [3, 'Username is too short!'],
     required: [true, 'Username is required!'],
+  },
+  bio: {
+    type: String,
+    maxlength: [150, 'Bio is too long!'],
   },
   passwordHash: {
     type: String,
@@ -39,7 +44,7 @@ const userSchema = new mongoose.Schema({
       ref: 'User',
     },
   ],
-  image: String,
+  image: imageSchema,
 });
 
 userSchema.set('toJSON', {

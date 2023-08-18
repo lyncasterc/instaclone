@@ -31,10 +31,16 @@ const authSlice = createSlice({
       state.username = null;
       state.token = null;
     },
+    updateCurrentUsername: (
+      state,
+      action: PayloadAction<string>,
+    ) => {
+      state.username = action.payload;
+    },
   },
 });
 
-export const { setAuthedUser, removeCurrentUser } = authSlice.actions;
+export const { setAuthedUser, removeCurrentUser, updateCurrentUsername } = authSlice.actions;
 
 export default authSlice.reducer;
 
@@ -44,6 +50,24 @@ export const initAuthedUser = (): ThunkAction<void, RootState, unknown, AnyActio
     if (token) {
       const parsedToken = JSON.parse(token);
       dispatch(setAuthedUser(parsedToken));
+    }
+  };
+};
+
+/**
+ * Updates the username in the stored JWT. Necessary for when user edits their username
+ * so that the application can continue to display the correct updated username.
+ * @param {string} username - the new username.
+*/
+export const updateAuthedUsername = (username: string):
+ThunkAction<void, RootState, unknown, AnyAction> => {
+  const token = localStorage.getItem('instacloneSCToken');
+  return (dispatch) => {
+    if (token) {
+      const parsedToken = JSON.parse(token);
+      const updatedUsernameToken = { ...parsedToken, username };
+      localStorage.setItem('instacloneSCToken', JSON.stringify(updatedUsernameToken));
+      dispatch(updateCurrentUsername(username));
     }
   };
 };

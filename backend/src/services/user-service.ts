@@ -1,11 +1,12 @@
 import bcyrpt from 'bcrypt';
 import { ObjectId } from 'mongoose';
 import { User } from '../mongo';
-import { NewUser, ProofedUpdatedUser } from '../types';
+import { NewUser, UpdatedUserFields } from '../types';
+import cloudinary from '../utils/cloudinary';
 
 const getUsers = async () => {
-  // TODO: figure out if post id is populated by default.
   // TODO: decide which are and populate the fields that should be populated.
+  // TODO: omit passwordHash from results.
   const users = await User.find({})
     .populate('posts', { image: 1 });
 
@@ -36,17 +37,15 @@ const addUser = async (user: NewUser) => {
   return savedNewUser;
 };
 
-const updateUserById = async (user: ProofedUpdatedUser, id: string) => {
+const updateUserById = async (user: UpdatedUserFields, id: string) => {
   let passwordHash;
   const updatedUser: any = { ...user };
 
   if (user.password) {
     passwordHash = await bcyrpt.hash(user.password, 10);
     updatedUser.passwordHash = passwordHash;
+    delete updatedUser.password;
   }
-
-  // FIXME: Pretty sure this can be in the if block above ^
-  delete updatedUser.password;
 
   const savedUpdatedUser = await User.findByIdAndUpdate(id, updatedUser, { new: true })
     .populate('posts', { image: 1 });
@@ -72,10 +71,20 @@ const followUserById = async (followerId: string, followedUserId: string) => {
   return followedUser;
 };
 
+const deleteUserImage = async (id: string) => {
+  const user = await User.findById(id);
+  cloudinary.destroy(user.image.publicId);
+  user.image = null;
+  await user.save();
+
+  return user;
+};
+
 export default {
   getUsers,
   getUserById,
   addUser,
   updateUserById,
   followUserById,
+  deleteUserImage,
 };

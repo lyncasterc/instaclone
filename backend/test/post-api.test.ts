@@ -32,12 +32,18 @@ beforeEach(async () => {
     {
       creator: testUser.id,
       caption: 'A super cool caption.',
-      image: 'fakedataurl',
+      image: {
+        url: 'fakeurl.com',
+        publicId: 'fakepublicid',
+      },
     },
     {
       creator: testUser.id,
       caption: 'Another super cool caption.',
-      image: 'anotherfakedataurl',
+      image: {
+        url: 'anotherfakeurl.com',
+        publicId: 'anotherfakepublicid',
+      },
     },
 
   ];
@@ -95,7 +101,7 @@ describe('when there are posts in the database', () => {
         .expect(401)
         .send({
           caption: 'caption',
-          image: 'image',
+          imageDataUrl: testDataUri,
         })
         .expect('Content-Type', /application\/json/);
 
@@ -104,7 +110,7 @@ describe('when there are posts in the database', () => {
 
     test('request with missing required field fails with 400 error code', async () => {
       const invalidPostFields = {
-        image: testDataUri,
+        imageDataUrl: testDataUri,
       };
 
       const response = await api
@@ -120,7 +126,7 @@ describe('when there are posts in the database', () => {
       const startPosts = await testHelpers.postsInDB();
       const validPostFields = {
         caption: 'blue square',
-        image: testDataUri,
+        imageDataUrl: testDataUri,
       };
       await api
         .post('/api/posts')
