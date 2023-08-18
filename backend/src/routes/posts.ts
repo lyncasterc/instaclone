@@ -19,6 +19,8 @@ router.get('/:id', authenticator(), async (req, res) => {
 router.post('/', authenticator(), async (req, res, next) => {
   let newPostFields: NewPostFields;
   let image: Image | undefined;
+  // TODO: check if the user exists before proceeding?
+  // or should that happen in the autheticator middleware?
   const user = await User.findById(req.userToken!.id);
 
   try {
