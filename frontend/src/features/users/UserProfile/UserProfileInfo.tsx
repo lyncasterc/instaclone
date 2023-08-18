@@ -89,7 +89,6 @@ function UserProfileInfo({
     return null;
   };
 
-  // TODO: replace lorem with real bio (have to add bio field to user backend?)
   const bio = () => (
     <div style={{ whiteSpace: 'pre-wrap' }}>
       <Text weight={600}>{user.fullName}</Text>

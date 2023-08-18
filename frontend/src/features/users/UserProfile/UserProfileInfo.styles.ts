@@ -94,6 +94,11 @@ export default createStyles((theme) => ({
     top: 0,
     width: 79,
     height: 79,
+
+    [`@media (min-width: ${theme.breakpoints.sm}px)`]: {
+      width: 154,
+      height: 154,
+    },
   },
   loadingAvatar: {
     position: 'relative',
