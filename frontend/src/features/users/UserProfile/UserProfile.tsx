@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useMediaQuery } from '@mantine/hooks';
+import { useEffect } from 'react';
 import GoBackNavbar from '../../../common/components/Navbars/GoBackNavbar/GoBackNavbar';
 import UserProfileInfo from './UserProfileInfo';
 import UserProfileInfoBar from './UserProfileInfoBar/UserProfileInfoBar';
@@ -17,6 +18,14 @@ function UserProfile() {
   ) : undefined;
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
   const isCurrentUserProfile = user != null && user === username;
+
+  useEffect(() => {
+    if (selectedUser) {
+      document.title = `${username} (@${username}) • Instaclone`;
+    } else {
+      document.title = 'Page Not Found • Instaclone';
+    }
+  }, [selectedUser, username]);
 
   if (selectedUser) {
     return (
