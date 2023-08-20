@@ -24,7 +24,7 @@ handles data-fetching and caching. Here's an [example of data-fetching logic usi
 ### Things to do:
 - Core functionality of Instagram: 
   - ~Create account, sign up, login~
-  - Editing user, uploading avatar image, following/unfollowing users
+  - ~User profile view~, ~editing user profile~, ~uploading avatar image~, following/unfollowing users
   - Creating posts, liking posts, deleting posts
   - Commenting on posts, commenting on comments
 - Searching for users.
