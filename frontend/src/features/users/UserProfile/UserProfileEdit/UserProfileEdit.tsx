@@ -103,7 +103,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
           <Formik
             initialValues={{
               email: userObject?.email ?? '',
-              name: userObject?.fullName ?? '',
+              fullName: userObject?.fullName ?? '',
               username: userObject?.username ?? '',
               bio: userObject?.bio ?? '',
             }}
@@ -123,7 +123,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
             validationSchema={Yup.object({
               email: Yup.string()
                 .required(),
-              name: Yup.string()
+              fullName: Yup.string()
                 .required(),
               username: Yup.string()
                 .required(),
@@ -211,7 +211,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                 </div>
 
                 <FormikTextInput
-                  name="name"
+                  name="fullName"
                   placeholder="Name"
                   label="Name"
                   classNames={{
