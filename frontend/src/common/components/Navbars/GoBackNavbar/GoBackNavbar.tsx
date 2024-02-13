@@ -29,12 +29,14 @@ function GoBackNavbar({ isCurrentUserProfile, text }: GoBackNavbarProps) {
     >
       {
         !isCurrentUserProfile && (
-          <ChevronLeft
-            className={`${classes.backBtn}`}
-            size={35}
-            strokeWidth={1.5}
-            onClick={handleGoBack}
-          />
+          <div className={classes.backBtnContainer}>
+            <ChevronLeft
+              className={`${classes.backBtn}`}
+              size={35}
+              strokeWidth={1.5}
+              onClick={handleGoBack}
+            />
+          </div>
         )
       }
       <Title order={4} className={`${classes.text}`}>{text}</Title>
