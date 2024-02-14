@@ -2,6 +2,7 @@ import { Button, Container } from '@mantine/core';
 import {
   Home,
   SquarePlus,
+  BrandMessenger,
 } from 'tabler-icons-react';
 import { Link } from 'react-router-dom';
 import useStyles from './DesktopNavbar.styles';
@@ -59,6 +60,16 @@ function DesktopNavbar({ displayOnMobile }: DesktopNavbarProps) {
               to="/"
             >
               <SquarePlus
+                size={30}
+                strokeWidth={2}
+                color="black"
+              />
+            </Link>
+
+            <Link
+              to="/"
+            >
+              <BrandMessenger
                 size={30}
                 strokeWidth={2}
                 color="black"
