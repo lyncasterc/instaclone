@@ -6,10 +6,11 @@ import useStyles from './GoBackNavbar.styles';
 
 interface GoBackNavbarProps {
   isCurrentUserProfile?: boolean,
+  rightComponent?: JSX.Element,
   text: string
 }
 
-function GoBackNavbar({ isCurrentUserProfile, text }: GoBackNavbarProps) {
+function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavbarProps) {
   const { classes: baseClasses } = baseStyles();
   const { classes } = useStyles();
   const navigate = useNavigate();
@@ -35,17 +36,21 @@ function GoBackNavbar({ isCurrentUserProfile, text }: GoBackNavbarProps) {
               size={35}
               strokeWidth={1.5}
               onClick={handleGoBack}
+              data-testid="goBackNavBtn"
             />
           </div>
         )
       }
-      <Title order={4} className={`${classes.text}`}>{text}</Title>
+      <Title order={4} className={baseClasses.header}>{text}</Title>
+
+      {rightComponent}
     </nav>
   );
 }
 
 GoBackNavbar.defaultProps = {
   isCurrentUserProfile: false,
+  rightComponent: null,
 };
 
 export default GoBackNavbar;

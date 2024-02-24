@@ -17,11 +17,4 @@ export default createStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
-    fontSize: '1rem',
-    flexGrow: 1,
-    textAlign: 'center',
-    position: 'relative',
-
-  },
 }));
