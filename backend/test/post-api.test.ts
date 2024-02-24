@@ -108,9 +108,9 @@ describe('when there are posts in the database', () => {
       expect(response.body.error).toMatch(/token missing or invalid/i);
     });
 
-    test('request with missing required field fails with 400 error code', async () => {
+    test('request with missing image field fails with 400 error code', async () => {
       const invalidPostFields = {
-        imageDataUrl: testDataUri,
+        caption: 'caption',
       };
 
       const response = await api
@@ -119,7 +119,40 @@ describe('when there are posts in the database', () => {
         .set('Authorization', `bearer ${token}`)
         .expect(400);
 
-      expect(response.body.error).toMatch(/incorrect or missing/i);
+      expect(response.body.error).toMatch(/missing image/i);
+    });
+
+    test('request with no caption succeeds with 201 code', async () => {
+      const startPosts = await testHelpers.postsInDB();
+      const validPostFields = {
+        imageDataUrl: testDataUri,
+      };
+
+      await api
+        .post('/api/posts')
+        .send(validPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(201);
+
+      const posts = await testHelpers.postsInDB();
+      expect(posts).toHaveLength(startPosts.length + 1);
+    });
+
+    test('request with empty caption succeeds with 201 code', async () => {
+      const startPosts = await testHelpers.postsInDB();
+      const validPostFields = {
+        imageDataUrl: testDataUri,
+        caption: '',
+      };
+
+      await api
+        .post('/api/posts')
+        .send(validPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(201);
+
+      const posts = await testHelpers.postsInDB();
+      expect(posts).toHaveLength(startPosts.length + 1);
     });
 
     test('can post a valid post', async () => {

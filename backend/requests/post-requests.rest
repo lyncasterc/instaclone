@@ -20,13 +20,38 @@ Content-Type: application/json
 }
 
 ###
-#creating post
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYmJ5ZG9iIiwiaWQiOiI2MjYxZTE1OTcxYmFhMzFkOWU3YjA5NjMiLCJpYXQiOjE2NTA1ODIwMjMsImV4cCI6MTY1MDU4NTYyM30.Y2FKPx7u1b_nKiDrN8IJjXkfRWQEMWX6UjHahM6Lgrc
+#creating post with caption and image
+# replace {{token}} with the token from the login response
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYmJ5ZG9iIiwiaWQiOiI2NWRhODA5YmQ5ZmVkMGNiYjI1YWY5YTYiLCJpYXQiOjE3MDg4MTg1OTEsImV4cCI6MTcwODgyMjE5MX0.p46VL7kK6e6I8gXueLRbYOa6VtZx1J4iPWZ1CaH7eKY
 POST http://localhost:3001/api/posts
 Content-Type: application/json
 Authorization: bearer {{token}}
 
 {
   "caption": "a blue square",
-  "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCBmaWxsPSIjMDBCMUZGIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIvPjwvc3ZnPg=="
+  "imageDataUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCBmaWxsPSIjMDBCMUZGIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIvPjwvc3ZnPg=="
+}
+
+###
+#creating post with image and no caption (should pass)
+# replace {{token}} with the token from the login response
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYmJ5ZG9iIiwiaWQiOiI2NWRhODA5YmQ5ZmVkMGNiYjI1YWY5YTYiLCJpYXQiOjE3MDg4MTg1OTEsImV4cCI6MTcwODgyMjE5MX0.p46VL7kK6e6I8gXueLRbYOa6VtZx1J4iPWZ1CaH7eKY
+POST http://localhost:3001/api/posts
+Content-Type: application/json
+Authorization: bearer {{token}}
+
+{
+  "imageDataUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCBmaWxsPSIjMDBCMUZGIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIvPjwvc3ZnPg=="
+}
+
+###
+#creating post with no image (should fail)
+# replace {{token}} with the token from the login response
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYmJ5ZG9iIiwiaWQiOiI2NWRhODA5YmQ5ZmVkMGNiYjI1YWY5YTYiLCJpYXQiOjE3MDg4MTg1OTEsImV4cCI6MTcwODgyMjE5MX0.p46VL7kK6e6I8gXueLRbYOa6VtZx1J4iPWZ1CaH7eKY
+POST http://localhost:3001/api/posts
+Content-Type: application/json
+Authorization: bearer {{token}}
+
+{
+  "caption": "a blue square"
 }

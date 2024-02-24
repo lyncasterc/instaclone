@@ -44,13 +44,13 @@ export interface NewUser {
 }
 
 export interface NewPostFields {
-  caption: string,
+  caption?: string,
   imageDataUrl: string,
 }
 
 export interface NewPost {
-  caption: string,
-  image?: Image,
+  caption?: string,
+  image: Image,
 }
 
 export interface ProofedUpdatedUserFields {
