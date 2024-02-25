@@ -29,7 +29,7 @@ import { UpdatedUserFields } from '../../../../app/types';
 import placeholderIcon from '../../../../assets/placeholder-icon.jpeg';
 import ChangeAvatarModal from './ChangeAvatarModal/ChangeAvatarModal';
 import GoBackNavbar from '../../../../common/components/Navbars/GoBackNavbar/GoBackNavbar';
-import UserProfileAlert from '../UserProfileAlert/UserProfileAlert';
+import Alert from '../../../../common/components/Alert/Alert';
 
 interface UserProfileEditProps {
   user: string | null
@@ -86,7 +86,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
     return (
       <>
         {(alertText && !modalOpened) && (
-          <UserProfileAlert alertText={alertText} setAlertText={setAlertText} />
+          <Alert alertText={alertText} setAlertText={setAlertText} />
         )}
         <GoBackNavbar text="Edit Profile" />
         <ChangeAvatarModal

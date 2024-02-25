@@ -61,7 +61,7 @@ test('user with an image can upload a new one', async () => {
   await waitFor(async () => {
     expect(avatarImage).not.toHaveAttribute('src', oldImage);
 
-    // Asserts that UserProfileAlert appears on screen, indicating successful image upload.
+    // Asserts that Alert appears on screen, indicating successful image upload.
     expect(screen.getByText(/profile photo added/i)).toBeVisible();
   });
 });
