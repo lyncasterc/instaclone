@@ -7,7 +7,7 @@ import useStyles from './GoBackNavbar.styles';
 interface GoBackNavbarProps {
   isCurrentUserProfile?: boolean,
   rightComponent?: JSX.Element,
-  text: string
+  text: string,
 }
 
 function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavbarProps) {
@@ -15,7 +15,6 @@ function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavb
   const { classes } = useStyles();
   const navigate = useNavigate();
 
-  // TODO: write tests for the going back logic when possible
   const handleGoBack = () => {
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);

@@ -3,6 +3,7 @@ import {
   NewUserFields,
   LoginFields,
   UpdatedUserFields,
+  NewPostFields,
 } from '../../app/types';
 
 export const fakeUser = {
@@ -31,6 +32,18 @@ export const handlers = [
       posts: fakeUser.posts,
       followers: fakeUser.followers,
       following: fakeUser.following,
+    }));
+  }),
+  rest.post<NewPostFields>('/api/posts', (req, res, ctx) => {
+    const postFields = req.body;
+    ctx.delay(2500);
+    return res(ctx.status(201), ctx.json({
+      id: '1',
+      creator: fakeUser.id,
+      caption: postFields.caption,
+      image: { url: postFields.imageDataUrl, publicId: 'fakepublicid' },
+      comments: [],
+      likes: [],
     }));
   }),
   rest.post<LoginFields>('/api/login', (req, res, ctx) => res(ctx.status(200), ctx.json({

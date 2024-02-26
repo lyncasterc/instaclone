@@ -1,4 +1,4 @@
-import { Button, Container } from '@mantine/core';
+import { Button, Container, UnstyledButton } from '@mantine/core';
 import {
   Home,
   SquarePlus,
@@ -56,15 +56,19 @@ function DesktopNavbar({ displayOnMobile }: DesktopNavbarProps) {
                 color="black"
               />
             </Link>
-            <Link
-              to="/"
-            >
-              <SquarePlus
-                size={30}
-                strokeWidth={2}
-                color="black"
-              />
-            </Link>
+
+            <UnstyledButton>
+              <label htmlFor="postImageUpload">
+                <SquarePlus
+                  size={30}
+                  strokeWidth={2}
+                  color="black"
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                />
+              </label>
+            </UnstyledButton>
 
             <Link
               to="/"

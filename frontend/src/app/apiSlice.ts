@@ -4,11 +4,13 @@ import {
   EntityState,
   createSelector,
 } from '@reduxjs/toolkit';
-import type {
-  User,
-  NewUserFields,
-  LoginFields,
-  UpdatedUserFields,
+import {
+  type User,
+  type NewUserFields,
+  type LoginFields,
+  type UpdatedUserFields,
+  type Post,
+  type NewPostFields,
 } from './types';
 import type { AuthState } from '../features/auth/authSlice';
 // eslint-disable-next-line import/no-cycle
@@ -66,6 +68,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    addPost: builder.mutation<Post, NewPostFields>({
+      query: (newPostFields) => ({
+        url: '/posts',
+        method: 'POST',
+        body: newPostFields,
+      }),
+    }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
         url: '/login',
@@ -82,6 +91,7 @@ export const {
   useGetUsersQuery,
   useEditUserMutation,
   useDeleteUserImageMutation,
+  useAddPostMutation,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();
