@@ -22,13 +22,15 @@ handles data-fetching and caching. Here's an [example of data-fetching logic usi
 - Integration tests using [Jest](https://jestjs.io/) and [supertest](https://github.com/visionmedia/supertest). [Example](https://github.com/lyncasterc/instaclone/blob/dev/backend/test/login-api.test.ts).
 
 ### Things to do:
-- Core functionality of the Instagram: 
-  - ~Create account, sign up, login~
-  - Editing user, uploading avatar image, following/unfollowing users
-  - Creating posts, liking posts, deleting posts
-  - Commenting on posts, commenting on comments
-- Searching for users.
-- Instant notifications and direct messaging with [Socket.io](https://socket.io/get-started/).
+- Core functionality of Instagram: 
+  - ~Creating accounts, logging in~
+  - ~Editing user profile, uploading profile image~
+  - Creating, viewing and deleting posts
+  - following/unfollowing users
+  - Commenting on posts, replying to comments
+  - Liking posts and comments
+  - Notification system
+  - Searching for users.
 ### To run on your machine:
 - clone this repo, then run `git checkout dev` to switch to the dev branch.
 - Run `cd frontend` to switch to the `frontend` directory.
