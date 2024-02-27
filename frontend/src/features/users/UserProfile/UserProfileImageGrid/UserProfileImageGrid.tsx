@@ -1,12 +1,17 @@
 import {
   SimpleGrid,
   Container,
+  Image,
 } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import useStyles from './UserProfileImageGrid.styles';
-import GridImage from './GridImage/GridImage';
+import { Post } from '../../../../app/types';
 
-// TODO: add prop for user images
-function UserProfileImageGrid() {
+interface UserProfileImageGridProps {
+  posts: Post[];
+}
+
+function UserProfileImageGrid({ posts }: UserProfileImageGridProps) {
   const { classes } = useStyles();
 
   return (
@@ -20,18 +25,21 @@ function UserProfileImageGrid() {
         spacing="xs"
         className={classes.grid}
       >
-        <GridImage
-          src="https://picsum.photos/200/300"
-          alt=""
-        />
-        <GridImage
-          src="https://picsum.photos/200/300"
-          alt=""
-        />
-        <GridImage
-          src="https://picsum.photos/200/300"
-          alt=""
-        />
+        {
+          [...posts].reverse().map((post) => {
+            const { id, image: { url } } = post;
+            return (
+              <Link
+                to={`/p/${id}`}
+                key={id}
+              >
+                <Image
+                  src={url}
+                />
+              </Link>
+            );
+          })
+        }
       </SimpleGrid>
     </Container>
   );

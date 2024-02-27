@@ -1,14 +1,12 @@
 import { createStyles } from '@mantine/core';
 
 export default createStyles((theme) => ({
-  container: {
-
-  },
-  grid: {
-    gap: 3,
-
+  postViewContainer: {
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
-      gap: 25,
+      backgroundColor: 'white',
+      border: `1px solid ${theme.colors.gray[4]}`,
+      padding: '1rem',
+      marginTop: 60,
     },
   },
 }));

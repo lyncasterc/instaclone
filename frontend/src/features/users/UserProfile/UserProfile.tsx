@@ -55,7 +55,7 @@ function UserProfile() {
           )
         }
 
-        <UserProfileImageGrid />
+        <UserProfileImageGrid posts={selectedUser.posts ?? []} />
 
       </>
     );

@@ -32,18 +32,20 @@ export interface User {
   bio?: string,
   passwordHash: string,
   image?: Image,
-  posts?: string[],
+  posts?: Post[],
   followers?: string[],
   following?: string[],
 }
 
 export interface Post {
   id: string,
-  creator: string, // ref -> User
+  creator: User, // ref -> User
   caption?: string,
   image: Image,
   comments?: string[], // ref
   likes?: string[], // ref -> User
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export interface LoginFields {

@@ -3,7 +3,6 @@ import {
   Route,
   useLocation,
 } from 'react-router-dom';
-import { useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
 import Damion from '../common/components/Damion';
 import GlobalStyles from '../common/components/GlobalStyles';
@@ -17,9 +16,9 @@ import BottomNavBar from '../common/components/Navbars/BottomNavbar/BottomNavbar
 import UserProfile from '../features/users/UserProfile/UserProfile';
 import EditPostDetails from '../features/posts/EditPostDetails/EditPostDetails';
 import UserProfileEdit from '../features/users/UserProfile/UserProfileEdit/UserProfileEdit';
-import Test from '../test';
 import EditPostImage from '../features/posts/EditPostImage/EditPostImage';
 import Alert from '../common/components/Alert/Alert';
+import PostView from '../features/posts/PostView/PostView';
 
 interface LocationState {
   background: string,
@@ -32,7 +31,6 @@ function App() {
   const isCreatePage = /create/i.test(location.pathname);
   const state = location.state as LocationState;
   const background = state && state.background;
-  const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
 
   return (
     <>
@@ -94,17 +92,8 @@ function App() {
             </RequireAuth>
         )}
         />
-        {/* TODO: add post view route here when not on desktop */}
+        <Route path="/p/:postId" element={<PostView />} />
       </Routes>
-
-      {/* TODO: replace <Test> with real modal image component */}
-      {
-        background && isMediumScreenOrWider && (
-          <Routes>
-            <Route path="/p/:postId" element={<Test />} />
-          </Routes>
-        )
-      }
     </>
   );
 }

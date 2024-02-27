@@ -91,7 +91,18 @@ describe('when there are posts in the database', () => {
       expect(targetPost.caption).toBe(fetchedPost.caption);
     });
 
-    // TODO: write test checking that image is populated, (potentially other fields in the future)
+    test('returned post has populated image field', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+      const response = await api
+        .get(`/api/posts/${targetPost.id}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+
+      const fetchedPost = response.body;
+
+      expect(fetchedPost.image.url).toBeDefined();
+      expect(fetchedPost.image.publicId).toBeDefined();
+    });
   });
 
   describe('when creating posts', () => {
