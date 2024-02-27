@@ -1,5 +1,5 @@
 import { Title } from '@mantine/core';
-import { ChevronLeft } from 'tabler-icons-react';
+import { IconChevronLeft } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import baseStyles from '../mobile-nav-styles';
 import useStyles from './GoBackNavbar.styles';
@@ -30,7 +30,7 @@ function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavb
       {
         !isCurrentUserProfile && (
           <div className={classes.backBtnContainer}>
-            <ChevronLeft
+            <IconChevronLeft
               className={`${classes.backBtn}`}
               size={35}
               strokeWidth={1.5}

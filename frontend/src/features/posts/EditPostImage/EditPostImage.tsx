@@ -6,7 +6,7 @@ import { useState } from 'react';
 import {
   Button, Title, UnstyledButton,
 } from '@mantine/core';
-import { X } from 'tabler-icons-react';
+import { IconX } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
 import baseStyles from '../../../common/components/Navbars/mobile-nav-styles';
 import getCroppedImage from './getCroppedImage';
@@ -60,7 +60,7 @@ function EditPostImage({ setAlertText }: EditPostImageProps) {
 
           <div className={baseClasses.threeItemNavContainer}>
             <Link to="/" className={baseClasses.closeButton}>
-              <X size={35} strokeWidth={1.5} />
+              <IconX size={35} strokeWidth={1.5} />
             </Link>
             <Title order={4} className={baseClasses.header}>New Post Photo</Title>
 

@@ -1,5 +1,5 @@
 import { Group } from '@mantine/core';
-import { BrandMessenger } from 'tabler-icons-react';
+import { IconBrandMessenger } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 // import useStyles from './HomeNavbar.styles';
 import baseStyles from '../../../../common/components/Navbars/mobile-nav-styles';
@@ -20,7 +20,7 @@ function HomeNavbar() {
       <Link
         to="/"
       >
-        <BrandMessenger
+        <IconBrandMessenger
           size={30}
           strokeWidth={1.5}
           color="black"

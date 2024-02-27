@@ -1,9 +1,9 @@
 import {
-  Home,
-  SquarePlus,
-  Search,
-  Heart,
-} from 'tabler-icons-react';
+  IconHome,
+  IconSquarePlus,
+  IconSearch,
+  IconHeart,
+} from '@tabler/icons-react';
 import { Link, Navigate } from 'react-router-dom';
 import { Avatar, Group, UnstyledButton } from '@mantine/core';
 import { useState } from 'react';
@@ -47,7 +47,7 @@ function BottomNavBar({ user }: BottomNavBarProps) {
       <Link
         to="/"
       >
-        <Home
+        <IconHome
           size={30}
           strokeWidth={1.5}
           color="black"
@@ -57,7 +57,7 @@ function BottomNavBar({ user }: BottomNavBarProps) {
       <Link
         to="/"
       >
-        <Search
+        <IconSearch
           size={30}
           strokeWidth={1.5}
           color="black"
@@ -66,7 +66,7 @@ function BottomNavBar({ user }: BottomNavBarProps) {
 
       <UnstyledButton>
         <label htmlFor="postImageUpload">
-          <SquarePlus
+          <IconSquarePlus
             size={30}
             strokeWidth={1.5}
             color="black"
@@ -98,7 +98,7 @@ function BottomNavBar({ user }: BottomNavBarProps) {
       <Link
         to="/"
       >
-        <Heart
+        <IconHeart
           size={30}
           strokeWidth={1.5}
           color="black"

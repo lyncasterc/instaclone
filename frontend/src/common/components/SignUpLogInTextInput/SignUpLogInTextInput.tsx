@@ -2,7 +2,7 @@ import { useField } from 'formik';
 import {
   TextInput,
 } from '@mantine/core';
-import { CircleX, CircleCheck } from 'tabler-icons-react';
+import { IconCircleX, IconCircleCheck } from '@tabler/icons-react';
 import useStyles from './SignUpLogInTextInput.styles';
 import type { FormikInputProps } from '../FormikTextInput';
 
@@ -18,7 +18,7 @@ function SignUpLogInTextInput({ name, ...props }: FormikInputProps) {
   const renderIcon = () => {
     if (showError) {
       return (
-        <CircleX
+        <IconCircleX
           strokeWidth={1.5}
           size={25}
           color="red"
@@ -29,7 +29,7 @@ function SignUpLogInTextInput({ name, ...props }: FormikInputProps) {
 
     if (touchedAndNoError) {
       return (
-        <CircleCheck
+        <IconCircleCheck
           strokeWidth={1.5}
           size={25}
           color="#868E96"

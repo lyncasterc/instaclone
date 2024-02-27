@@ -4,9 +4,9 @@ import {
   Divider,
 } from '@mantine/core';
 import {
-  UserCircle,
-  Settings,
-} from 'tabler-icons-react';
+  IconUserCircle,
+  IconSettings,
+} from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import useStyles from './UserMenu.styles';
 import useAuth from '../../hooks/useAuth';
@@ -32,10 +32,10 @@ function UserMenu() {
         cursor: 'pointer',
       }}
     >
-      <Menu.Item icon={<UserCircle size={18} />} component={Link} to={`/${user}`}>
+      <Menu.Item icon={<IconUserCircle size={18} />} component={Link} to={`/${user}`}>
         Profile
       </Menu.Item>
-      <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
+      <Menu.Item icon={<IconSettings size={18} />}>Settings</Menu.Item>
 
       <Divider />
 
