@@ -1,8 +1,8 @@
 import { Title } from '@mantine/core';
 import { IconChevronLeft } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
 import baseStyles from '../mobile-nav-styles';
 import useStyles from './GoBackNavbar.styles';
+import useGoBack from '../../../hooks/useGoBack';
 
 interface GoBackNavbarProps {
   isCurrentUserProfile?: boolean,
@@ -13,15 +13,7 @@ interface GoBackNavbarProps {
 function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavbarProps) {
   const { classes: baseClasses } = baseStyles();
   const { classes } = useStyles();
-  const navigate = useNavigate();
-
-  const handleGoBack = () => {
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate('/', { replace: true });
-    }
-  };
+  const goBack = useGoBack();
 
   return (
     <nav
@@ -34,7 +26,7 @@ function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavb
               className={`${classes.backBtn}`}
               size={35}
               strokeWidth={1.5}
-              onClick={handleGoBack}
+              onClick={goBack}
               data-testid="goBackNavBtn"
             />
           </div>
