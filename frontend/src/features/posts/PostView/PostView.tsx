@@ -6,7 +6,11 @@ import { useGetPostByIdQuery } from '../../../app/apiSlice';
 import PostComponent from '../PostComponent/PostComponent';
 import useStyles from './PostView.styles';
 
-function PostView() {
+interface PostViewProps {
+  setAlertText: React.Dispatch<React.SetStateAction<string>>
+}
+
+function PostView({ setAlertText }: PostViewProps) {
   const { postId } = useParams();
   const { classes } = useStyles();
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
@@ -23,7 +27,7 @@ function PostView() {
           px={!isMediumScreenOrWider ? 0 : 'md'}
         >
           <GoBackNavbar text="Post" />
-          <PostComponent post={post} />
+          <PostComponent post={post} setAlertText={setAlertText} />
         </Container>
       );
     }

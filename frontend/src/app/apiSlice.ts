@@ -79,6 +79,12 @@ export const apiSlice = createApi({
       query: (id) => `/posts/${id}`,
       providesTags: ['Post'],
     }),
+    deletePostById: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/posts/${id}`,
+        method: 'DELETE',
+      }),
+    }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
         url: '/login',
@@ -97,6 +103,7 @@ export const {
   useDeleteUserImageMutation,
   useAddPostMutation,
   useGetPostByIdQuery,
+  useDeletePostByIdMutation,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();

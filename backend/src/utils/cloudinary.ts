@@ -21,7 +21,18 @@ const destroy = async (publicId: string) => {
   await cloudinary.uploader.destroy(publicId);
 };
 
+const checkIfImageExists = async (publicId: string) => {
+  try {
+    await cloudinary.api.resource(publicId);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
 export default {
   upload,
   destroy,
+  checkIfImageExists,
 };

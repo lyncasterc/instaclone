@@ -10,7 +10,7 @@ import { NewPostFields, Image } from '../types';
 const router = express.Router();
 
 // TODO: remove authenticator from this. instagram allows this.
-router.get('/:id', authenticator(), async (req, res) => {
+router.get('/:id', async (req, res) => {
   const post = await postService.getPost(req.params.id);
   if (!post) return res.status(404).end();
   return res.send(post);
@@ -75,6 +75,26 @@ router.put('/:id', authenticator(), async (req, res, next) => {
     const errorMessage = logger.getErrorMessage(error);
     logger.error(errorMessage);
     if (errorMessage === 'Unauthorized') return res.status(401).send({ error: errorMessage });
+
+    return next(error);
+  }
+});
+
+router.delete('/:id', authenticator(), async (req, res, next) => {
+  try {
+    await postService.deletePostById(req.params.id, req.userToken!.id);
+    return res.status(204).end();
+  } catch (error) {
+    const errorMessage = logger.getErrorMessage(error);
+    logger.error(errorMessage);
+
+    if (/unauthorized/i.test(errorMessage)) {
+      return res.status(401).send({ error: errorMessage });
+    }
+
+    if (/post not found/i.test(errorMessage)) {
+      return res.status(404).send({ error: errorMessage });
+    }
 
     return next(error);
   }

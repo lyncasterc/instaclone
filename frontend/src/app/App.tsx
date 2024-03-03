@@ -92,7 +92,7 @@ function App() {
             </RequireAuth>
         )}
         />
-        <Route path="/p/:postId" element={<PostView />} />
+        <Route path="/p/:postId" element={<PostView setAlertText={setAlertText} />} />
       </Routes>
     </>
   );
