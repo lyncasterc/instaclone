@@ -21,8 +21,8 @@ export interface Post {
   image: Image,
   comments?: string[], // ref
   likes?: string[], // ref -> User
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: string, // Date
+  updatedAt: string, // Date
 }
 
 export interface User {
