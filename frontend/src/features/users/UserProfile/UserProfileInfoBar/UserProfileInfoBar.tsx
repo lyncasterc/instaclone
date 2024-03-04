@@ -35,7 +35,7 @@ function UserProfileInfoBar({
         <Text
           className={classes.itemLabel}
         >
-          posts
+          {postCount === 1 ? 'post' : 'posts'}
         </Text>
       </div>
 
@@ -50,7 +50,7 @@ function UserProfileInfoBar({
         <Text
           className={classes.itemLabel}
         >
-          followers
+          {followerCount === 1 ? 'follower' : 'followers'}
         </Text>
       </div>
 
