@@ -20,7 +20,7 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { NewUserFields, LoginFields } from '../../src/app/types';
+import { NewUserFields, LoginFields, UpdatedUserFields } from '../../src/app/types';
 
 declare global {
   namespace Cypress {
@@ -46,6 +46,12 @@ declare global {
        * Uses the logged in user's token to authenticate the request.
        */
       createPost(): Chainable<Element>,
+      /**
+       * Custom Cypress command to edit a user.
+       * Uses the logged in user's token to authenticate the request.
+       * @param updatedUserFields - Object containing fields to update.
+       */
+      editUser(updatedUserFields: UpdatedUserFields): Chainable<Element>,
     }
   }
 }

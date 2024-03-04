@@ -8,6 +8,8 @@ import { Link, Navigate } from 'react-router-dom';
 import { Avatar, Group, UnstyledButton } from '@mantine/core';
 import { useState } from 'react';
 import useStyles from './BottomNavbar.styles';
+import { useAppSelector } from '../../../hooks/selector-dispatch-hooks';
+import { selectUserByUsername } from '../../../../app/apiSlice';
 
 interface BottomNavBarProps {
   user: string | null,
@@ -17,6 +19,9 @@ interface BottomNavBarProps {
 function BottomNavBar({ user }: BottomNavBarProps) {
   const { classes } = useStyles();
   const [image, setImage] = useState('');
+  const selectedUser = user ? useAppSelector(
+    (state) => selectUserByUsername(state, user),
+  ) : undefined;
 
   const handleFileInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -110,6 +115,8 @@ function BottomNavBar({ user }: BottomNavBarProps) {
         to={`/${user}`}
         radius="xl"
         data-testid="bottom-nav-avatar"
+        src={selectedUser?.image?.url}
+        size="sm"
       />
 
     </Group>
