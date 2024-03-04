@@ -46,8 +46,10 @@ test('user with an image can upload a new one', async () => {
   store.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
-  const avatarImage = await screen.findByRole('img');
-  expect(avatarImage).toHaveAttribute('src', oldImage);
+  const avatarImages = await screen.findAllByRole('img');
+  avatarImages.forEach((avatarImage) => {
+    expect(avatarImage).toHaveAttribute('src', oldImage);
+  });
 
   await user.click(screen.getByText(/change profile photo/i));
 
@@ -59,7 +61,9 @@ test('user with an image can upload a new one', async () => {
   });
 
   await waitFor(async () => {
-    expect(avatarImage).not.toHaveAttribute('src', oldImage);
+    avatarImages.forEach((avatarImage) => {
+      expect(avatarImage).not.toHaveAttribute('src', oldImage);
+    });
 
     // Asserts that Alert appears on screen, indicating successful image upload.
     expect(screen.getByText(/profile photo added/i)).toBeVisible();
