@@ -57,7 +57,7 @@ function DesktopNavbar({ displayOnMobile }: DesktopNavbarProps) {
               />
             </Link>
 
-            <UnstyledButton>
+            <UnstyledButton data-cy="desktop-upload-btn">
               <label htmlFor="postImageUpload">
                 <IconSquarePlus
                   size={30}

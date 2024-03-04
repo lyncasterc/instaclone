@@ -1,4 +1,13 @@
 {
   "pageLoadTimeout": 120000,
-  "responseTimeout": 60000
+  "responseTimeout": 60000,
+  "defaultCommandTimeout": 10000,
+  "env": {
+    "user1": {
+      "fullName": "Superuser",
+      "username": "admin",
+      "password": "secret",
+      "email": "admin@email.com"
+    }
+  }
 }

@@ -190,6 +190,7 @@ function EditPostDetails({ username, setAlertText }: EditPostDetailsProps) {
                         type="submit"
                         size="xs"
                         disabled={isPosting}
+                        data-cy="edit-post-details-desktop-share-btn"
                       >
                         {
                       isPosting ? (

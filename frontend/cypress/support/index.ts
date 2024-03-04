@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 // ***********************************************************
 // This example support/index.js is processed and
-// loaded automatically before your test files.
+// loaded automatically beforeEach your test files.
 //
 // This is a great place to put global configuration and
 // behavior that modifies Cypress.
@@ -40,7 +40,12 @@ declare global {
        * Saves token to localStorage and redirects to homepage ('/') after logging in.
        * @param loginFields - Object containing username and password fields.
        */
-      login(loginFields: LoginFields): Chainable<Element>
+      login(loginFields: LoginFields): Chainable<Element>,
+      /**
+       * Custom Cypress command to create a post.
+       * Uses the logged in user's token to authenticate the request.
+       */
+      createPost(): Chainable<Element>,
     }
   }
 }

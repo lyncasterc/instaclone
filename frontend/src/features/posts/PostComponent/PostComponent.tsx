@@ -90,6 +90,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
               color="black"
               className={classes.activeOpacityLight}
               onClick={() => setDeleteModalOpen(true)}
+              data-cy="post-options-btn"
             />
           )
         }
@@ -151,7 +152,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
             </Text>
 
           </Stack>
-          <UnstyledButton className={classes.modalBtn} onClick={onDelete}>
+          <UnstyledButton className={classes.modalBtn} onClick={onDelete} data-cy="confirm-delete-post-btn">
             Delete
           </UnstyledButton>
           <UnstyledButton
@@ -165,6 +166,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
       </Group>
       <Image
         src={post.image.url}
+        data-cy="post-image"
       />
       <Group
         position="left"

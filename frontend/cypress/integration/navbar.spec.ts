@@ -1,9 +1,4 @@
-const user = {
-  fullName: 'Superuser',
-  username: 'admin',
-  password: 'secret',
-  email: 'admin@email.com',
-};
+const user = Cypress.env('user1');
 
 beforeEach(() => {
   cy.request('POST', 'http://localhost:3001/api/test/reset');

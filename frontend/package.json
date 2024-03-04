@@ -35,11 +35,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server:dev": "cd ../backend && npm run start:dev",
+    "server:test": "cd ../backend && npm run start:test",
     "docker:mongo": "cd ../backend && npm run docker:mongo",
     "start:dev": "concurrently \"npm run docker:mongo\" \"npm run server:dev\" \"npm start\"",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "cypress:tests": "concurrently \"npm run server:dev\" \"npm start\" \"npm run cypress:open\"",
+    "cypress:tests": "concurrently \"npm run server:test\" \"npm start\" \"npm run cypress:open\"",
     "lint": "eslint .",
     "ts-jest:init": "npx ts-jest config:init",
     "jest-preview": "jest-preview"

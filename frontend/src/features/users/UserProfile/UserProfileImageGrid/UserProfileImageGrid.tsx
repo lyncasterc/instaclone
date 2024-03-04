@@ -24,6 +24,7 @@ function UserProfileImageGrid({ posts }: UserProfileImageGridProps) {
         cols={3}
         spacing="xs"
         className={classes.grid}
+        data-cy="user-profile-image-grid"
       >
         {
           [...posts].reverse().map((post) => {

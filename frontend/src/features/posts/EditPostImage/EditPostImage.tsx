@@ -59,7 +59,7 @@ function EditPostImage({ setAlertText }: EditPostImageProps) {
         >
 
           <div className={baseClasses.threeItemNavContainer}>
-            <Link to="/" className={baseClasses.closeButton}>
+            <Link to="/" className={baseClasses.closeButton} data-cy="edit-post-image-mobile-cancel-btn">
               <IconX size={35} strokeWidth={1.5} />
             </Link>
             <Title order={4} className={baseClasses.header}>New Post Photo</Title>
@@ -67,6 +67,7 @@ function EditPostImage({ setAlertText }: EditPostImageProps) {
             <UnstyledButton
               className={baseClasses.nextButton}
               onClick={() => onNextClick(state.image!)}
+              data-cy="edit-post-image-mobile-next-btn"
             >
               Next
             </UnstyledButton>
@@ -86,7 +87,7 @@ function EditPostImage({ setAlertText }: EditPostImageProps) {
         {ismediumOrWider && (
           <div className={classes.desktopBtns}>
             <Button size="xs" onClick={() => navigate('/')} color="gray">Cancel</Button>
-            <Button size="xs" onClick={() => onNextClick(state.image!)}>Next</Button>
+            <Button size="xs" onClick={() => onNextClick(state.image!)} data-cy="edit-post-image-desktop-next-btn">Next</Button>
           </div>
         )}
       </>
