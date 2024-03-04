@@ -66,7 +66,7 @@ test('post is viewable in homepage after creating it', async () => {
   });
 });
 
-test('post is viewable in the user profile after creating it', async () => {
+test.only('post is viewable in the user profile after creating it', async () => {
   await store.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
@@ -109,7 +109,7 @@ test('post is viewable in the user profile after creating it', async () => {
   });
 });
 
-test('post is viewable in the post view page', async () => {
+test.only('post is viewable in the post view page', async () => {
   await store.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
