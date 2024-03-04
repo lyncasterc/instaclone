@@ -1,27 +1,19 @@
 import { Title } from '@mantine/core';
-import { ChevronLeft } from 'tabler-icons-react';
-import { useNavigate } from 'react-router-dom';
+import { IconChevronLeft } from '@tabler/icons-react';
 import baseStyles from '../mobile-nav-styles';
 import useStyles from './GoBackNavbar.styles';
+import useGoBack from '../../../hooks/useGoBack';
 
 interface GoBackNavbarProps {
   isCurrentUserProfile?: boolean,
-  text: string
+  rightComponent?: JSX.Element,
+  text: string,
 }
 
-function GoBackNavbar({ isCurrentUserProfile, text }: GoBackNavbarProps) {
+function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavbarProps) {
   const { classes: baseClasses } = baseStyles();
   const { classes } = useStyles();
-  const navigate = useNavigate();
-
-  // TODO: write tests for the going back logic when possible
-  const handleGoBack = () => {
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate('/', { replace: true });
-    }
-  };
+  const goBack = useGoBack();
 
   return (
     <nav
@@ -29,21 +21,27 @@ function GoBackNavbar({ isCurrentUserProfile, text }: GoBackNavbarProps) {
     >
       {
         !isCurrentUserProfile && (
-          <ChevronLeft
-            className={`${classes.backBtn}`}
-            size={35}
-            strokeWidth={1.5}
-            onClick={handleGoBack}
-          />
+          <div className={classes.backBtnContainer}>
+            <IconChevronLeft
+              className={`${classes.backBtn}`}
+              size={35}
+              strokeWidth={1.5}
+              onClick={goBack}
+              data-testid="goBackNavBtn"
+            />
+          </div>
         )
       }
-      <Title order={4} className={`${classes.text}`}>{text}</Title>
+      <Title order={4} className={baseClasses.header}>{text}</Title>
+
+      {rightComponent}
     </nav>
   );
 }
 
 GoBackNavbar.defaultProps = {
   isCurrentUserProfile: false,
+  rightComponent: null,
 };
 
 export default GoBackNavbar;

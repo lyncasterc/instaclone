@@ -1,5 +1,7 @@
 import { Post } from '../mongo';
 import { NewPost, ProofedUpdatedPost } from '../types';
+import cloudinary from '../utils/cloudinary';
+
 // TODO: figure out what exactly needs to be populated.
 const getPost = async (id: string) => {
   const post = await Post.findById(id)
@@ -49,8 +51,24 @@ const updatePostById = async (
   return updatedPost;
 };
 
+const deletePostById = async (id: string, requester: string) => {
+  const deletedPost = await Post.findById(id);
+
+  if (!deletedPost) {
+    throw new Error('Post not found');
+  }
+
+  if (requester !== deletedPost.creator.toString()) {
+    throw new Error('Unauthorized');
+  }
+
+  await cloudinary.destroy(deletedPost.image.publicId);
+  await deletedPost.remove();
+};
+
 export default {
   getPost,
   addPost,
   updatePostById,
+  deletePostById,
 };

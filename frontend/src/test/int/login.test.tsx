@@ -37,6 +37,8 @@ test('user can login successfully', async () => {
   });
 
   expect(screen.getByText(fakeUser.username)).toBeVisible();
+
+  // FIXME: home nav is always visible so this is not a good way to test this
   expect(screen.getByTestId('home-nav')).toBeVisible();
 });
 

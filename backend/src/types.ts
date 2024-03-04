@@ -16,11 +16,13 @@ export interface Comment {
 
 export interface Post {
   id: string,
-  creator: string, // ref -> User
+  creator: User, // ref -> User
   caption?: string,
   image: Image,
   comments?: string[], // ref
   likes?: string[], // ref -> User
+  createdAt: string, // Date
+  updatedAt: string, // Date
 }
 
 export interface User {
@@ -44,13 +46,13 @@ export interface NewUser {
 }
 
 export interface NewPostFields {
-  caption: string,
+  caption?: string,
   imageDataUrl: string,
 }
 
 export interface NewPost {
-  caption: string,
-  image?: Image,
+  caption?: string,
+  image: Image,
 }
 
 export interface ProofedUpdatedUserFields {

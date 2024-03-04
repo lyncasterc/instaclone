@@ -1,8 +1,9 @@
-import { Button, Container } from '@mantine/core';
+import { Button, Container, UnstyledButton } from '@mantine/core';
 import {
-  Home,
-  SquarePlus,
-} from 'tabler-icons-react';
+  IconHome,
+  IconSquarePlus,
+  IconBrandMessenger,
+} from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import useStyles from './DesktopNavbar.styles';
 import useAuth from '../../../hooks/useAuth';
@@ -49,16 +50,30 @@ function DesktopNavbar({ displayOnMobile }: DesktopNavbarProps) {
             <Link
               to="/"
             >
-              <Home
+              <IconHome
                 size={30}
                 strokeWidth={2}
                 color="black"
               />
             </Link>
+
+            <UnstyledButton data-cy="desktop-upload-btn">
+              <label htmlFor="postImageUpload">
+                <IconSquarePlus
+                  size={30}
+                  strokeWidth={2}
+                  color="black"
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                />
+              </label>
+            </UnstyledButton>
+
             <Link
               to="/"
             >
-              <SquarePlus
+              <IconBrandMessenger
                 size={30}
                 strokeWidth={2}
                 color="black"

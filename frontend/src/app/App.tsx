@@ -3,7 +3,7 @@ import {
   Route,
   useLocation,
 } from 'react-router-dom';
-import { useMediaQuery } from '@mantine/hooks';
+import { useState } from 'react';
 import Damion from '../common/components/Damion';
 import GlobalStyles from '../common/components/GlobalStyles';
 import Login from '../features/auth/Login';
@@ -14,20 +14,23 @@ import useAuth from '../common/hooks/useAuth';
 import DesktopNavbar from '../common/components/Navbars/DesktopNavbar/DesktopNavbar';
 import BottomNavBar from '../common/components/Navbars/BottomNavbar/BottomNavbar';
 import UserProfile from '../features/users/UserProfile/UserProfile';
+import EditPostDetails from '../features/posts/EditPostDetails/EditPostDetails';
 import UserProfileEdit from '../features/users/UserProfile/UserProfileEdit/UserProfileEdit';
-import Test from '../test';
+import EditPostImage from '../features/posts/EditPostImage/EditPostImage';
+import Alert from '../common/components/Alert/Alert';
+import PostView from '../features/posts/PostView/PostView';
 
 interface LocationState {
   background: string,
 }
 
 function App() {
-  // TODO: pass down user as props to components that need it?
   const [user] = useAuth();
   const location = useLocation();
+  const [alertText, setAlertText] = useState('');
+  const isCreatePage = /create/i.test(location.pathname);
   const state = location.state as LocationState;
   const background = state && state.background;
-  const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
 
   return (
     <>
@@ -35,14 +38,24 @@ function App() {
       <Damion />
 
       {
-        user && (
-          <>
-            <DesktopNavbar />
-            <BottomNavBar user={user} />
-          </>
+        alertText && (
+          <Alert
+            alertText={alertText}
+            setAlertText={setAlertText}
+          />
         )
       }
 
+      {
+        user && (
+          <>
+            <DesktopNavbar />
+            {!isCreatePage && (
+              <BottomNavBar user={user} />
+            )}
+          </>
+        )
+      }
       <Routes location={background || location}>
         <Route
           path="/"
@@ -56,6 +69,22 @@ function App() {
         <Route path="/signup" element={user ? <Home /> : <SignUp />} />
         <Route path="/:username" element={<UserProfile />} />
         <Route
+          path="/create/edit"
+          element={(
+            <RequireAuth>
+              <EditPostImage setAlertText={setAlertText} />
+            </RequireAuth>
+        )}
+        />
+        <Route
+          path="/create/details"
+          element={(
+            <RequireAuth>
+              <EditPostDetails username={user!} setAlertText={setAlertText} />
+            </RequireAuth>
+        )}
+        />
+        <Route
           path="/accounts/edit"
           element={(
             <RequireAuth>
@@ -63,17 +92,8 @@ function App() {
             </RequireAuth>
         )}
         />
-        {/* TODO: add post view route here when not on desktop */}
+        <Route path="/p/:postId" element={<PostView setAlertText={setAlertText} />} />
       </Routes>
-
-      {/* TODO: replace <Test> with real modal image component */}
-      {
-        background && isMediumScreenOrWider && (
-          <Routes>
-            <Route path="/p/:postId" element={<Test />} />
-          </Routes>
-        )
-      }
     </>
   );
 }

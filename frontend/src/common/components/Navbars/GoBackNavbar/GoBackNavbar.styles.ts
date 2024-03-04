@@ -5,17 +5,16 @@ export default createStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
       display: 'none',
     },
   },
   backBtn: {
-    position: 'fixed',
-    left: 10,
-    marginRight: 'auto',
   },
-  text: {
-    fontSize: '1rem',
+  backBtnContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));

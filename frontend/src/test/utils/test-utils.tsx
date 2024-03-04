@@ -9,7 +9,7 @@ import { store } from '../../app/store';
 import { initAuthedUser, removeCurrentUser } from '../../features/auth/authSlice';
 import { apiSlice } from '../../app/apiSlice';
 
-function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children }: { children: ReactNode }) {
   return (
     <MantineProvider theme={theme}>
       <Provider store={store}>
@@ -78,6 +78,31 @@ export const mockLogout = ({ resetApiState }: {
   store.dispatch(removeCurrentUser());
   localStorage.removeItem('instacloneSCToken');
 };
+
+/**
+ * Converts a data URI to a Blob object.
+ * @param {string} dataURI - The data URI to convert.
+ * @returns {Blob} A Blob object.
+ * @example const dataURI = 'data:image/jpeg;base64,/9j/4AAQSk...'; // Your data URI here
+const blob = dataURItoBlob(dataURI);
+const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+ */
+export function dataURItoBlob(dataURI: string) {
+  // Split the data URI into parts
+  const parts = dataURI.split(',');
+  const byteString = atob(parts[1]);
+  const mimeString = parts[0].split(':')[1].split(';')[0];
+
+  // Write the bytes of the string to an ArrayBuffer
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  // Create a new Blob object
+  return new Blob([ab], { type: mimeString });
+}
 
 export * from '@testing-library/react';
 export { customRender as render };

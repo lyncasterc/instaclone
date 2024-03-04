@@ -15,7 +15,7 @@ import UserProfileInfoBar from './UserProfileInfoBar/UserProfileInfoBar';
 import useUserProfileImageUpload from '../../../common/hooks/useUserProfileImageUpload';
 import placeholderIcon from '../../../assets/placeholder-icon.jpeg';
 import ChangeAvatarModal from './UserProfileEdit/ChangeAvatarModal/ChangeAvatarModal';
-import UserProfileAlert from './UserProfileAlert/UserProfileAlert';
+import Alert from '../../../common/components/Alert/Alert';
 
 interface UserProfileInfoProps {
   user: User;
@@ -101,7 +101,7 @@ function UserProfileInfo({
   return (
     <>
       {alertText && !modalOpened && (
-        <UserProfileAlert alertText={alertText} setAlertText={setAlertText} />
+        <Alert alertText={alertText} setAlertText={setAlertText} />
       )}
 
       <ChangeAvatarModal

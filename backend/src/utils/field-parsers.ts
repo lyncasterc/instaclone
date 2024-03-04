@@ -13,7 +13,7 @@ export const parseStringField = (param: unknown, fieldKey: string) => {
 
 const parseDataURIField = (param: unknown) => {
   if (!param || !isString(param) || !validDataUrl(param)) {
-    throw new Error('Malformatted or missing image');
+    throw new Error('Malformed or missing image');
   }
 
   return param;
@@ -84,8 +84,10 @@ interface UnknownPostFields {
 }
 
 const proofPostFields = ({ caption, imageDataUrl }: UnknownPostFields) => {
+  const optionalCaption = caption ? parseStringField(caption, 'caption') : '';
+
   const postFields = {
-    caption: parseStringField(caption, 'caption'),
+    caption: optionalCaption,
     imageDataUrl: parseDataURIField(imageDataUrl),
   };
 

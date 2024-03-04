@@ -5,6 +5,11 @@ export interface NewUserFields {
   password: string,
 }
 
+export interface NewPostFields {
+  imageDataUrl: string,
+  caption?: string,
+}
+
 export interface UpdatedUserFields {
   fullName?: string,
   username?: string,
@@ -27,9 +32,20 @@ export interface User {
   bio?: string,
   passwordHash: string,
   image?: Image,
-  posts?: string[],
+  posts?: Post[],
   followers?: string[],
   following?: string[],
+}
+
+export interface Post {
+  id: string,
+  creator: User, // ref -> User
+  caption?: string,
+  image: Image,
+  comments?: string[], // ref
+  likes?: string[], // ref -> User
+  createdAt: string, // Date
+  updatedAt: string, // Date
 }
 
 export interface LoginFields {

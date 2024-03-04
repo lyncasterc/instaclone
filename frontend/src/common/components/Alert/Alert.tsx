@@ -1,13 +1,13 @@
 import { nanoid } from 'nanoid';
 import { useEffect } from 'react';
-import useStyles from './UserProfileAlert.styles';
+import useStyles from './Alert.styles';
 
-interface UserProfileAlertProps {
+interface AlertProps {
   alertText: string,
   setAlertText: (alertText: string) => void,
 }
 
-function UserProfileAlert({ alertText, setAlertText }: UserProfileAlertProps) {
+function Alert({ alertText, setAlertText }: AlertProps) {
   if (!alertText) return null;
 
   const { classes } = useStyles();
@@ -28,4 +28,4 @@ function UserProfileAlert({ alertText, setAlertText }: UserProfileAlertProps) {
   );
 }
 
-export default UserProfileAlert;
+export default Alert;

@@ -3,23 +3,30 @@ import {
   NewUserFields,
   LoginFields,
   UpdatedUserFields,
+  NewPostFields,
+  User,
+  Post,
 } from '../../app/types';
 
-export const fakeUser = {
+export const fakeUser: User = {
   id: '1',
   fullName: 'Bob Dob',
   username: 'bobbydob',
   email: 'bob@dob.com',
   bio: '',
   passwordHash: 'secrethashstash',
-  image: null,
+  image: undefined,
   posts: [],
   followers: [],
   following: [],
 };
 
+const posts: Post[] = [];
+const users: User[] = [fakeUser];
+
 export const handlers = [
   rest.post<NewUserFields>('/api/users', (req, res, ctx) => {
+    console.log('POST /api/users');
     const userFields = req.body;
     return res(ctx.status(201), ctx.json({
       id: fakeUser.id,
@@ -33,19 +40,63 @@ export const handlers = [
       following: fakeUser.following,
     }));
   }),
-  rest.post<LoginFields>('/api/login', (req, res, ctx) => res(ctx.status(200), ctx.json({
-    username: req.body.username,
-    token: 'supersecrettoken',
-  }))),
-  rest.put<UpdatedUserFields>('/api/users/:id', (req, res, ctx) => res(ctx.status(200), ctx.json({
-    ...fakeUser,
-    fullName: req.body.fullName ?? fakeUser.fullName,
-    username: req.body.username ?? fakeUser.username,
-    email: req.body.email ?? fakeUser.email,
-    bio: req.body.bio ?? fakeUser.bio,
-    image: req.body.imageDataUrl
-      ? { url: req.body.imageDataUrl, publicId: 'fakepublicid' }
-      : fakeUser.image,
-  }))),
-  rest.get('/api/users', (req, res, ctx) => res(ctx.status(200), ctx.json([fakeUser]))),
+  rest.post<NewPostFields>('/api/posts', (req, res, ctx) => {
+    console.log('POST /api/posts');
+    const postFields = req.body;
+    const post: Post = {
+      id: '1',
+      creator: { ...fakeUser },
+      caption: postFields.caption,
+      image: { url: postFields.imageDataUrl, publicId: 'fakepublicid' },
+      comments: [],
+      likes: [],
+      createdAt: '2021-08-01T00:00:00.000Z',
+      updatedAt: '2021-08-01T00:00:00.000Z',
+    };
+
+    if (fakeUser.posts) {
+      fakeUser.posts = [post, ...fakeUser.posts];
+    } else {
+      fakeUser.posts = [post];
+    }
+
+    posts.unshift(post);
+
+    ctx.delay(2500);
+    return res(ctx.status(201), ctx.json(post));
+  }),
+  rest.get('/api/posts/:id', (req, res, ctx) => {
+    console.log('GET /api/posts/:id');
+    const post = posts.find((p) => p.id === req.params.id);
+
+    if (post) {
+      return res(ctx.status(200), ctx.json(post));
+    }
+
+    return res(ctx.status(404));
+  }),
+  rest.post<LoginFields>('/api/login', (req, res, ctx) => {
+    console.log('POST /api/login');
+    return res(ctx.status(200), ctx.json({
+      username: req.body.username,
+      token: 'supersecrettoken',
+    }));
+  }),
+  rest.put<UpdatedUserFields>('/api/users/:id', (req, res, ctx) => {
+    console.log('PUT /api/users/:id');
+    return res(ctx.status(200), ctx.json({
+      ...fakeUser,
+      fullName: req.body.fullName ?? fakeUser.fullName,
+      username: req.body.username ?? fakeUser.username,
+      email: req.body.email ?? fakeUser.email,
+      bio: req.body.bio ?? fakeUser.bio,
+      image: req.body.imageDataUrl
+        ? { url: req.body.imageDataUrl, publicId: 'fakepublicid' }
+        : fakeUser.image,
+    }));
+  }),
+  rest.get('/api/users', (req, res, ctx) => {
+    console.log('GET /api/users');
+    return res(ctx.status(200), ctx.json(users));
+  }),
 ];

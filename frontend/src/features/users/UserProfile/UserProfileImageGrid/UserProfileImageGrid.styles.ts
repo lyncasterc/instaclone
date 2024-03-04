@@ -8,7 +8,7 @@ export default createStyles((theme) => ({
     gap: 3,
 
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
-      gap: 28,
+      gap: 25,
     },
   },
 }));

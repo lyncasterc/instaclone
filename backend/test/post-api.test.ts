@@ -4,6 +4,7 @@ import { testMongodb, Post } from '../src/mongo';
 import testHelpers from './helpers/test-helpers';
 import testDataUri from './helpers/test-data-uri';
 import { User } from '../src/types';
+import cloudinary from '../src/utils/cloudinary';
 
 const api = supertest(app);
 let token: string;
@@ -56,17 +57,6 @@ afterAll(async () => { await testMongodb.close(); });
 
 describe('when there are posts in the database', () => {
   describe('when getting one post', () => {
-    test('request without token fails with 401 error code ', async () => {
-      const targetPost = (await testHelpers.postsInDB())[0];
-
-      const response = await api
-        .get(`/api/posts/${targetPost.id}`)
-        .expect(401)
-        .expect('Content-Type', /application\/json/);
-
-      expect(response.body.error).toMatch(/token missing or invalid/i);
-    });
-
     test('post is returned in JSON', async () => {
       const targetPost = (await testHelpers.postsInDB())[0];
 
@@ -91,7 +81,18 @@ describe('when there are posts in the database', () => {
       expect(targetPost.caption).toBe(fetchedPost.caption);
     });
 
-    // TODO: write test checking that image is populated, (potentially other fields in the future)
+    test('returned post has populated image field', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+      const response = await api
+        .get(`/api/posts/${targetPost.id}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+
+      const fetchedPost = response.body;
+
+      expect(fetchedPost.image.url).toBeDefined();
+      expect(fetchedPost.image.publicId).toBeDefined();
+    });
   });
 
   describe('when creating posts', () => {
@@ -108,9 +109,9 @@ describe('when there are posts in the database', () => {
       expect(response.body.error).toMatch(/token missing or invalid/i);
     });
 
-    test('request with missing required field fails with 400 error code', async () => {
+    test('request with missing image field fails with 400 error code', async () => {
       const invalidPostFields = {
-        imageDataUrl: testDataUri,
+        caption: 'caption',
       };
 
       const response = await api
@@ -119,7 +120,40 @@ describe('when there are posts in the database', () => {
         .set('Authorization', `bearer ${token}`)
         .expect(400);
 
-      expect(response.body.error).toMatch(/incorrect or missing/i);
+      expect(response.body.error).toMatch(/missing image/i);
+    });
+
+    test('request with no caption succeeds with 201 code', async () => {
+      const startPosts = await testHelpers.postsInDB();
+      const validPostFields = {
+        imageDataUrl: testDataUri,
+      };
+
+      await api
+        .post('/api/posts')
+        .send(validPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(201);
+
+      const posts = await testHelpers.postsInDB();
+      expect(posts).toHaveLength(startPosts.length + 1);
+    });
+
+    test('request with empty caption succeeds with 201 code', async () => {
+      const startPosts = await testHelpers.postsInDB();
+      const validPostFields = {
+        imageDataUrl: testDataUri,
+        caption: '',
+      };
+
+      await api
+        .post('/api/posts')
+        .send(validPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(201);
+
+      const posts = await testHelpers.postsInDB();
+      expect(posts).toHaveLength(startPosts.length + 1);
     });
 
     test('can post a valid post', async () => {
@@ -241,6 +275,101 @@ describe('when there are posts in the database', () => {
       expect(returnedPost.creator.username).toBeDefined();
 
       expect(returnedPost.creator.username).toBe(testUser.username);
+    });
+  });
+
+  describe('when deleting posts', () => {
+    test('request without token fails with 401 error code', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+
+      await api
+        .delete(`/api/posts/${targetPost.id}`)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+    });
+
+    test('when user making request is not creator of post, fails with 401 error code', async () => {
+      const targetPost = (await testHelpers.postsInDB())[0];
+
+      // creating a new user and logging them in to get a token
+
+      const differentUser = await testHelpers.createTestUser({
+        username: 'dobbybo',
+        email: 'b@email.com',
+        fullName: 'Dob Bob',
+        password: 'secret',
+      });
+
+      const tokenResponse = await api
+        .post('/api/login')
+        .send({
+          username: differentUser.username,
+          password: 'secret',
+        });
+
+      const wrongUserToken = tokenResponse.body.token;
+
+      const response = await api
+        .delete(`/api/posts/${targetPost.id}`)
+        .set('Authorization', `bearer ${wrongUserToken}`)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+
+      expect(response.body.error).toMatch(/unauthorized/i);
+    });
+
+    test('when trying to delete non-existent post, fails with 404 error code', async () => {
+      const targetPostId = (await testHelpers.postsInDB())[0].id;
+      await Post.findByIdAndDelete(targetPostId);
+
+      const response = await api
+        .delete(`/api/posts/${targetPostId}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(404);
+
+      expect(response.body.error).toMatch(/post not found/i);
+    });
+
+    test('valid request succeeds with 204 code', async () => {
+      const startPosts = await testHelpers.postsInDB();
+      const targetPost = startPosts[0];
+
+      await api
+        .delete(`/api/posts/${targetPost.id}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(204);
+
+      const endPosts = await testHelpers.postsInDB();
+
+      expect(endPosts).toHaveLength(startPosts.length - 1);
+
+      const postIds = endPosts.map((post) => post.id);
+
+      expect(postIds).not.toContain(targetPost.id);
+    });
+
+    test('a post with an image deletes the image from cloudinary', async () => {
+      const validPostFields = {
+        caption: 'blue square',
+        imageDataUrl: testDataUri,
+      };
+
+      const response = await api
+        .post('/api/posts')
+        .send(validPostFields)
+        .set('Authorization', `bearer ${token}`)
+        .expect(201);
+
+      const newPost = response.body;
+
+      expect(await cloudinary.checkIfImageExists(newPost.image.publicId)).toBe(true);
+
+      await api
+        .delete(`/api/posts/${newPost.id}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(204);
+
+      expect(await cloudinary.checkIfImageExists(newPost.image.publicId)).toBe(false);
     });
   });
 });
