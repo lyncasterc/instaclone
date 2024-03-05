@@ -87,11 +87,13 @@ router.delete('/:id/image', authenticator(), async (req, res, next) => {
 });
 
 router.put('/:id/follow', authenticator(), async (req, res, next) => {
-  if (req.params.id === req.userToken!.id) return res.status(400).send({ error: 'You can\'t follow yourself!' });
+  if (req.params.id === req.userToken!.id) {
+    return res.status(400).send({ error: 'You can\'t follow yourself!' });
+  }
 
   try {
-    const followedUser = await userService.followUserById(req.userToken!.id, req.params.id);
-    return res.status(200).send(followedUser);
+    await userService.followUserById(req.userToken!.id, req.params.id);
+    return res.status(200).end();
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
     logger.error(errorMessage);
@@ -103,7 +105,20 @@ router.put('/:id/follow', authenticator(), async (req, res, next) => {
     return next(error);
   }
 });
+
+router.put('/:id/unfollow', authenticator(), async (req, res, next) => {
+  if (req.params.id === req.userToken!.id) {
+    return res.status(400).send({ error: 'You can\'t unfollow yourself!' });
+  }
+
+  try {
+    await userService.unfollowUserById(req.userToken!.id, req.params.id);
+    return res.status(200).end();
+  } catch (error) {
+    return next(error);
+  }
+});
+
 // TODO: write a delete route
-// TODO: write unfollow route?
 
 export default router;

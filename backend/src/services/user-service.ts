@@ -57,18 +57,20 @@ const followUserById = async (followerId: string, followedUserId: string) => {
   const followedUser = await User.findById(followedUserId);
   const follower = await User.findById(followerId);
 
-  if (!followedUser) throw new Error('User not found.');
+  if (!followedUser) {
+    throw new Error('User not found.');
+  }
 
   // checking if user already follows the user they are requesting to follow
-  if (follower.following.map((ids: ObjectId) => ids?.toString()).includes(followedUser.id)) throw new Error('You already follow that user!');
+  if (follower.following.map((ids: ObjectId) => ids?.toString()).includes(followedUser.id)) {
+    throw new Error('You already follow that user!');
+  }
 
   followedUser.followers = [...followedUser.followers, follower];
   follower.following = [...follower.following, followedUser.id];
 
   await followedUser.save();
   await follower.save();
-
-  return followedUser;
 };
 
 const deleteUserImage = async (id: string) => {
@@ -80,6 +82,25 @@ const deleteUserImage = async (id: string) => {
   return user;
 };
 
+const unfollowUserById = async (followerId: string, followedUserId: string) => {
+  const followedUser = await User.findById(followedUserId);
+  const follower = await User.findById(followerId);
+
+  if (!followedUser) {
+    throw new Error('User not found.');
+  }
+
+  follower.following = follower.following.filter(
+    (id: ObjectId) => id.toString() !== followedUser.id,
+  );
+  followedUser.followers = followedUser.followers.filter(
+    (id: ObjectId) => id.toString() !== follower.id,
+  );
+
+  await follower.save();
+  await followedUser.save();
+};
+
 export default {
   getUsers,
   getUserById,
@@ -87,4 +108,5 @@ export default {
   updateUserById,
   followUserById,
   deleteUserImage,
+  unfollowUserById,
 };

@@ -277,15 +277,17 @@ describe('When there are multiple users in the database', () => {
       const users = (await testHelpers.usersInDB());
       const differentUser = users.find((user) => user.id !== targetUser.id);
 
-      const response = await api
+      await api
         .put(`/api/users/${differentUser.id}/follow`)
         .set('Authorization', `bearer ${token}`)
         .expect(200);
 
-      const returnedUser = response.body;
+      const followedUser = (await testHelpers.usersInDB()).find(
+        (user) => user.id === differentUser.id,
+      );
 
-      expect(returnedUser.followers).toHaveLength(1);
-      expect(returnedUser.followers[0].id).toBe(targetUser.id);
+      expect(followedUser.followers).toHaveLength(1);
+      expect(followedUser.followers[0].toString()).toBe(targetUser.id.toString());
     });
 
     test('following a user adds that user to the requesting user following list', async () => {
@@ -302,6 +304,44 @@ describe('When there are multiple users in the database', () => {
 
       expect(updatedTargetUser.following).toHaveLength(1);
       expect(updatedTargetUser.following[0].toString()).toBe(differentUser.id.toString());
+    });
+
+    test('user can be unfollowed', async () => {
+      const users = (await testHelpers.usersInDB());
+      const differentUser = users.find((user) => user.id !== targetUser.id);
+      const differentUserId = differentUser.id;
+
+      await api
+        .put(`/api/users/${differentUserId}/follow`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+
+      let updatedTargetUser = (await testHelpers.usersInDB()).find(
+        (user) => user.id === targetUser.id,
+      );
+      let updatedDifferentUser = (await testHelpers.usersInDB()).find(
+        (user) => user.id === differentUserId,
+      );
+
+      expect(updatedTargetUser.following).toHaveLength(1);
+      expect(updatedTargetUser.following[0].toString()).toBe(differentUserId.toString());
+      expect(updatedDifferentUser.followers).toHaveLength(1);
+      expect(updatedDifferentUser.followers[0].toString()).toBe(targetUser.id.toString());
+
+      await api
+        .put(`/api/users/${differentUserId}/unfollow`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(200);
+
+      updatedTargetUser = (await testHelpers.usersInDB()).find(
+        (user) => user.id === targetUser.id,
+      );
+      updatedDifferentUser = (await testHelpers.usersInDB()).find(
+        (user) => user.id === differentUserId,
+      );
+
+      expect(updatedTargetUser.following).toHaveLength(0);
+      expect(updatedDifferentUser.followers).toHaveLength(0);
     });
   });
 

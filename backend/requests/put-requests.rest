@@ -1,0 +1,45 @@
+# creating a user
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "fullName": "Bob Dob",
+  "email": "bob@dob.com",
+  "username": "bobbydob",
+  "password": "secret"
+}
+
+###
+# creating a second user
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "fullName": "Bob Dob",
+  "email": "bo2@dob.com",
+  "username": "bobbydob2",
+  "password": "secret"
+}
+
+###
+#log in first user
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYmJ5ZG9iIiwiaWQiOiI2NWU2NjUxNjA0ZWZmYTY3MDUyYmUyZjYiLCJpYXQiOjE3MDk1OTc5OTQsImV4cCI6MTcwOTYwMTU5NH0.gPitDV8GC8GjbhaNuAIDG0z2mDPtrNtRFJanRSPpOtw
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "bobbydob",
+  "password": "secret"
+}
+
+###
+# request to follow second user
+@id = 65e6652404effa67052be2fa
+PUT http://localhost:3001/api/users/{{id}}/follow
+Authorization: bearer {{token}}
+
+###
+# request to unfollow second user
+@id = 65e6652404effa67052be2fa
+PUT http://localhost:3001/api/users/{{id}}/unfollow
+Authorization: bearer {{token}}
