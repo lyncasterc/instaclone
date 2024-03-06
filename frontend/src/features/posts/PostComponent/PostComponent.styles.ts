@@ -19,7 +19,20 @@ export default createStyles((theme) => ({
     height: '100%',
   },
   likeCommentContainer: {
-    padding: '14px',
+    position: 'relative',
+    left: -5,
+  },
+  captionText: {
+    lineHeight: 1.2,
+  },
+  captionCreatorLink: {
+    lineHeight: 0,
+  },
+  postBottomSection: {
+    padding: 14,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 5,
   },
   activeOpacityLight: {
     '&:active': {
@@ -29,9 +42,6 @@ export default createStyles((theme) => ({
   createdAt: {
     color: '#737373',
     fontWeight: 400,
-  },
-  createdContainer: {
-    padding: '0 14px',
   },
   modal: {
     borderRadius: 10,

@@ -161,3 +161,50 @@ test.only('post is viewable in the post view page', async () => {
     expect(postedImage).toBeVisible();
   });
 });
+
+test.only('when a post has a caption, it is viewable in the post view page', async () => {
+  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  const history = createBrowserHistory();
+  history.push('/create/details', { croppedImage: testImage });
+
+  render(
+    <HistoryRouter history={history}>
+      <Providers>
+        <App />
+      </Providers>
+    </HistoryRouter>,
+  );
+
+  const user = userEvent.setup();
+  const shareBtns = await screen.findAllByText(/share/i);
+  const shareBtn = shareBtns[0];
+  const textarea = screen.getByRole('textbox');
+
+  await user.type(textarea, 'This is a caption');
+  await user.click(shareBtn);
+
+  await waitFor(() => {
+    expect(history.location.pathname).toBe('/');
+  });
+
+  // Navigate to user profile
+  act(() => {
+    history.push(`/${fakeUser.username}`);
+  });
+
+  // simulating a page refresh
+  await store.dispatch(apiSlice.endpoints.getUsers.initiate(undefined, { forceRefetch: true }));
+
+  await waitFor(async () => {
+    const images = screen.getAllByRole('img');
+    const postedImage = images.find((img) => img.getAttribute('src') === testImage);
+    expect(postedImage).toBeDefined();
+
+    // going to the post view page
+    await user.click(postedImage!);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText(/this is a caption/i)).toBeVisible();
+  });
+});
