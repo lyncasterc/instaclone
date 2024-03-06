@@ -32,7 +32,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
   const isCurrentUserPostCreator = currentUsername === postCreator;
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState(false);
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
   const goBack = useGoBack();
   const [deletePost] = useDeletePostByIdMutation();
 
@@ -168,28 +168,51 @@ function PostComponent({ post, setAlertText }: PostProps) {
         src={post.image.url}
         data-cy="post-image"
       />
-      <Group
-        position="left"
-        className={classes.likeCommentContainer}
-        spacing="sm"
-      >
-        <IconHeart
-          size={28}
-          strokeWidth={1.5}
-          color="black"
-          className={classes.activeOpacityLight}
-        />
-        <IconMessageCircle
-          size={28}
-          strokeWidth={1.5}
-          color="black"
-          className={classes.activeOpacityLight}
-        />
-      </Group>
-      <div className={classes.createdContainer}>
-        <Text size="xs" className={classes.createdAt}>
-          {getTimeSinceDate(new Date(post.createdAt))}
-        </Text>
+      <div className={classes.postBottomSection}>
+        <Group
+          position="left"
+          className={classes.likeCommentContainer}
+          spacing="sm"
+        >
+          <IconHeart
+            size={28}
+            strokeWidth={1.5}
+            color="black"
+            className={classes.activeOpacityLight}
+          />
+          <IconMessageCircle
+            size={28}
+            strokeWidth={1.5}
+            color="black"
+            className={classes.activeOpacityLight}
+          />
+        </Group>
+        {
+        post.caption && (
+          <div>
+            <Text
+              weight={700}
+              size="sm"
+              className={cx(classes.activeOpacityLight, classes.captionCreatorLink)}
+              component={Link}
+              to={`/${postCreator}`}
+            >
+              {postCreator}
+            </Text>
+            <Text
+              size="sm"
+              className={classes.captionText}
+            >
+              {post.caption}
+            </Text>
+          </div>
+        )
+      }
+        <div>
+          <Text size="xs" className={classes.createdAt}>
+            {getTimeSinceDate(new Date(post.createdAt))}
+          </Text>
+        </div>
       </div>
     </>
   );
