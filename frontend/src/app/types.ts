@@ -33,8 +33,8 @@ export interface User {
   passwordHash: string,
   image?: Image,
   posts?: Post[],
-  followers?: string[],
-  following?: string[],
+  followers?: { id: string, username: string }[],
+  following?: { id: string, username: string }[],
 }
 
 export interface Post {

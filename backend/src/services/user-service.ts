@@ -6,16 +6,22 @@ import cloudinary from '../utils/cloudinary';
 
 const getUsers = async () => {
   // TODO: decide which are and populate the fields that should be populated.
-  // TODO: omit passwordHash from results.
   const users = await User.find({})
-    .populate('posts', { image: 1 });
+    .select('-passwordHash')
+    .populate('posts', { image: 1 })
+    .populate('followers', { username: 1 })
+    .populate('following', { username: 1 });
 
   return users;
 };
 
 const getUserById = async (id: string) => {
   const user = await User.findById(id)
-    .populate('posts', { image: 1 });
+    .select('-passwordHash')
+    .populate('posts', { image: 1 })
+    .populate('followers', { username: 1 })
+    .populate('following', { username: 1 });
+
   return user;
 };
 

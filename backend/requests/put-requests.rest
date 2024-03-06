@@ -23,23 +23,23 @@ Content-Type: application/json
 
 ###
 #log in first user
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYmJ5ZG9iIiwiaWQiOiI2NWU2NjUxNjA0ZWZmYTY3MDUyYmUyZjYiLCJpYXQiOjE3MDk1OTc5OTQsImV4cCI6MTcwOTYwMTU5NH0.gPitDV8GC8GjbhaNuAIDG0z2mDPtrNtRFJanRSPpOtw
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2NWU0ZjZhZTNjMjg4Y2EzODVkYzJhNGEiLCJpYXQiOjE3MDk2MTEzMTAsImV4cCI6MTcwOTYxNDkxMH0.gmUZvHrjxO8ceZVOm0kTh3fYboJldmsCdxMPMyUmbH4
 POST http://localhost:3001/api/login
 Content-Type: application/json
 
 {
-  "username": "bobbydob",
-  "password": "secret"
+  "username": "admin",
+  "password": "admin"
 }
 
 ###
 # request to follow second user
-@id = 65e6652404effa67052be2fa
+@id = 65e64e6a0fa35c92f120667b
 PUT http://localhost:3001/api/users/{{id}}/follow
 Authorization: bearer {{token}}
 
 ###
 # request to unfollow second user
-@id = 65e6652404effa67052be2fa
+@id = 65e64e6a0fa35c92f120667b
 PUT http://localhost:3001/api/users/{{id}}/unfollow
 Authorization: bearer {{token}}

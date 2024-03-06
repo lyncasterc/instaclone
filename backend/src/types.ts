@@ -34,8 +34,8 @@ export interface User {
   passwordHash: string,
   image?: Image,
   posts?: string[], // ref
-  followers?: string[], // ref -> User
-  following?: string[], //  ref -> User
+  followers?: { id: string, username: string }[], //  ref -> User
+  following?: { id: string, username: string }[], //  ref -> User
 }
 
 export interface NewUser {

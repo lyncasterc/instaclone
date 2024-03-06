@@ -55,7 +55,7 @@ describe('When there are multiple users in the database', () => {
   });
 
   describe('When getting a single user by id', () => {
-    test('Correct user is retured', async () => {
+    test('Correct user is returned', async () => {
       const targetUser = (await testHelpers.usersInDB())[0];
       const response = await api
         .get(`/api/users/${targetUser.id}`)
