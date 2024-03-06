@@ -4,11 +4,12 @@ import {
   useLocation,
 } from 'react-router-dom';
 import { useState } from 'react';
+import { useMediaQuery } from '@mantine/hooks';
 import Damion from '../common/components/Damion';
 import GlobalStyles from '../common/components/GlobalStyles';
 import Login from '../features/auth/Login';
 import SignUp from '../features/users/SignUp';
-import Home from '../features/users/Home/Home';
+import Home from '../features/posts/Home/Home';
 import RequireAuth from '../features/auth/RequireAuth';
 import useAuth from '../common/hooks/useAuth';
 import DesktopNavbar from '../common/components/Navbars/DesktopNavbar/DesktopNavbar';
@@ -19,6 +20,7 @@ import UserProfileEdit from '../features/users/UserProfile/UserProfileEdit/UserP
 import EditPostImage from '../features/posts/EditPostImage/EditPostImage';
 import Alert from '../common/components/Alert/Alert';
 import PostView from '../features/posts/PostView/PostView';
+import MobileHomeNavBar from '../common/components/Navbars/MobileHomeNavbar/MobileHomeNavbar';
 
 interface LocationState {
   background: string,
@@ -29,8 +31,10 @@ function App() {
   const location = useLocation();
   const [alertText, setAlertText] = useState('');
   const isCreatePage = /create/i.test(location.pathname);
+  const isHomePage = location.pathname === '/';
   const state = location.state as LocationState;
   const background = state && state.background;
+  const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
 
   return (
     <>
@@ -49,7 +53,13 @@ function App() {
       {
         user && (
           <>
-            <DesktopNavbar />
+            {
+              isMediumScreenOrWider ? (
+                <DesktopNavbar />
+              ) : (
+                isHomePage && <MobileHomeNavBar />
+              )
+            }
             {!isCreatePage && (
               <BottomNavBar user={user} />
             )}
@@ -61,12 +71,12 @@ function App() {
           path="/"
           element={(
             <RequireAuth>
-              <Home />
+              <Home setAlertText={setAlertText} />
             </RequireAuth>
         )}
         />
-        <Route path="/login" element={user ? <Home /> : <Login />} />
-        <Route path="/signup" element={user ? <Home /> : <SignUp />} />
+        <Route path="/login" element={user ? <Home setAlertText={setAlertText} /> : <Login />} />
+        <Route path="/signup" element={user ? <Home setAlertText={setAlertText} /> : <SignUp />} />
         <Route path="/:username" element={<UserProfile />} />
         <Route
           path="/create/edit"

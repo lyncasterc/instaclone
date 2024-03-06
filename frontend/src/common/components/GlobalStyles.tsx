@@ -16,10 +16,6 @@ function GlobalStyles() {
           backgroundColor: 'white',
           color: theme.colors.instaDark[6],
           width: '100%',
-
-          [`@media (min-width: ${theme.breakpoints.md}px)`]: {
-            backgroundColor: theme.colors.gray[0],
-          },
         },
       })}
     />

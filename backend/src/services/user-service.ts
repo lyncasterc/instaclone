@@ -8,7 +8,14 @@ const getUsers = async () => {
   // TODO: decide which are and populate the fields that should be populated.
   const users = await User.find({})
     .select('-passwordHash')
-    .populate('posts', { image: 1 })
+    .populate({
+      path: 'posts',
+      select: 'image createdAt updatedAt creator',
+      populate: {
+        path: 'creator',
+        select: 'username id image',
+      },
+    })
     .populate('followers', { username: 1 })
     .populate('following', { username: 1 });
 

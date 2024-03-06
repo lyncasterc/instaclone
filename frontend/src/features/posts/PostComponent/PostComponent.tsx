@@ -48,7 +48,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
   };
 
   return (
-    <>
+    <div className={classes.postContainer}>
       <Group
         position="apart"
         className={classes.postCreatorBar}
@@ -191,7 +191,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
           {getTimeSinceDate(new Date(post.createdAt))}
         </Text>
       </div>
-    </>
+    </div>
   );
 }
 

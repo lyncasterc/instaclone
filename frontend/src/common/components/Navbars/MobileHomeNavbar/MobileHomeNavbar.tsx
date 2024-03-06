@@ -1,12 +1,10 @@
 import { Group } from '@mantine/core';
 import { IconBrandMessenger } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
-// import useStyles from './HomeNavbar.styles';
-import baseStyles from '../../../../common/components/Navbars/mobile-nav-styles';
-import NavbarBrand from '../../../../common/components/Navbars/NavbarBrand/NavbarBrand';
+import baseStyles from '../mobile-nav-styles';
+import NavbarBrand from '../NavbarBrand/NavbarBrand';
 
-function HomeNavbar() {
-  // const { classes } = useStyles();
+function MobileHomeNavBar() {
   const { classes: baseClasses } = baseStyles();
 
   return (
@@ -30,4 +28,4 @@ function HomeNavbar() {
   );
 }
 
-export default HomeNavbar;
+export default MobileHomeNavBar;
