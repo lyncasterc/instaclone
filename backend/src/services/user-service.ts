@@ -5,12 +5,11 @@ import { NewUser, UpdatedUserFields } from '../types';
 import cloudinary from '../utils/cloudinary';
 
 const getUsers = async () => {
-  // TODO: decide which are and populate the fields that should be populated.
   const users = await User.find({})
     .select('-passwordHash')
     .populate({
       path: 'posts',
-      select: 'image createdAt updatedAt creator',
+      select: 'image createdAt updatedAt creator caption',
       populate: {
         path: 'creator',
         select: 'username id image',

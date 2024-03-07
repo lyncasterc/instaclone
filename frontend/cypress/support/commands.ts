@@ -58,14 +58,19 @@ Cypress.Commands.add('login', ({
   cy.visit('http://localhost:3000');
 });
 
+Cypress.Commands.add('logout', () => {
+  localStorage.removeItem('instacloneSCToken');
+  cy.visit('http://localhost:3000');
+});
+
 Cypress.Commands.add('createPost', () => {
-  const { token } = JSON.parse(localStorage.getItem('instacloneSCToken'));
+  const { token, username } = JSON.parse(localStorage.getItem('instacloneSCToken'));
 
   cy.request({
     url: 'http://localhost:3001/api/posts',
     method: 'POST',
     body: {
-      caption: 'test caption',
+      caption: `${username} test post`,
       imageDataUrl: testImageDataUrl,
     },
     headers: {

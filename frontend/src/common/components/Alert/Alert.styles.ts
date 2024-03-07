@@ -24,7 +24,7 @@ export default createStyles((theme) => ({
     padding: '1rem',
     animation: `${alertAnimation} 5500ms`,
     animationFillMode: 'forwards',
-    zIndex: -1,
+    zIndex: 1000,
 
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
       maxWidth: 500,

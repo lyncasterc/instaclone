@@ -8,6 +8,12 @@
       "username": "admin",
       "password": "secret",
       "email": "admin@email.com"
+    },
+    "user2": {
+      "fullName": "Superuser2",
+      "username": "admin2",
+      "password": "secret",
+      "email": "admin2@email.com"
     }
   }
 }

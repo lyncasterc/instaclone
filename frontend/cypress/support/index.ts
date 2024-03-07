@@ -42,6 +42,10 @@ declare global {
        */
       login(loginFields: LoginFields): Chainable<Element>,
       /**
+       * Custom Cypress command to log out the currently logged in user.
+       */
+      logout(): Chainable<Element>,
+      /**
        * Custom Cypress command to create a post.
        * Uses the logged in user's token to authenticate the request.
        */

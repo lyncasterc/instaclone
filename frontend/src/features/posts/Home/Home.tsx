@@ -14,6 +14,9 @@ function Home({ setAlertText }: HomeProps) {
   const is541PxOrWider = useMediaQuery('(min-width: 541px)');
 
   // Get all users that the current user follows
+
+  // If you are somehow reading this, I know this is not the best way to do this but I'm tired lol
+  // An separate endpoint to get all the homepage posts would be better
   const users = (useAppSelector(selectAllUsers)).filter(
     (u) => u.username === user! || u.followers?.find((f) => f.username === user!) != null,
   );
@@ -22,13 +25,13 @@ function Home({ setAlertText }: HomeProps) {
     (postA, postB) => new Date(postB.createdAt).getTime() - new Date(postA.createdAt).getTime(),
   );
 
-  console.log(posts);
   return (
     <Container
       size="xs"
       pt={is541PxOrWider ? 15 : 0}
       px={is541PxOrWider ? 16 : 0}
       pb={44}
+      data-testid="homepage-container"
     >
       {posts.map((post) => (
         <PostComponent key={post.id} post={post} setAlertText={setAlertText} />

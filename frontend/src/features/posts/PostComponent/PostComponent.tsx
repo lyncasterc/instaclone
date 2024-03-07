@@ -7,7 +7,7 @@ import {
   UnstyledButton,
   Stack,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import {
   IconHeart, IconMessageCircle, IconDots,
@@ -29,6 +29,8 @@ interface PostProps {
 function PostComponent({ post, setAlertText }: PostProps) {
   const [currentUsername] = useAuth();
   const postCreator = post.creator.username;
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
   const isCurrentUserPostCreator = currentUsername === postCreator;
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteConfirmModalOpen, setDeleteConfirmModalOpen] = useState(false);
@@ -41,7 +43,10 @@ function PostComponent({ post, setAlertText }: PostProps) {
       setDeleteConfirmModalOpen(false);
       await deletePost(post.id).unwrap();
       setAlertText('Post deleted');
-      goBack();
+
+      if (!isHomePage) {
+        goBack();
+      }
     } catch (error) {
       console.error(getErrorMessage(error));
     }
@@ -91,6 +96,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
               className={classes.activeOpacityLight}
               onClick={() => setDeleteModalOpen(true)}
               data-cy="post-options-btn"
+              style={{ cursor: 'pointer' }}
             />
           )
         }

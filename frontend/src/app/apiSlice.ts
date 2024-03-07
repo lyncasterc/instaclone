@@ -88,6 +88,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: newPostFields,
       }),
+      invalidatesTags: ['User'],
     }),
     getPostById: builder.query<Post, string>({
       query: (id) => `/posts/${id}`,
@@ -98,6 +99,7 @@ export const apiSlice = createApi({
         url: `/posts/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['User'],
     }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({

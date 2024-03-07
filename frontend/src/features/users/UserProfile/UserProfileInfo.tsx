@@ -95,6 +95,7 @@ function UserProfileInfo({
             }}
             onClick={onFollowBtnClick}
             loading={isFollowLoading || isUnfollowLoading}
+            data-cy="follow-btn"
           >
             {isCurrentUserFollowing ? 'Following' : 'Follow'}
           </Button>
