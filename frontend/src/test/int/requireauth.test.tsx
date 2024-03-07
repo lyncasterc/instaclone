@@ -38,8 +38,7 @@ test('logged in user is taken to home page', async () => {
     <App />,
   );
 
-  // TODO: update this when home page is nearing completion
-  expect(screen.getByText(fakeTokenInfo.username)).toBeVisible();
+  expect(screen.getByTestId('homepage-container')).toBeVisible();
 });
 
 test('when user logs in, it redirects user to route they were attempting to visit', async () => {

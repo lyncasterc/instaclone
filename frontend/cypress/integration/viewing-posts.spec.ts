@@ -31,7 +31,6 @@ it('user can view a post by clicking on it in their user profile', () => {
   const user = Cypress.env('user1');
 
   cy.createPost();
-  cy.reload();
 
   cy.visit(`http://localhost:3000/${user.username}`);
 
@@ -40,4 +39,16 @@ it('user can view a post by clicking on it in their user profile', () => {
   cy.url().should('include', '/p/');
 
   cy.get('[data-cy="post-image"] img').should('be.visible');
+});
+
+it('user can view their post on the home page', () => {
+  const user = Cypress.env('user1');
+
+  cy.createPost();
+
+  cy.visit('http://localhost:3000');
+
+  cy.get('[data-cy="post-image"]').should('be.visible');
+  cy.contains(user.username).should('be.visible');
+  cy.get('[data-cy="post-options-btn"]').should('be.visible');
 });

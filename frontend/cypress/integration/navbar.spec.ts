@@ -12,6 +12,7 @@ it('navbars are not displayed in login page', () => {
   cy.get('[data-testid="home-nav"]').should('not.exist');
   cy.get('[data-cy="bottom-nav"]').should('not.exist');
 });
+
 it('navbars are not displayed in signup page', () => {
   cy.visit('http://localhost:3000/signup');
   cy.get('[data-cy="desktop-nav"]').should('not.exist');
@@ -25,7 +26,7 @@ it('when logged in on desktop, desktop nav is rendered and visible', () => {
   cy.login({ username: user.username, password: user.password });
 
   cy.get('[data-cy="desktop-nav"]').should('be.visible');
-  cy.get('[data-testid="home-nav"]').should('not.be.visible');
+  cy.get('[data-testid="home-nav"]').should('not.exist');
   cy.get('[data-cy="bottom-nav"]').should('not.be.visible');
 });
 
@@ -34,7 +35,7 @@ it('when logged on mobile, mobile navs are rendered and visible', () => {
   cy.createUser(user);
   cy.login({ username: user.username, password: user.password });
 
-  cy.get('[data-cy="desktop-nav"]').should('not.be.visible');
+  cy.get('[data-cy="desktop-nav"]').should('not.exist');
   cy.get('[data-testid="home-nav"]').should('be.visible');
   cy.get('[data-cy="bottom-nav"]').should('be.visible');
 });

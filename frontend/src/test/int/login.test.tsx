@@ -36,10 +36,7 @@ test('user can login successfully', async () => {
     expect(parsedToken.username).toBe(loginFields.username);
   });
 
-  expect(screen.getByText(fakeUser.username)).toBeVisible();
-
-  // FIXME: home nav is always visible so this is not a good way to test this
-  expect(screen.getByTestId('home-nav')).toBeVisible();
+  expect(screen.getByTestId('homepage-container')).toBeVisible();
 });
 
 test('error is displayed on unsuccessful login', async () => {

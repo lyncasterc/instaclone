@@ -29,10 +29,7 @@ test('clicking on back button with no history redirects to home', async () => {
 
   await user.click(backBtn);
 
-  // TODO: change this to a better test when the home page is implemented
-  const username = await screen.findByText(fakeUser.username);
-
-  expect(username).toBeVisible();
+  expect(screen.getByTestId('homepage-container')).toBeVisible();
 });
 
 test('clicking on back button with history goes back', async () => {

@@ -47,9 +47,7 @@ test('user can signup successfully', async () => {
     expect(parsedToken.username).toBe(signupFields.username);
   });
 
-  // testing that user has been redirected to home page
-  // TODO: update this when Home component design is nearing finalization.
-  expect(screen.getByText(fakeUser.username)).toBeVisible();
+  expect(screen.getByTestId('homepage-container')).toBeVisible();
 });
 
 test('error is displayed on unsuccessful signup', async () => {
@@ -84,5 +82,5 @@ test('user is redirected to home page if they visit the signup page and are alre
   renderWithRouter(<App />, { route: '/signup' });
 
   expect(screen.queryByText(/don't have an account?/i)).toBeNull();
-  expect(screen.getByText(fakeTokenInfo.username)).toBeVisible();
+  expect(screen.getByTestId('homepage-container')).toBeVisible();
 });

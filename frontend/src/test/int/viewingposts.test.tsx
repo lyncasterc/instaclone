@@ -60,13 +60,15 @@ test('post is viewable in homepage after creating it', async () => {
 
   await waitFor(() => {
     expect(history.location.pathname).toBe('/');
-    const img = screen.getByRole('img');
-    expect(img).toBeVisible();
-    expect(img).toHaveAttribute('src', testImage);
+    const images = screen.getAllByRole('img');
+    const postedImage = images.find((img) => img.getAttribute('src') === testImage);
+
+    expect(postedImage).toBeDefined();
+    expect(postedImage).toBeVisible();
   });
 });
 
-test.only('post is viewable in the user profile after creating it', async () => {
+test('post is viewable in the user profile after creating it', async () => {
   await store.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
@@ -94,9 +96,6 @@ test.only('post is viewable in the user profile after creating it', async () => 
   act(() => {
     history.push(`/${fakeUser.username}`);
   });
-
-  // simulating a page refresh
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate(undefined, { forceRefetch: true }));
 
   await waitFor(() => {
     expect(history.location.pathname).toBe(`/${fakeUser.username}`);
@@ -109,7 +108,7 @@ test.only('post is viewable in the user profile after creating it', async () => 
   });
 });
 
-test.only('post is viewable in the post view page', async () => {
+test('post is viewable in the post view page', async () => {
   await store.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
@@ -137,9 +136,6 @@ test.only('post is viewable in the post view page', async () => {
   act(() => {
     history.push(`/${fakeUser.username}`);
   });
-
-  // simulating a page refresh
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate(undefined, { forceRefetch: true }));
 
   await waitFor(async () => {
     expect(history.location.pathname).toBe(`/${fakeUser.username}`);
@@ -162,7 +158,7 @@ test.only('post is viewable in the post view page', async () => {
   });
 });
 
-test.only('when a post has a caption, it is viewable in the post view page', async () => {
+test('when a post has a caption, it is viewable in the post view page', async () => {
   await store.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
@@ -191,9 +187,6 @@ test.only('when a post has a caption, it is viewable in the post view page', asy
   act(() => {
     history.push(`/${fakeUser.username}`);
   });
-
-  // simulating a page refresh
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate(undefined, { forceRefetch: true }));
 
   await waitFor(async () => {
     const images = screen.getAllByRole('img');
