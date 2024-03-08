@@ -21,6 +21,7 @@ import EditPostImage from '../features/posts/EditPostImage/EditPostImage';
 import Alert from '../common/components/Alert/Alert';
 import PostView from '../features/posts/PostView/PostView';
 import MobileHomeNavBar from '../common/components/Navbars/MobileHomeNavbar/MobileHomeNavbar';
+import FollowingFollowersView from '../features/users/FollowingFollowersView/FollowingFollowersView';
 
 interface LocationState {
   background: string,
@@ -78,6 +79,8 @@ function App() {
         <Route path="/login" element={user ? <Home setAlertText={setAlertText} /> : <Login />} />
         <Route path="/signup" element={user ? <Home setAlertText={setAlertText} /> : <SignUp />} />
         <Route path="/:username" element={<UserProfile />} />
+        <Route path="/:username/followers" element={<FollowingFollowersView />} />
+        <Route path="/:username/following" element={<FollowingFollowersView />} />
         <Route
           path="/create/edit"
           element={(

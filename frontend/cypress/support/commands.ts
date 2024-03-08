@@ -92,3 +92,16 @@ Cypress.Commands.add('editUser', (updatedUserFields) => {
     },
   });
 });
+
+Cypress.Commands.add('followUser', (username) => {
+  const { token } = JSON.parse(localStorage.getItem('instacloneSCToken'));
+  const userId = localStorage.getItem(`cy-${username}-id`);
+
+  cy.request({
+    url: `http://localhost:3001/api/users/${userId}/follow`,
+    method: 'PUT',
+    headers: {
+      Authorization: `bearer ${token}`,
+    },
+  });
+});
