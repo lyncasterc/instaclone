@@ -4,7 +4,7 @@ Instaclone is an Instagram clone written using the MERN stack + TypeScript.
 
 This is a final project after having completed [Full Stack Open 2022](https://fullstackopen.com/).
 
-To check out the work completed so far, switch to the `dev` branch!
+<strong>To check out the work completed so far, switch to the `dev` branch!</strong>
 
 ### How to navigate this project
 #### Frontend
