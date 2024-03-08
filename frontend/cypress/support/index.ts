@@ -42,6 +42,10 @@ declare global {
        */
       login(loginFields: LoginFields): Chainable<Element>,
       /**
+       * Custom Cypress command to log out the currently logged in user.
+       */
+      logout(): Chainable<Element>,
+      /**
        * Custom Cypress command to create a post.
        * Uses the logged in user's token to authenticate the request.
        */
@@ -52,6 +56,12 @@ declare global {
        * @param updatedUserFields - Object containing fields to update.
        */
       editUser(updatedUserFields: UpdatedUserFields): Chainable<Element>,
+      /**
+       * Custom Cypress command to follow a user.
+       * Uses the logged in user's token to authenticate the request.
+       * @param username - Username of the user to follow.
+       */
+      followUser(username: string): Chainable<Element>,
     }
   }
 }

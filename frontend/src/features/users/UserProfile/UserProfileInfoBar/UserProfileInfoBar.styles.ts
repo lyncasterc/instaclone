@@ -24,9 +24,15 @@ export default createStyles((theme) => ({
     flex: 1,
 
     [`@media (min-width: ${theme.breakpoints.md}px)`]: {
-      flexDirection: 'row',
       flex: 0,
-      gap: 4,
+    },
+  },
+  link: {
+    textDecoration: 'none',
+    textAlign: 'center',
+    color: 'inherit',
+    '&:active': {
+      opacity: 0.5,
     },
   },
 }));

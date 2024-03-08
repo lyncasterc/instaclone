@@ -2,6 +2,7 @@ import {
   Group,
   Text,
 } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import useStyles from './UserProfileInfoBar.styles';
 import numberFormatter from './numberFormatter';
 
@@ -15,9 +16,8 @@ function UserProfileInfoBar({
   postCount,
   followerCount,
   followingCount,
-
 }: UserProfileInfoBarProps) {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
 
   return (
     <Group
@@ -42,31 +42,36 @@ function UserProfileInfoBar({
       <div
         className={classes.item}
       >
-        <Text
-          weight={600}
-        >
-          {numberFormatter(followerCount)}
-        </Text>
-        <Text
-          className={classes.itemLabel}
-        >
-          {followerCount === 1 ? 'follower' : 'followers'}
-        </Text>
+        <Link to="followers" className={cx(classes.link)}>
+
+          <Text
+            weight={600}
+          >
+            {numberFormatter(followerCount)}
+          </Text>
+          <Text
+            className={classes.itemLabel}
+          >
+            {followerCount === 1 ? 'follower' : 'followers'}
+          </Text>
+        </Link>
       </div>
 
       <div
         className={classes.item}
       >
-        <Text
-          weight={600}
-        >
-          {numberFormatter(followingCount)}
-        </Text>
-        <Text
-          className={classes.itemLabel}
-        >
-          following
-        </Text>
+        <Link to="following" className={cx(classes.link)}>
+          <Text
+            weight={600}
+          >
+            {numberFormatter(followingCount)}
+          </Text>
+          <Text
+            className={classes.itemLabel}
+          >
+            following
+          </Text>
+        </Link>
       </div>
     </Group>
 

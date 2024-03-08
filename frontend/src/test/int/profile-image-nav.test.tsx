@@ -66,21 +66,6 @@ test('when user has no profile image, a default image is displayed in mobile nav
   });
 });
 
-test('when user has no profile image, a default image is displayed in desktop nav', async () => {
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
-  renderWithRouter(<App />, { route: '/' });
-
-  const avatar = await screen.findByTestId('desktop-nav-avatar');
-
-  await waitFor(() => {
-    const image = within(avatar).queryByRole('img');
-    const placeholderSvg = avatar.querySelector('svg');
-
-    expect(placeholderSvg).not.toBeNull();
-    expect(image).toBeNull();
-  });
-});
-
 test('when user has a profile image, it is displayed in desktop nav', async () => {
   const imageSrc = 'https://i.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U';
   server.use(

@@ -16,11 +16,14 @@ import useUserProfileImageUpload from '../../../common/hooks/useUserProfileImage
 import placeholderIcon from '../../../assets/placeholder-icon.jpeg';
 import ChangeAvatarModal from './UserProfileEdit/ChangeAvatarModal/ChangeAvatarModal';
 import Alert from '../../../common/components/Alert/Alert';
+import { useFollowUserByIdMutation, useUnfollowUserByIdMutation } from '../../../app/apiSlice';
+import getErrorMessage from '../../../common/utils/getErrorMessage';
 
 interface UserProfileInfoProps {
   user: User;
   isCurrentUserLoggedIn: boolean;
   isCurrentUserProfile?: boolean;
+  isCurrentUserFollowing: boolean;
 }
 
 /**
@@ -31,6 +34,7 @@ function UserProfileInfo({
   user,
   isCurrentUserProfile,
   isCurrentUserLoggedIn,
+  isCurrentUserFollowing,
 }: UserProfileInfoProps) {
   const { classes, cx } = useStyles();
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
@@ -42,6 +46,20 @@ function UserProfileInfo({
       isDeleting, isImageUpdating, modalOpened, setModalOpened,
     },
   ] = useUserProfileImageUpload(setAlertText);
+
+  const [followUser, { isLoading: isFollowLoading }] = useFollowUserByIdMutation();
+  const [unfollowUser, { isLoading: isUnfollowLoading }] = useUnfollowUserByIdMutation();
+
+  const onFollowBtnClick = async () => {
+    const followFunc = isCurrentUserFollowing ? unfollowUser : followUser;
+
+    try {
+      await followFunc(user.id).unwrap();
+    } catch (error) {
+      console.error(getErrorMessage(error));
+    }
+  };
+
   const buttons = () => {
     if (isCurrentUserProfile) {
       return (
@@ -68,8 +86,6 @@ function UserProfileInfo({
               outline: classes.buttonOutline,
             }}
             variant="outline"
-            component={Link}
-            to="/"
           >
             Message
           </Button>
@@ -77,10 +93,11 @@ function UserProfileInfo({
             classNames={{
               root: cx(classes.buttonRoot, classes.followButtonRoot),
             }}
-            component={Link}
-            to="/"
+            onClick={onFollowBtnClick}
+            loading={isFollowLoading || isUnfollowLoading}
+            data-cy="follow-btn"
           >
-            Follow
+            {isCurrentUserFollowing ? 'Following' : 'Follow'}
           </Button>
         </div>
       );

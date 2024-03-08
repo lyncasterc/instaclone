@@ -2,9 +2,7 @@ import { createStyles } from '@mantine/core';
 
 export default createStyles((theme) => ({
   container: {
-    // display: 'flex',
-    // justifyContent: 'space-between',
-    // alignItems: 'center',
+    zIndex: 1000,
     backgroundColor: 'white',
     width: '100%',
     padding: '5px 20px',

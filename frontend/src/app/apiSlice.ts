@@ -68,12 +68,27 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    followUserById: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/users/${id}/follow`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['User'],
+    }),
+    unfollowUserById: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/users/${id}/unfollow`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['User'],
+    }),
     addPost: builder.mutation<Post, NewPostFields>({
       query: (newPostFields) => ({
         url: '/posts',
         method: 'POST',
         body: newPostFields,
       }),
+      invalidatesTags: ['User'],
     }),
     getPostById: builder.query<Post, string>({
       query: (id) => `/posts/${id}`,
@@ -84,6 +99,7 @@ export const apiSlice = createApi({
         url: `/posts/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['User'],
     }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
@@ -104,6 +120,8 @@ export const {
   useAddPostMutation,
   useGetPostByIdQuery,
   useDeletePostByIdMutation,
+  useFollowUserByIdMutation,
+  useUnfollowUserByIdMutation,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();

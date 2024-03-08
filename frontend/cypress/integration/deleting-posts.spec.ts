@@ -25,11 +25,9 @@ it('user can delete their post in the post view', () => {
 
   cy.contains(/post deleted/i).should('be.visible');
 
-  cy.reload();
-
-  cy.contains(/post/i).should('not.exist');
-
   cy.contains(/posts/i)
     .prev()
     .should('contain.text', '0');
+
+  cy.get('[data-cy="user-profile-image-grid"] img').should('not.exist');
 });

@@ -3,7 +3,7 @@ import { User, Post } from '../../src/mongo';
 import { NewUser } from '../../src/types';
 
 const usersInDB = async () => {
-  const users = await User.find({});
+  const users = await User.find({}).select('-passwordHash');
   return users.map((user) => user.toJSON());
 };
 

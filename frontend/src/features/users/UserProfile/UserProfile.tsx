@@ -18,10 +18,16 @@ function UserProfile() {
   ) : undefined;
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
   const isCurrentUserProfile = user != null && user === username;
+  const isCurrentUserFollowing = Boolean(
+    user
+    && !isCurrentUserProfile
+    && selectedUser?.followers
+    && selectedUser.followers.find((follower) => follower.username === user) != null,
+  );
 
   useEffect(() => {
     if (selectedUser) {
-      document.title = `${username} (@${username}) • Instaclone`;
+      document.title = `${selectedUser.fullName} (@${username}) • Instaclone`;
     } else {
       document.title = 'Page Not Found • Instaclone';
     }
@@ -44,6 +50,7 @@ function UserProfile() {
           user={selectedUser}
           isCurrentUserProfile={isCurrentUserProfile}
           isCurrentUserLoggedIn={user != null}
+          isCurrentUserFollowing={isCurrentUserFollowing}
         />
         {
           !isMediumScreenOrWider && (

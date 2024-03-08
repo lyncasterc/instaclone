@@ -1,6 +1,9 @@
 import { createStyles } from '@mantine/core';
 
 export default createStyles((theme) => ({
+  postContainer: {
+    paddingBottom: 10,
+  },
   postCreatorBar: {
     height: 56,
     padding: '0 14px',

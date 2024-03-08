@@ -5,17 +5,29 @@ import { NewUser, UpdatedUserFields } from '../types';
 import cloudinary from '../utils/cloudinary';
 
 const getUsers = async () => {
-  // TODO: decide which are and populate the fields that should be populated.
-  // TODO: omit passwordHash from results.
   const users = await User.find({})
-    .populate('posts', { image: 1 });
+    .select('-passwordHash')
+    .populate({
+      path: 'posts',
+      select: 'image createdAt updatedAt creator caption',
+      populate: {
+        path: 'creator',
+        select: 'username id image',
+      },
+    })
+    .populate('followers', { username: 1 })
+    .populate('following', { username: 1 });
 
   return users;
 };
 
 const getUserById = async (id: string) => {
   const user = await User.findById(id)
-    .populate('posts', { image: 1 });
+    .select('-passwordHash')
+    .populate('posts', { image: 1 })
+    .populate('followers', { username: 1 })
+    .populate('following', { username: 1 });
+
   return user;
 };
 
@@ -57,18 +69,20 @@ const followUserById = async (followerId: string, followedUserId: string) => {
   const followedUser = await User.findById(followedUserId);
   const follower = await User.findById(followerId);
 
-  if (!followedUser) throw new Error('User not found.');
+  if (!followedUser) {
+    throw new Error('User not found.');
+  }
 
   // checking if user already follows the user they are requesting to follow
-  if (follower.following.map((ids: ObjectId) => ids?.toString()).includes(followedUser.id)) throw new Error('You already follow that user!');
+  if (follower.following.map((ids: ObjectId) => ids?.toString()).includes(followedUser.id)) {
+    throw new Error('You already follow that user!');
+  }
 
   followedUser.followers = [...followedUser.followers, follower];
   follower.following = [...follower.following, followedUser.id];
 
   await followedUser.save();
   await follower.save();
-
-  return followedUser;
 };
 
 const deleteUserImage = async (id: string) => {
@@ -80,6 +94,25 @@ const deleteUserImage = async (id: string) => {
   return user;
 };
 
+const unfollowUserById = async (followerId: string, followedUserId: string) => {
+  const followedUser = await User.findById(followedUserId);
+  const follower = await User.findById(followerId);
+
+  if (!followedUser) {
+    throw new Error('User not found.');
+  }
+
+  follower.following = follower.following.filter(
+    (id: ObjectId) => id.toString() !== followedUser.id,
+  );
+  followedUser.followers = followedUser.followers.filter(
+    (id: ObjectId) => id.toString() !== follower.id,
+  );
+
+  await follower.save();
+  await followedUser.save();
+};
+
 export default {
   getUsers,
   getUserById,
@@ -87,4 +120,5 @@ export default {
   updateUserById,
   followUserById,
   deleteUserImage,
+  unfollowUserById,
 };
