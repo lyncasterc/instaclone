@@ -5,8 +5,7 @@ import cloudinary from '../utils/cloudinary';
 // TODO: figure out what exactly needs to be populated.
 const getPost = async (id: string) => {
   const post = await Post.findById(id)
-    .populate('creator', { username: 1, image: 1 })
-    .populate('comments');
+    .populate('creator', { username: 1, image: 1 });
 
   return post;
 };
@@ -33,9 +32,6 @@ const updatePostById = async (
 
     updatedPost.caption = updatedPostFields.caption;
   }
-  // FIXME: this is not how commenting or liking will work. remove it
-  if (updatedPostFields.comments) updatedPost.comments = updatedPostFields.comments;
-  if (updatedPostFields.likes) updatedPost.likes = updatedPostFields.likes;
 
   await updatedPost.save();
 

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Comment } from '../index';
 
 export const imageSchema = new mongoose.Schema(
   {
@@ -28,10 +29,12 @@ const postSchema = new mongoose.Schema(
       type: imageSchema,
       required: true,
     },
-    comments: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
-    },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+      },
+    ],
     likes: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -46,6 +49,13 @@ postSchema.set('toJSON', {
     delete returnedObject._id;
     delete returnedObject.__v;
   },
+});
+
+postSchema.pre('remove', async function deleteAllCommentsOfPost(next) {
+  const post = this;
+
+  await Comment.deleteMany({ post: post._id });
+  next();
 });
 
 export default mongoose.model('Post', postSchema);

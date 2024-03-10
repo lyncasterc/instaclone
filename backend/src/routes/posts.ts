@@ -1,4 +1,5 @@
 import express from 'express';
+import commentRouter from './comments';
 import postService from '../services/post-service';
 import { authenticator } from '../utils/middleware';
 import fieldParsers, { parseStringField } from '../utils/field-parsers';
@@ -95,5 +96,7 @@ router.delete('/:id', authenticator(), async (req, res, next) => {
     return next(error);
   }
 });
+
+router.use('/:id/comments', commentRouter);
 
 export default router;

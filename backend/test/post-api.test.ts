@@ -255,7 +255,6 @@ describe('when there are posts in the database', () => {
       expect(returnedPost.caption).toBe(updatedPostFields.caption);
     });
 
-    // TODO: update this for other populated creator/comment fields that may be needed?
     test('returned updated post has populated creator', async () => {
       const targetPost = (await testHelpers.postsInDB())[0];
 

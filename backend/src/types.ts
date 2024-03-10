@@ -1,5 +1,3 @@
-// TODO: do the reference fields need to be of type string or their actual types?
-
 export interface Image {
   url: string,
   publicId: string,
@@ -7,11 +5,20 @@ export interface Image {
 
 export interface Comment {
   id: string,
-  post: string, // ref
-  comment: string,
+  post: string, // ref -> Post
+  body: string,
   author: string, // ref -> User
-  parentComment?: string, // ref
-  replies?: string[] // ref -> Comment
+  parentComment?: string, // ref -> Comment (the root comment)
+  replies?: string[], // ref -> Comment (only parent comments can have replies)
+  createdAt: string, // Date
+  updatedAt: string, // Date
+}
+
+export interface NewComment {
+  post: string, // ref -> Post,
+  body: string,
+  author: string, // ref -> User
+  parentComment?: string, // ref -> Comment (the root comment)
 }
 
 export interface Post {
