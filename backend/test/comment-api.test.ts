@@ -73,13 +73,25 @@ describe('when creating comments', () => {
       author: testUser.id,
     };
 
-    const response = await api
+    const alsoInvalidComment = {
+      post: post.id,
+      body: '',
+    };
+
+    const responseOne = await api
       .post(`/api/posts/${post.id}/comments`)
       .set('Authorization', `Bearer ${token}`)
       .send(invalidComment)
       .expect(400);
 
-    expect(response.body.error).toMatch(/incorrect or missing body/i);
+    const responseTwo = await api
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(alsoInvalidComment)
+      .expect(400);
+
+    expect(responseOne.body.error).toMatch(/incorrect or missing body/i);
+    expect(responseTwo.body.error).toMatch(/incorrect or missing body/i);
   });
 
   test('request with non-existent post id should fail', async () => {
