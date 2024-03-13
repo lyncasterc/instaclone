@@ -6,6 +6,10 @@ const theme: MantineProviderProps['theme'] = {
     instaDark: ['#434343', '#3D3D3D', '#383838', '#333333', '#2E2E2E', '#2A2A2A', '#262626', '#222222', '#1F1F1F', '#1C1C1C'],
   },
   primaryColor: 'instaBlue',
+  other: {
+    topMobileNavHeight: 44,
+    bottomMobileNavHeight: 44.9,
+  },
 };
 
 type CustomColors = 'instaBlue' | 'instaDark';

@@ -4,7 +4,8 @@ import { NewComment } from '../types';
 const getParentCommentsByPostId = async (postId: string) => {
   const comments = await Comment.find({ post: postId })
     .where('parentComment')
-    .exists(false);
+    .exists(false)
+    .populate('author', 'username');
 
   return comments;
 };
@@ -16,7 +17,9 @@ const getRepliesByParentCommentId = async (parentCommentId: string) => {
     throw new Error('Parent comment not found');
   }
 
-  const replies = await Comment.find({ parentComment: parentCommentId });
+  const replies = await Comment
+    .find({ parentComment: parentCommentId })
+    .populate('author', 'username');
 
   return replies;
 };

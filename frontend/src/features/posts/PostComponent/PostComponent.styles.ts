@@ -40,6 +40,11 @@ export default createStyles((theme) => ({
   createdAt: {
     color: '#737373',
     fontWeight: 400,
+    lineHeight: 0.5,
+  },
+  commentsLink: {
+    color: '#737373',
+    fontWeight: 400,
   },
   modal: {
     borderRadius: 10,

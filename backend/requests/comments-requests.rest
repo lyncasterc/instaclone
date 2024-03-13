@@ -1,0 +1,26 @@
+
+@postId = 65ea187dad15412a70a98ce0
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2NWU0ZjZhZTNjMjg4Y2EzODVkYzJhNGEiLCJpYXQiOjE3MTAxMDg0NzEsImV4cCI6MTcxMDExMjA3MX0.NWgwdMgGZKyeDYdhfZHNS6lX5aLlk3kGiLXGKLoJ1xs
+POST http://localhost:3001/api/posts/{{postId}}/comments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "body": "WOW! This is a really really great post!"
+}
+
+###
+# getting parent comments
+GET http://localhost:3001/api/posts/{{postId}}/comments
+
+###
+# replying to parent comment
+@parentCommentId = 65ee315ccd5c36f914e30f05
+POST http://localhost:3001/api/posts/{{postId}}/comments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "body": "WOW! This is a really really great comment!",
+  "parentComment": "{{parentCommentId}}"
+}

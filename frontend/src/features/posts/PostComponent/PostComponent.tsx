@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Avatar,
   Image,
@@ -37,6 +38,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
   const { classes, cx } = useStyles();
   const goBack = useGoBack();
   const [deletePost] = useDeletePostByIdMutation();
+  const postCommentsLength = post.comments ? post.comments.length : 0;
 
   const onDelete = async () => {
     try {
@@ -180,18 +182,21 @@ function PostComponent({ post, setAlertText }: PostProps) {
           className={classes.likeCommentContainer}
           spacing="sm"
         >
+
           <IconHeart
             size={28}
             strokeWidth={1.5}
             color="black"
             className={classes.activeOpacityLight}
           />
-          <IconMessageCircle
-            size={28}
-            strokeWidth={1.5}
-            color="black"
-            className={classes.activeOpacityLight}
-          />
+          <Link to={`/p/${post.id}/comments`}>
+            <IconMessageCircle
+              size={28}
+              strokeWidth={1.5}
+              color="black"
+              className={classes.activeOpacityLight}
+            />
+          </Link>
         </Group>
         {
         post.caption && (
@@ -214,6 +219,24 @@ function PostComponent({ post, setAlertText }: PostProps) {
           </div>
         )
       }
+
+        {
+        postCommentsLength > 0 && (
+          <Text
+            size="sm"
+            className={cx(classes.activeOpacityLight, classes.commentsLink)}
+            component={Link}
+            to={`/p/${post.id}/comments`}
+          >
+            View all
+            {' '}
+            {postCommentsLength}
+            {' '}
+            comments
+          </Text>
+        )
+      }
+
         <div>
           <Text size="xs" className={classes.createdAt}>
             {getTimeSinceDate(new Date(post.createdAt))}

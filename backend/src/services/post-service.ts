@@ -2,7 +2,6 @@ import { Post } from '../mongo';
 import { NewPost, ProofedUpdatedPost } from '../types';
 import cloudinary from '../utils/cloudinary';
 
-// TODO: figure out what exactly needs to be populated.
 const getPost = async (id: string) => {
   const post = await Post.findById(id)
     .populate('creator', { username: 1, image: 1 });
