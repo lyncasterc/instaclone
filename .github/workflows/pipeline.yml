@@ -62,7 +62,7 @@ jobs:
       - name: cypress tests
         uses: cypress-io/github-action@v2
         with: 
-          start: npm run server:dev, npm start
+          start: npm run server:test, npm start
           wait-on: 'http://localhost:3001/health, http://localhost:3000'
           working-directory: ./frontend
 
