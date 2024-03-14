@@ -11,10 +11,11 @@ import { Comment as CommentType } from '../../app/types';
 import Comment from './Comment';
 
 interface ParentCommentProps {
-  comment: CommentType
+  comment: CommentType,
+  setReplyRecipientUsername: React.Dispatch<React.SetStateAction<string>>,
 }
 
-function ParentComment({ comment }: ParentCommentProps) {
+function ParentComment({ comment, setReplyRecipientUsername }: ParentCommentProps) {
   const { classes } = useStyles();
   const { replies } = comment;
   const [repliesExpanded, setRepliesExpanded] = useState(false);
@@ -24,7 +25,7 @@ function ParentComment({ comment }: ParentCommentProps) {
     postId: comment.post,
   }, { skip: !getReplies });
 
-  const doesCommentHaveReplies = replies && replies.length > 0;
+  const doesParentCommentHaveReplies = replies && replies.length > 0;
 
   const onViewRepliesClick = () => {
     if (!getReplies) {
@@ -42,9 +43,9 @@ function ParentComment({ comment }: ParentCommentProps) {
 
   return (
     <>
-      <Comment comment={comment} />
+      <Comment comment={comment} setReplyRecipientUsername={setReplyRecipientUsername} />
       {
-        doesCommentHaveReplies && (
+        doesParentCommentHaveReplies && (
           <div className={classes.repliesDividerContainer}>
             <Group spacing={10}>
               <div className={classes.repliesDivider} />
@@ -78,6 +79,8 @@ function ParentComment({ comment }: ParentCommentProps) {
                 <Comment
                   comment={reply}
                   key={reply.id}
+                  setReplyRecipientUsername={setReplyRecipientUsername}
+                  parentCommentId={comment.id}
                 />
               ))
             }

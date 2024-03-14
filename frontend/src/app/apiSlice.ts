@@ -122,12 +122,14 @@ export const apiSlice = createApi({
           parentComment,
         },
       }),
+      invalidatesTags: ['Comment'],
     }),
     deleteCommentById: builder.mutation<void, DeleteCommentRequestFields>({
       query: ({ postId, commentId }) => ({
         url: `/posts/${postId}/comments/${commentId}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Comment'],
     }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({

@@ -31,7 +31,8 @@ const addComment = async (commentFields: NewComment) => {
 
   post.comments = [...post.comments, comment.id];
 
-  if (commentFields.parentComment) {
+  // eslint-disable-next-line no-extra-boolean-cast
+  if (Boolean(commentFields.parentComment)) {
     const parentComment = await Comment.findById(commentFields.parentComment);
 
     if (!parentComment) {

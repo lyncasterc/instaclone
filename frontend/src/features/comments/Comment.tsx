@@ -6,36 +6,47 @@ import {
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { IconHeart, IconTrash } from '@tabler/icons-react';
+import { useFormikContext } from 'formik';
+import { useState } from 'react';
 import Avatar from '../../common/components/Avatar/Avatar';
 import { Comment as CommentType } from '../../app/types';
 import useStyles from './comments-captions.styles';
-import { selectUserByUsername } from '../../app/apiSlice';
+import { selectUserByUsername, useDeleteCommentByIdMutation } from '../../app/apiSlice';
 import { useAppSelector } from '../../common/hooks/selector-dispatch-hooks';
 import useAuth from '../../common/hooks/useAuth';
 import getTimeSinceDate from '../../common/utils/getTimeSinceDate';
 import ViewMoreText from '../../common/components/ViewMoreText/ViewMoreText';
+import DeleteModal from '../../common/components/DeleteModal/DeleteModal';
 
 interface CommentProps {
   comment: CommentType,
+  parentCommentId?: string,
+  setReplyRecipientUsername: React.Dispatch<React.SetStateAction<string>>,
 }
 
-function Comment({ comment }: CommentProps) {
+function Comment({ comment, setReplyRecipientUsername, parentCommentId }: CommentProps) {
   const { classes } = useStyles();
+  const { setFieldValue } = useFormikContext();
   const {
-    author: { username },
+    author: { username: commentAuthorUsername },
     createdAt,
     body,
   } = comment;
-  const user = useAppSelector((state) => selectUserByUsername(state, username));
+  const commentAuthor = useAppSelector(
+    (state) => selectUserByUsername(state, commentAuthorUsername),
+  );
   const [currentUsername] = useAuth();
-  if (user) {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteComment] = useDeleteCommentByIdMutation();
+
+  if (commentAuthor) {
     const commentTimeStamps = getTimeSinceDate(new Date(createdAt), { isCommentFormat: true });
-    const isCurrentUserTheCommentAuthor = currentUsername === username;
+    const isCurrentUserTheCommentAuthor = currentUsername === commentAuthorUsername;
 
     return (
       <Group spacing="sm" pb={15} position="apart">
-        <Link to={`/users/${username}`} className={classes.avatarLink}>
-          <Avatar src={user.image?.url} alt={username} />
+        <Link to={`/users/${commentAuthorUsername}`} className={classes.avatarLink}>
+          <Avatar src={commentAuthor.image?.url} alt={commentAuthorUsername} />
         </Link>
         <Stack
           spacing={0}
@@ -49,13 +60,13 @@ function Comment({ comment }: CommentProps) {
             <span>
               <Text
                 component={Link}
-                to={`/users/${username}`}
+                to={`/users/${commentAuthorUsername}`}
                 color="black"
                 weight={700}
                 size="sm"
                 className={classes.activeOpacityLight}
               >
-                {username}
+                {commentAuthorUsername}
               </Text>
             </span>
             {' '}
@@ -74,47 +85,87 @@ function Comment({ comment }: CommentProps) {
             </span>
           </div>
           <Group spacing="xs">
-            <Text size="xs">{commentTimeStamps}</Text>
+            <Text
+              size="xs"
+              styles={{
+                root: {
+                  color: '#737373',
+                },
+              }}
+              weight={500}
+            >
+              {commentTimeStamps}
+            </Text>
 
             {
-            currentUsername && (
-              <UnstyledButton>
-                <Text
-                  size="xs"
-                  weight={700}
-                  styles={{
-                    root: {
-                      color: '#737373',
-                    },
+              currentUsername && (
+                <UnstyledButton
+                  onClick={() => {
+                    setFieldValue('body', `@${commentAuthorUsername} `);
+                    setFieldValue('parentComment', parentCommentId || comment.id);
+                    setReplyRecipientUsername(commentAuthorUsername);
                   }}
+                  className={classes.activeOpacityLight}
                 >
-                  Reply
-                </Text>
-              </UnstyledButton>
-            )
-          }
+                  <Text
+                    size="xs"
+                    weight={700}
+                    styles={{
+                      root: {
+                        color: '#737373',
+                      },
+                    }}
+                  >
+                    Reply
+                  </Text>
+                </UnstyledButton>
+              )
+            }
 
           </Group>
         </Stack>
 
-        <Group>
-          <UnstyledButton className={classes.activeOpacityLight}>
-            <IconHeart size={15} />
-          </UnstyledButton>
+        {
+          currentUsername && (
+            <Group>
+              <UnstyledButton className={classes.activeOpacityLight}>
+                <IconHeart size={15} />
+              </UnstyledButton>
 
-          {
-          isCurrentUserTheCommentAuthor && (
-            <UnstyledButton className={classes.activeOpacityLight}>
-              <IconTrash size={15} />
-            </UnstyledButton>
+              {
+                isCurrentUserTheCommentAuthor && (
+                  <>
+                    <DeleteModal
+                      opened={isDeleteModalOpen}
+                      onClose={() => setIsDeleteModalOpen(false)}
+                      onDelete={() => deleteComment({
+                        postId: comment.post,
+                        commentId: comment.id,
+                      })}
+                      zIndex={1000}
+                    />
+                    <UnstyledButton
+                      className={classes.activeOpacityLight}
+                      onClick={() => setIsDeleteModalOpen(true)}
+                      data-cy="delete-comment-btn"
+                    >
+                      <IconTrash size={15} />
+                    </UnstyledButton>
+                  </>
+                )
+              }
+            </Group>
           )
         }
-        </Group>
       </Group>
     );
   }
 
   return null;
 }
+
+Comment.defaultProps = {
+  parentCommentId: null,
+};
 
 export default Comment;

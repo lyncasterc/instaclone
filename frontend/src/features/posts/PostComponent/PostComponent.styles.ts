@@ -1,8 +1,16 @@
 import { createStyles } from '@mantine/core';
 
-export default createStyles((theme) => ({
+export default createStyles(() => ({
   postContainer: {
     paddingBottom: 10,
+
+    '@media (max-width: 375px)': {
+      minHeight: '100vh',
+    },
+
+    '@media (max-height: 500px) and (orientation: landscape)': {
+      minHeight: '260vh',
+    },
   },
   postCreatorBar: {
     height: 56,
@@ -45,37 +53,5 @@ export default createStyles((theme) => ({
   commentsLink: {
     color: '#737373',
     fontWeight: 400,
-  },
-  modal: {
-    borderRadius: 10,
-    width: '83%',
-
-    [`@media (min-width: ${theme.breakpoints.md}px)`]: {
-      width: '30%',
-    },
-  },
-  modalBtn: {
-    textAlign: 'center',
-    display: 'block',
-    width: '100%',
-    padding: '20px 0',
-    fontSize: '.9rem',
-    fontWeight: 700,
-    cursor: 'pointer',
-    '&:active': {
-      backgroundColor: theme.colors.gray[2],
-    },
-    '&:first-of-type': {
-      borderBottom: `1px solid ${theme.colors.gray[4]}`,
-      borderTop: `1px solid ${theme.colors.gray[4]}`,
-      color: theme.colors.red[6],
-      fontWeight: 700,
-      borderTopRightRadius: 10,
-      borderTopLeftRadius: 10,
-    },
-    '&:last-of-type': {
-      borderBottomRightRadius: 10,
-      borderBottomLeftRadius: 10,
-    },
   },
 }));

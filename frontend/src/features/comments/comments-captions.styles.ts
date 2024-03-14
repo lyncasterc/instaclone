@@ -11,7 +11,6 @@ export default createStyles((theme) => ({
   },
   repliesDividerContainer: {
     marginLeft: 53,
-    marginBottom: 15,
   },
   repliesDivider: {
     width: 25,

@@ -79,7 +79,6 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
     setModalOpened,
   }] = useUserProfileImageUpload(setAlertText);
   const [, { updateTokenUsername }] = useAuth();
-  // const [bioValue, setBioValue] = useState(userObject?.bio ?? '');
 
   if (userObject) {
     const { id: userId } = userObject;
