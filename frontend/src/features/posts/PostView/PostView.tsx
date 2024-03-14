@@ -5,6 +5,8 @@ import GoBackNavbar from '../../../common/components/Navbars/GoBackNavbar/GoBack
 import { useGetPostByIdQuery } from '../../../app/apiSlice';
 import PostComponent from '../PostComponent/PostComponent';
 import useStyles from './PostView.styles';
+import useAuth from '../../../common/hooks/useAuth';
+import DesktopNavbar from '../../../common/components/Navbars/DesktopNavbar/DesktopNavbar';
 
 interface PostViewProps {
   setAlertText: React.Dispatch<React.SetStateAction<string>>
@@ -13,22 +15,30 @@ interface PostViewProps {
 function PostView({ setAlertText }: PostViewProps) {
   const { postId } = useParams();
   const { classes } = useStyles();
+  const [user] = useAuth();
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
   if (postId) {
     const { data: post, error } = useGetPostByIdQuery(postId);
 
     if (post && !error) {
       return (
-        <Container
-          size={isMediumScreenOrWider ? 'xs' : 'md'}
-          classNames={{
-            root: classes.postViewContainer,
-          }}
-          px={!isMediumScreenOrWider ? 0 : 'md'}
-        >
-          <GoBackNavbar text="Post" />
-          <PostComponent post={post} setAlertText={setAlertText} />
-        </Container>
+        <>
+          {
+          !user && (
+            <DesktopNavbar />
+          )
+        }
+          <Container
+            size={isMediumScreenOrWider ? 'xs' : 'md'}
+            classNames={{
+              root: classes.postViewContainer,
+            }}
+            px={!isMediumScreenOrWider ? 0 : 'md'}
+          >
+            <GoBackNavbar text="Post" />
+            <PostComponent post={post} setAlertText={setAlertText} />
+          </Container>
+        </>
       );
     }
   }

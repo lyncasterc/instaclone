@@ -10,6 +10,22 @@ export interface NewPostFields {
   caption?: string,
 }
 
+export interface GetReplyCommentsRequestFields {
+  postId: string,
+  parentCommentId: string,
+}
+
+export interface DeleteCommentRequestFields {
+  postId: string,
+  commentId: string,
+}
+
+export interface NewCommentFields {
+  postId: string,
+  body: string,
+  parentComment?: string,
+}
+
 export interface UpdatedUserFields {
   fullName?: string,
   username?: string,
@@ -44,6 +60,20 @@ export interface Post {
   image: Image,
   comments?: string[], // ref
   likes?: string[], // ref -> User
+  createdAt: string, // Date
+  updatedAt: string, // Date
+}
+
+export interface Comment {
+  id: string,
+  post: string, // ref -> Post
+  body: string,
+  author: {
+    id: string,
+    username: string,
+  }, // ref -> User
+  parentComment?: string, // ref -> Comment (the root comment)
+  replies?: string[], // ref -> Comment (only parent comments can have replies)
   createdAt: string, // Date
   updatedAt: string, // Date
 }

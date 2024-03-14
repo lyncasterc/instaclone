@@ -22,6 +22,7 @@ import Alert from '../common/components/Alert/Alert';
 import PostView from '../features/posts/PostView/PostView';
 import MobileHomeNavBar from '../common/components/Navbars/MobileHomeNavbar/MobileHomeNavbar';
 import FollowingFollowersView from '../features/users/FollowingFollowersView/FollowingFollowersView';
+import CommentsView from '../features/comments/CommentsView/CommentsView';
 
 interface LocationState {
   background: string,
@@ -106,6 +107,7 @@ function App() {
         )}
         />
         <Route path="/p/:postId" element={<PostView setAlertText={setAlertText} />} />
+        <Route path="/p/:postId/comments" element={<CommentsView />} />
       </Routes>
     </>
   );

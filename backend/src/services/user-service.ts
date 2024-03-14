@@ -9,7 +9,7 @@ const getUsers = async () => {
     .select('-passwordHash')
     .populate({
       path: 'posts',
-      select: 'image createdAt updatedAt creator caption',
+      select: 'image createdAt updatedAt creator caption comments',
       populate: {
         path: 'creator',
         select: 'username id image',

@@ -1,4 +1,4 @@
-import { Title } from '@mantine/core';
+import { Title, UnstyledButton } from '@mantine/core';
 import { IconChevronLeft } from '@tabler/icons-react';
 import baseStyles from '../mobile-nav-styles';
 import useStyles from './GoBackNavbar.styles';
@@ -21,15 +21,17 @@ function GoBackNavbar({ isCurrentUserProfile, text, rightComponent }: GoBackNavb
     >
       {
         !isCurrentUserProfile && (
-          <div className={classes.backBtnContainer}>
+          <UnstyledButton
+            className={classes.backBtnContainer}
+            onClick={goBack}
+          >
             <IconChevronLeft
               className={`${classes.backBtn}`}
               size={35}
               strokeWidth={1.5}
-              onClick={goBack}
               data-testid="goBackNavBtn"
             />
-          </div>
+          </UnstyledButton>
         )
       }
       <Title order={4} className={baseClasses.header}>{text}</Title>

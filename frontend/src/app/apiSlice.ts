@@ -11,6 +11,10 @@ import {
   type UpdatedUserFields,
   type Post,
   type NewPostFields,
+  type Comment,
+  type GetReplyCommentsRequestFields,
+  type NewCommentFields,
+  type DeleteCommentRequestFields,
 } from './types';
 import type { AuthState } from '../features/auth/authSlice';
 // eslint-disable-next-line import/no-cycle
@@ -36,7 +40,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ['User', 'Post'],
+  tagTypes: ['User', 'Post', 'Comment'],
   endpoints: (builder) => ({
     addUser: builder.mutation<User, NewUserFields>({
       query: (newUserFields) => ({
@@ -101,6 +105,32 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    getParentCommentsByPostId: builder.query<Comment[], string>({
+      query: (id) => `/posts/${id}/comments`,
+      providesTags: ['Comment'],
+    }),
+    getRepliesByParentCommentId: builder.query<Comment[], GetReplyCommentsRequestFields>({
+      query: ({ postId, parentCommentId }) => `/posts/${postId}/comments/${parentCommentId}`,
+      providesTags: ['Comment'],
+    }),
+    addComment: builder.mutation<void, NewCommentFields>({
+      query: ({ postId, body, parentComment }) => ({
+        url: `/posts/${postId}/comments`,
+        method: 'POST',
+        body: {
+          body,
+          parentComment,
+        },
+      }),
+      invalidatesTags: ['Comment'],
+    }),
+    deleteCommentById: builder.mutation<void, DeleteCommentRequestFields>({
+      query: ({ postId, commentId }) => ({
+        url: `/posts/${postId}/comments/${commentId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Comment'],
+    }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
         url: '/login',
@@ -122,6 +152,10 @@ export const {
   useDeletePostByIdMutation,
   useFollowUserByIdMutation,
   useUnfollowUserByIdMutation,
+  useGetParentCommentsByPostIdQuery,
+  useGetRepliesByParentCommentIdQuery,
+  useAddCommentMutation,
+  useDeleteCommentByIdMutation,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();

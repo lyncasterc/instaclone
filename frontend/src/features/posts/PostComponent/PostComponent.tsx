@@ -1,11 +1,9 @@
+/* eslint-disable max-len */
 import {
   Avatar,
   Image,
   Group,
   Text,
-  Modal,
-  UnstyledButton,
-  Stack,
 } from '@mantine/core';
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
@@ -20,6 +18,7 @@ import getTimeSinceDate from '../../../common/utils/getTimeSinceDate';
 import { useDeletePostByIdMutation } from '../../../app/apiSlice';
 import useGoBack from '../../../common/hooks/useGoBack';
 import getErrorMessage from '../../../common/utils/getErrorMessage';
+import DeleteModal from '../../../common/components/DeleteModal/DeleteModal';
 
 interface PostProps {
   post: Post,
@@ -37,6 +36,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
   const { classes, cx } = useStyles();
   const goBack = useGoBack();
   const [deletePost] = useDeletePostByIdMutation();
+  const postCommentsLength = post.comments ? post.comments.length : 0;
 
   const onDelete = async () => {
     try {
@@ -101,73 +101,26 @@ function PostComponent({ post, setAlertText }: PostProps) {
           )
         }
         {/* First delete modal */}
-        <Modal
+        <DeleteModal
           onClose={() => setDeleteModalOpen(false)}
           opened={isDeleteModalOpen}
-          classNames={{
-            modal: classes.modal,
+          onDelete={() => {
+            setDeleteModalOpen(false);
+            setDeleteConfirmModalOpen(true);
           }}
-          withCloseButton={false}
-          padding={0}
-          centered
-        >
-          <UnstyledButton
-            className={classes.modalBtn}
-            onClick={() => {
-              setDeleteModalOpen(false);
-              setDeleteConfirmModalOpen(true);
-            }}
-          >
-            Delete
-          </UnstyledButton>
-          <UnstyledButton
-            className={classes.modalBtn}
-            onClick={() => setDeleteModalOpen(false)}
-          >
-            Cancel
-          </UnstyledButton>
-        </Modal>
+          zIndex={1000}
+        />
 
         {/* Second delete modal */}
-        <Modal
+
+        <DeleteModal
           onClose={() => setDeleteConfirmModalOpen(false)}
           opened={isDeleteConfirmModalOpen}
-          classNames={{
-            modal: classes.modal,
-          }}
-          withCloseButton={false}
-          padding={0}
-          centered
-        >
-          <Stack p={25} spacing={0}>
-
-            <Text
-              weight={600}
-              color="black"
-              size="xl"
-              align="center"
-            >
-              Delete Post?
-            </Text>
-            <Text
-              size="sm"
-              color="gray"
-              align="center"
-            >
-              Are you sure you want to delete this post?
-            </Text>
-
-          </Stack>
-          <UnstyledButton className={classes.modalBtn} onClick={onDelete} data-cy="confirm-delete-post-btn">
-            Delete
-          </UnstyledButton>
-          <UnstyledButton
-            className={classes.modalBtn}
-            onClick={() => setDeleteConfirmModalOpen(false)}
-          >
-            Cancel
-          </UnstyledButton>
-        </Modal>
+          onDelete={onDelete}
+          primaryLabel="Delete Post?"
+          secondaryLabel="Are you sure you want to delete this post?"
+          zIndex={1000}
+        />
 
       </Group>
       <Image
@@ -180,18 +133,21 @@ function PostComponent({ post, setAlertText }: PostProps) {
           className={classes.likeCommentContainer}
           spacing="sm"
         >
+
           <IconHeart
             size={28}
             strokeWidth={1.5}
             color="black"
             className={classes.activeOpacityLight}
           />
-          <IconMessageCircle
-            size={28}
-            strokeWidth={1.5}
-            color="black"
-            className={classes.activeOpacityLight}
-          />
+          <Link to={`/p/${post.id}/comments`} data-cy="comments-link">
+            <IconMessageCircle
+              size={28}
+              strokeWidth={1.5}
+              color="black"
+              className={classes.activeOpacityLight}
+            />
+          </Link>
         </Group>
         {
         post.caption && (
@@ -214,6 +170,24 @@ function PostComponent({ post, setAlertText }: PostProps) {
           </div>
         )
       }
+
+        {
+        postCommentsLength > 0 && (
+          <Text
+            size="sm"
+            className={cx(classes.activeOpacityLight, classes.commentsLink)}
+            component={Link}
+            to={`/p/${post.id}/comments`}
+          >
+            View all
+            {' '}
+            {postCommentsLength}
+            {' '}
+            comments
+          </Text>
+        )
+      }
+
         <div>
           <Text size="xs" className={classes.createdAt}>
             {getTimeSinceDate(new Date(post.createdAt))}

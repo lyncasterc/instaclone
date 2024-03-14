@@ -9,8 +9,10 @@ const connect = async () => {
   const testMongoDBURI = mongodbServer.getUri();
 
   try {
-    await mongoose.connect(testMongoDBURI);
-    logger.info('Connected to TEST MongoDB');
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(testMongoDBURI);
+      logger.info('Connected to TEST MongoDB');
+    }
   } catch (error) {
     const message = logger.getErrorMessage(error);
     logger.error('Error connecting to test MongoDB: ', message);

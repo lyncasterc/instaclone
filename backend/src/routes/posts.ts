@@ -1,4 +1,5 @@
 import express from 'express';
+import commentRouter from './comments';
 import postService from '../services/post-service';
 import { authenticator } from '../utils/middleware';
 import fieldParsers, { parseStringField } from '../utils/field-parsers';
@@ -9,7 +10,6 @@ import { NewPostFields, Image } from '../types';
 
 const router = express.Router();
 
-// TODO: remove authenticator from this. instagram allows this.
 router.get('/:id', async (req, res) => {
   const post = await postService.getPost(req.params.id);
   if (!post) return res.status(404).end();
@@ -47,7 +47,6 @@ router.post('/', authenticator(), async (req, res, next) => {
     return res.status(201).send(savedPost);
   } catch (error) {
     logger.error(logger.getErrorMessage(error));
-    // TODO: destroy the image if saving post fails?
     return next(error);
   }
 });
@@ -56,8 +55,6 @@ router.put('/:id', authenticator(), async (req, res, next) => {
   const updatedPostFields = req.body;
 
   try {
-    // TODO: this check will not be necessary,
-    // the only thing that will be updated for now on a post will be the capton
     if (updatedPostFields.caption) updatedPostFields.caption = parseStringField(updatedPostFields.caption, 'caption');
   } catch (error) {
     logger.error(logger.getErrorMessage(error));
@@ -100,6 +97,6 @@ router.delete('/:id', authenticator(), async (req, res, next) => {
   }
 });
 
-// TODO: write a delete route
+router.use('/:id/comments', commentRouter);
 
 export default router;
