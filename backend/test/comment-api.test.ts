@@ -469,8 +469,8 @@ describe('when deleting comments', () => {
       parentComment: parentComment.id,
     });
 
-    post.comments = [parentComment.id];
     parentComment.replies = [replyComment.id];
+    post.comments = [parentComment.id, replyComment.id];
 
     await post.save();
     await parentComment.save();
@@ -485,5 +485,44 @@ describe('when deleting comments', () => {
 
     expect(updatedParentComment.replies.length).toBe(0);
     expect(updatedPost.comments.length).toBe(1);
+  });
+
+  test('deleting a parent comment should delete all its replies', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const parentComment = await Comment.create({
+      post: post.id,
+      body: 'This is a comment.',
+      author: testUser.id,
+    });
+    const replyComment = await Comment.create({
+      post: post.id,
+      body: 'This is a reply.',
+      author: testUser.id,
+      parentComment: parentComment.id,
+    });
+
+    const parentCommentId = parentComment.id;
+    const replyCommentId = replyComment.id;
+
+    parentComment.replies = [replyComment.id];
+    post.comments = [parentComment.id, replyComment.id];
+
+    await post.save();
+    await parentComment.save();
+
+    await api
+      .delete(`/api/posts/${post.id}/comments/${parentComment.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
+
+    const updatedPost = await Post.findById(post.id);
+
+    expect(updatedPost.comments.length).toBe(0);
+
+    const updatedParentComment = await Comment.findById(parentCommentId);
+    const updatedReplyComment = await Comment.findById(replyCommentId);
+
+    expect(updatedParentComment).toBeNull();
+    expect(updatedReplyComment).toBeNull();
   });
 });

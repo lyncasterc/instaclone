@@ -34,25 +34,41 @@ const commentSchema = new mongoose.Schema(
   },
 );
 
-// if comment is a parent comment, delete all its replies
-commentSchema.pre('remove', async function deleteAllRepliesOfParentComment(next) {
-  const comment = this;
-  const post = await Post.findById(comment.post);
-  const parentComment = await comment.model('Comment').findById(comment.parentComment);
+commentSchema.pre('remove', async function handleCommentDeletion(next) {
+  const thisComment = this;
+  const post = await Post.findById(thisComment.post);
+  const isThisCommentAReply = Boolean(thisComment.parentComment);
+  let deletedCommentsIds = [thisComment._id.toString()];
 
-  await comment.model('Comment').deleteMany({ parentComment: comment._id });
+  // if this comment is a reply, remove it from its parent comment's replies
+  if (isThisCommentAReply) {
+    const parentComment = await thisComment.model('Comment').findById(thisComment.parentComment);
 
-  post.comments = post.comments.filter(
-    (c: mongoose.Schema.Types.ObjectId) => c.toString() !== comment._id.toString(),
-  );
-
-  if (parentComment) {
     parentComment.replies = parentComment.replies.filter(
-      (c: mongoose.Schema.Types.ObjectId) => c.toString() !== comment._id.toString(),
+      (c: mongoose.Schema.Types.ObjectId) => c.toString() !== thisComment._id.toString(),
     );
 
     await parentComment.save();
+  } else {
+    // else if this comment is a parent comment, delete all its replies
+
+    const replies = await thisComment.model('Comment').find({ parentComment: thisComment._id });
+
+    if (replies.length > 0) {
+      deletedCommentsIds = [
+        ...deletedCommentsIds,
+        ...replies.map((reply: { _id: mongoose.Schema.Types.ObjectId }) => reply._id.toString()),
+      ];
+
+      await thisComment.model('Comment').deleteMany({ parentComment: thisComment._id });
+    }
   }
+
+  post.comments = post.comments.filter(
+    (
+      commentId: mongoose.Schema.Types.ObjectId,
+    ) => !deletedCommentsIds.includes(commentId.toString()),
+  );
 
   await post.save();
 
