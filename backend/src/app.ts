@@ -14,7 +14,7 @@ const app = express();
 
 if (NODE_ENV === 'development') {
   mongodbConnect(config.DEV_MONGODB_URI!);
-} else if (NODE_ENV === 'test') {
+} else if (NODE_ENV === 'cypress') {
   (async () => {
     await testMongodb.connect();
   })();

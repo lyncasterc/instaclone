@@ -35,7 +35,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server:dev": "cd ../backend && npm run start:dev",
-    "server:test": "cd ../backend && npm run start:test",
+    "server:test": "cd ../backend && npm run start:cypress-test",
     "docker:mongo": "cd ../backend && npm run docker:mongo",
     "start:dev": "concurrently \"npm run docker:mongo\" \"npm run server:dev\" \"npm start\"",
     "cypress:open": "cypress open",
