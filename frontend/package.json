@@ -41,6 +41,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:tests": "concurrently \"npm run server:test\" \"npm start\" \"npm run cypress:open\"",
+    "cypress:tests-cli": "concurrently \"npm run server:test\" \"npm start\" \"npm run cypress:run\"",
     "lint": "eslint .",
     "ts-jest:init": "npx ts-jest config:init",
     "jest-preview": "jest-preview"

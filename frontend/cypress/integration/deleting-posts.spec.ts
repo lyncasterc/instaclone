@@ -21,7 +21,8 @@ it('user can delete their post in the post view', () => {
   cy.contains(/are you sure/i).should('be.visible');
 
   // Confirm delete
-  cy.get('[data-cy="confirm-delete-post-btn"]').click();
+  cy.wait(1000);
+  cy.get('button').contains(/delete/i).click();
 
   cy.contains(/post deleted/i).should('be.visible');
 

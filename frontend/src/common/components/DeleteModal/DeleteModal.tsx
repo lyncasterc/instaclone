@@ -71,7 +71,7 @@ function DeleteModal({
         )
       }
 
-      <UnstyledButton className={classes.modalBtn} onClick={onDelete} data-cy="confirm-delete-post-btn">
+      <UnstyledButton className={classes.modalBtn} onClick={onDelete}>
         Delete
       </UnstyledButton>
       <UnstyledButton
