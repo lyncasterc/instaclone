@@ -34,11 +34,20 @@ postSchema.set('toJSON', {
   },
 });
 
-postSchema.pre('remove', async function deleteAllCommentsOfPost(next) {
-  const post = this;
+postSchema.pre('remove', async function handlePostDeletion(next) {
+  const thisPost = this;
   const Comment = this.model('Comment');
+  const Like = this.model('Like');
+  let postCommentIds = await Comment.find({ post: thisPost._id }).select('_id');
 
-  await Comment.deleteMany({ post: post._id });
+  postCommentIds = postCommentIds.map(
+    (comment: { _id: mongoose.Schema.Types.ObjectId }) => comment._id.toString(),
+  );
+
+  await Comment.deleteMany({ post: thisPost._id });
+  await Like.deleteMany({ 'likedEntity.id': thisPost._id, 'likedEntity.model': 'Post' });
+  await Like.deleteMany({ 'likedEntity.id': { $in: postCommentIds }, 'likedEntity.model': 'Comment' });
+
   next();
 });
 

@@ -7,6 +7,7 @@ import postRouter from './routes/posts';
 import userRouter from './routes/users';
 import loginRouter from './routes/login';
 import testRouter from './routes/tests';
+import likeRouter from './routes/likes';
 import { errorHandler } from './utils/middleware';
 
 const { NODE_ENV } = process.env;
@@ -33,6 +34,8 @@ app.use(morgan('dev'));
 app.use('/api/posts', postRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
+app.use('/api/likes', likeRouter);
+
 if (NODE_ENV !== 'production') app.use('/api/test', testRouter);
 app.use(errorHandler);
 export default app;
