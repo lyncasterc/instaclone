@@ -22,7 +22,7 @@ export interface NewComment {
 }
 
 export interface NewLike {
-  user: string, // ref -> User
+  userId: string, // ref -> User
   entityId: string, // ref -> Post | Comment
   entityModel: 'Post' | 'Comment',
 }

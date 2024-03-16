@@ -62,7 +62,6 @@ describe('when liking entities', () => {
     const response = await api
       .post('/api/likes')
       .send({
-        user: testUser.id,
         entityId: post.id,
         entityModel: 'Post',
       })
@@ -81,7 +80,6 @@ describe('when liking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -98,7 +96,6 @@ describe('when liking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Comment',
       })
@@ -115,7 +112,6 @@ describe('when liking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'InvalidModel',
       })
@@ -132,7 +128,6 @@ describe('when liking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -164,7 +159,6 @@ describe('when liking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Comment',
       })
@@ -186,7 +180,6 @@ describe('when liking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -200,7 +193,6 @@ describe('when liking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -256,7 +248,6 @@ describe('when unliking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -294,7 +285,6 @@ describe('when unliking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Comment',
       })
@@ -322,7 +312,6 @@ describe('when unliking entities', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -357,7 +346,6 @@ describe('when getting like count', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -428,7 +416,6 @@ describe('when getting like users', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -444,6 +431,131 @@ describe('when getting like users', () => {
   });
 });
 
+describe('when getting has user liked entity', () => {
+  test('request without token should fail', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    const response = await api
+      .get(`/api/likes/${entityId}/hasLiked`)
+      .expect(401);
+
+    expect(response.body.error).toMatch(/token missing or invalid/i);
+  });
+
+  test('request for non-existing entity should succeed and return false', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    await post.remove();
+
+    const response = await api
+      .get(`/api/likes/${entityId}/hasLiked`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(response.body.hasLiked).toBe(false);
+  });
+
+  test('request for an entity that user has not liked should succeed and return false', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    const response = await api
+      .get(`/api/likes/${entityId}/hasLiked`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(response.body.hasLiked).toBe(false);
+  });
+
+  test('request for an entity user has liked should succeed and return true', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    const response = await api
+      .get(`/api/likes/${entityId}/hasLiked`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(response.body.hasLiked).toBe(true);
+  });
+
+  test('request for an entity user has unliked should succeed and return false', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    await api
+      .delete(`/api/likes/${entityId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
+
+    const response = await api
+      .get(`/api/likes/${entityId}/hasLiked`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(response.body.hasLiked).toBe(false);
+  });
+
+  test('request for an entity that has likes but user has not liked should succeed and return false', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    const otherUser = await testHelpers.createTestUser({
+      username: 'otheruser',
+      fullName: 'Bad Bunny',
+      email: 'whatevs@whatevs.com',
+      password: 'secret',
+    });
+
+    const otherUserToken = (await api
+      .post('/api/login')
+      .send({
+        username: otherUser.username,
+        password: 'secret',
+      })).body.token;
+
+    // liking the post with the other user
+
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${otherUserToken}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    // checking if the testUser has liked the post
+
+    const response = await api
+      .get(`/api/likes/${entityId}/hasLiked`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(response.body.hasLiked).toBe(false);
+  });
+});
+
 describe('when deleting entities with likes', () => {
   test('deleting a post with likes should delete the likes', async () => {
     const post = await Post.findOne({ creator: testUser.id });
@@ -453,7 +565,6 @@ describe('when deleting entities with likes', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Post',
       })
@@ -492,7 +603,6 @@ describe('when deleting entities with likes', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Comment',
       })
@@ -531,7 +641,6 @@ describe('when deleting entities with likes', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Comment',
       })
@@ -579,7 +688,6 @@ describe('when deleting entities with likes', () => {
       .post('/api/likes')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        user: testUser.id,
         entityId,
         entityModel: 'Comment',
       })

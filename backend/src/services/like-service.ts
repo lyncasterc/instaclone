@@ -18,7 +18,7 @@ const addLike = async (newLikeFields: NewLike) => {
 
   const existingLike = await Like.findOne({
     'likedEntity.id': newLikeFields.entityId,
-    user: newLikeFields.user,
+    user: newLikeFields.userId,
   });
 
   if (existingLike) {
@@ -26,7 +26,7 @@ const addLike = async (newLikeFields: NewLike) => {
   }
 
   await Like.create({
-    user: newLikeFields.user,
+    user: newLikeFields.userId,
     likedEntity: {
       id: newLikeFields.entityId,
       model: newLikeFields.entityModel,
@@ -59,9 +59,19 @@ const getLikeUsersByEntityId = async (entityId: string) => {
   return likes.map((like) => like.user);
 };
 
+const hasUserLikedEntity = async (userId: string, entityId: string) => {
+  const like = await Like.findOne({
+    'likedEntity.id': entityId,
+    user: userId,
+  });
+
+  return !!like;
+};
+
 export default {
   addLike,
   removeLikeByUserIdAndEntityId,
   getLikeCountByEntityId,
   getLikeUsersByEntityId,
+  hasUserLikedEntity,
 };

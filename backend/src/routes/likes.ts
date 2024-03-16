@@ -6,8 +6,14 @@ import likeService from '../services/like-service';
 const router = express.Router();
 
 router.post('/', authenticator(), async (req, res, next) => {
+  const userId = req.userToken!.id;
+
   try {
-    await likeService.addLike(req.body);
+    await likeService.addLike({
+      userId,
+      entityId: req.body.entityId,
+      entityModel: req.body.entityModel,
+    });
 
     return res.status(201).end();
   } catch (error) {
@@ -67,6 +73,22 @@ router.get('/:entityId/likes', async (req, res, next) => {
     const likes = await likeService.getLikeUsersByEntityId(entityId);
 
     return res.status(200).send({ likes });
+  } catch (error) {
+    const errorMessage = logger.getErrorMessage(error);
+    logger.error(errorMessage);
+
+    return next(error);
+  }
+});
+
+router.get('/:entityId/hasLiked', authenticator(), async (req, res, next) => {
+  const userId = req.userToken!.id;
+  const { entityId } = req.params;
+
+  try {
+    const hasLiked = await likeService.hasUserLikedEntity(userId, entityId);
+
+    return res.status(200).send({ hasLiked });
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
     logger.error(errorMessage);
