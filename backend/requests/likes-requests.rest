@@ -1,0 +1,13 @@
+
+@postId = 65f34799838f561749795f94
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2NWYyNWNmN2EwMDhlMzI2OTY2Mzc3MmYiLCJpYXQiOjE3MTA1NTk1MDEsImV4cCI6MTcxMDU2MzEwMX0.lNZkns3CWyu88knl6eUYslPEw9J9-sFFH43ItHzFgqE
+
+POST http://localhost:3001/api/likes
+Content-Type: application/json
+Authorization: bearer {{token}}
+
+{
+  "entityId": "{{postId}}",
+  "entityModel": "Post"
+}
