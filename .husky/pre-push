@@ -1,3 +1,5 @@
 (cd ./frontend && npm run lint && npm test -- --watchAll=false && npm run cypress:tests-cli) 
 
 (cd ./backend && npm run lint && npm test)
+
+exit 1
