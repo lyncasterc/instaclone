@@ -70,7 +70,7 @@ function UsersPreviewList({ users }: UsersPreviewListProps) {
   return (
     <div className={classes.userPreviewContainer}>
       {users.map((user) => (
-        <Group key={user.username} position="apart">
+        <Group pb={10} key={user.username} position="apart">
           <Link to={`/${user.username}`} className={classes.link}>
             <Group>
               <Avatar

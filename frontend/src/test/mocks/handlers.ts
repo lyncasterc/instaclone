@@ -99,4 +99,12 @@ export const handlers = [
     console.log('GET /api/users');
     return res(ctx.status(200), ctx.json(users));
   }),
+  rest.get('/api/likes/:entityId/likeCount', (req, res, ctx) => {
+    console.log('GET /api/likes/:entityId/likeCount');
+    return res(ctx.status(200), ctx.json({ likeCount: 0 }));
+  }),
+  rest.get('/api/likes/:entityId/hasLiked', (req, res, ctx) => {
+    console.log('GET /api/likes/:entityId/likeCount');
+    return res(ctx.status(200), ctx.json({ hasLiked: false }));
+  }),
 ];

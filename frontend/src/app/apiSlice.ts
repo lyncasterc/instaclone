@@ -15,6 +15,7 @@ import {
   type GetReplyCommentsRequestFields,
   type NewCommentFields,
   type DeleteCommentRequestFields,
+  type NewLikeRequestFields,
 } from './types';
 import type { AuthState } from '../features/auth/authSlice';
 // eslint-disable-next-line import/no-cycle
@@ -131,6 +132,30 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Comment'],
     }),
+    likeEntity: builder.mutation<void, NewLikeRequestFields>({
+      query: (newLikeFields) => ({
+        url: '/likes',
+        method: 'POST',
+        body: newLikeFields,
+      }),
+    }),
+    unlikeEntityById: builder.mutation<void, string>({
+      query: (entityId) => ({
+        url: `/likes/${entityId}`,
+        method: 'DELETE',
+      }),
+    }),
+    getEntityLikeCountByID: builder.query<{ likeCount: number }, string>({
+      query: (entityId) => `/likes/${entityId}/likeCount`,
+    }),
+    getEntityLikeUsersByID: builder.query<{
+      likes: { username: string, id: string }[]
+    }, string>({
+      query: (entityId) => `/likes/${entityId}/likes`,
+    }),
+    getHasUserLikedEntity: builder.query<{ hasLiked: boolean }, string>({
+      query: (entityId) => `/likes/${entityId}/hasLiked`,
+    }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
         url: '/login',
@@ -156,6 +181,11 @@ export const {
   useGetRepliesByParentCommentIdQuery,
   useAddCommentMutation,
   useDeleteCommentByIdMutation,
+  useLikeEntityMutation,
+  useUnlikeEntityByIdMutation,
+  useGetEntityLikeCountByIDQuery,
+  useGetEntityLikeUsersByIDQuery,
+  useGetHasUserLikedEntityQuery,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();

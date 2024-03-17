@@ -5,7 +5,7 @@ export default createStyles(() => ({
     paddingBottom: 10,
 
     '@media (max-width: 375px)': {
-      minHeight: '100vh',
+      minHeight: '105vh',
     },
 
     '@media (max-height: 500px) and (orientation: landscape)': {
@@ -53,5 +53,9 @@ export default createStyles(() => ({
   commentsLink: {
     color: '#737373',
     fontWeight: 400,
+    width: 'fit-content',
+  },
+  likedByLink: {
+    width: 'fit-content',
   },
 }));

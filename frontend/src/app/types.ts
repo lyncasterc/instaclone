@@ -10,6 +10,11 @@ export interface NewPostFields {
   caption?: string,
 }
 
+export interface NewLikeRequestFields {
+  entityId: string, // ref -> Post | Comment
+  entityModel: 'Post' | 'Comment',
+}
+
 export interface GetReplyCommentsRequestFields {
   postId: string,
   parentCommentId: string,

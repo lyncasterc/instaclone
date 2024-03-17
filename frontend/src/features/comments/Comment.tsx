@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Text,
   Group,
@@ -7,11 +8,19 @@ import {
 import { Link } from 'react-router-dom';
 import { IconHeart, IconTrash } from '@tabler/icons-react';
 import { useFormikContext } from 'formik';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Avatar from '../../common/components/Avatar/Avatar';
 import { Comment as CommentType } from '../../app/types';
 import useStyles from './comments-captions.styles';
-import { selectUserByUsername, useDeleteCommentByIdMutation } from '../../app/apiSlice';
+import getErrorMessage from '../../common/utils/getErrorMessage';
+import {
+  selectUserByUsername,
+  useDeleteCommentByIdMutation,
+  useGetEntityLikeCountByIDQuery,
+  useGetHasUserLikedEntityQuery,
+  useLikeEntityMutation,
+  useUnlikeEntityByIdMutation,
+} from '../../app/apiSlice';
 import { useAppSelector } from '../../common/hooks/selector-dispatch-hooks';
 import useAuth from '../../common/hooks/useAuth';
 import getTimeSinceDate from '../../common/utils/getTimeSinceDate';
@@ -38,6 +47,46 @@ function Comment({ comment, setReplyRecipientUsername, parentCommentId }: Commen
   const [currentUsername] = useAuth();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteComment] = useDeleteCommentByIdMutation();
+  const commentId = comment.id;
+  const { data: likeCountData } = useGetEntityLikeCountByIDQuery(commentId, {
+    refetchOnMountOrArgChange: true,
+  });
+  const { data: hasUserLikedEntityData } = useGetHasUserLikedEntityQuery(commentId, {
+    refetchOnMountOrArgChange: true,
+  });
+  const [likeEntity] = useLikeEntityMutation();
+  const [unlikeEntity] = useUnlikeEntityByIdMutation();
+  const hasUserLikedEntity = hasUserLikedEntityData?.hasLiked || false;
+  const [hasUserLikedComment, setHasUserLikedComment] = useState(false);
+  const [commentLikeCount, setCommentLikeCount] = useState(0);
+
+  const onLikeButtonClick = async () => {
+    if (hasUserLikedComment) {
+      try {
+        await unlikeEntity(commentId).unwrap();
+        setHasUserLikedComment(false);
+        setCommentLikeCount(commentLikeCount - 1);
+      } catch (error) {
+        console.error(getErrorMessage(error));
+      }
+    } else {
+      try {
+        await likeEntity({
+          entityId: commentId,
+          entityModel: 'Comment',
+        }).unwrap();
+        setHasUserLikedComment(true);
+        setCommentLikeCount(commentLikeCount + 1);
+      } catch (error) {
+        console.error(getErrorMessage(error));
+      }
+    }
+  };
+
+  useEffect(() => {
+    setHasUserLikedComment(hasUserLikedEntity);
+    setCommentLikeCount(likeCountData?.likeCount || 0);
+  }, [hasUserLikedEntityData, likeCountData]);
 
   if (commentAuthor) {
     const commentTimeStamps = getTimeSinceDate(new Date(createdAt), { isCommentFormat: true });
@@ -98,6 +147,27 @@ function Comment({ comment, setReplyRecipientUsername, parentCommentId }: Commen
             </Text>
 
             {
+              commentLikeCount > 0 && (
+                <Text
+                  size="xs"
+                  weight={700}
+                  styles={{
+                    root: {
+                      color: '#737373',
+                    },
+                  }}
+                  className={classes.activeOpacityLight}
+                  component={Link}
+                  to={`/p/${comment.post}/c/${comment.id}/liked_by`}
+                >
+                  {commentLikeCount}
+                  {' '}
+                  {commentLikeCount === 1 ? 'like' : 'likes'}
+                </Text>
+              )
+            }
+
+            {
               currentUsername && (
                 <UnstyledButton
                   onClick={() => {
@@ -128,8 +198,16 @@ function Comment({ comment, setReplyRecipientUsername, parentCommentId }: Commen
         {
           currentUsername && (
             <Group>
-              <UnstyledButton className={classes.activeOpacityLight}>
-                <IconHeart size={15} />
+              <UnstyledButton
+                className={classes.activeOpacityLight}
+                onClick={onLikeButtonClick}
+                data-cy="like-comment-btn"
+              >
+                <IconHeart
+                  size={15}
+                  fill={hasUserLikedComment ? 'red' : 'none'}
+                  color={hasUserLikedComment ? 'red' : 'black'}
+                />
               </UnstyledButton>
 
               {

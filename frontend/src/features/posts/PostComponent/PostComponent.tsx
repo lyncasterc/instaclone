@@ -4,18 +4,27 @@ import {
   Image,
   Group,
   Text,
+  UnstyledButton,
 } from '@mantine/core';
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  IconHeart, IconMessageCircle, IconDots,
+  IconHeart,
+  IconMessageCircle,
+  IconDots,
 } from '@tabler/icons-react';
 import useAuth from '../../../common/hooks/useAuth';
 import { Post } from '../../../app/types';
 import placeholderIcon from '../../../assets/placeholder-icon.jpeg';
 import useStyles from './PostComponent.styles';
 import getTimeSinceDate from '../../../common/utils/getTimeSinceDate';
-import { useDeletePostByIdMutation } from '../../../app/apiSlice';
+import {
+  useDeletePostByIdMutation,
+  useGetEntityLikeCountByIDQuery,
+  useGetHasUserLikedEntityQuery,
+  useLikeEntityMutation,
+  useUnlikeEntityByIdMutation,
+} from '../../../app/apiSlice';
 import useGoBack from '../../../common/hooks/useGoBack';
 import getErrorMessage from '../../../common/utils/getErrorMessage';
 import DeleteModal from '../../../common/components/DeleteModal/DeleteModal';
@@ -36,7 +45,24 @@ function PostComponent({ post, setAlertText }: PostProps) {
   const { classes, cx } = useStyles();
   const goBack = useGoBack();
   const [deletePost] = useDeletePostByIdMutation();
+  const { data: likeCountData } = useGetEntityLikeCountByIDQuery(post.id, {
+    refetchOnMountOrArgChange: true,
+  });
+  const { data: hasUserLikedEntityData } = useGetHasUserLikedEntityQuery(post.id, {
+    refetchOnMountOrArgChange: true,
+  });
+  const [likeEntity] = useLikeEntityMutation();
+  const [unlikeEntity] = useUnlikeEntityByIdMutation();
+  const hasUserLikedEntity = hasUserLikedEntityData?.hasLiked || false;
+  const [hasUserLikedPost, setHasUserLikedPost] = useState(false);
+  const [postLikeCount, setPostLikeCount] = useState(0);
+
   const postCommentsLength = post.comments ? post.comments.length : 0;
+
+  useEffect(() => {
+    setHasUserLikedPost(hasUserLikedEntity);
+    setPostLikeCount(likeCountData?.likeCount || 0);
+  }, [hasUserLikedEntityData, likeCountData]);
 
   const onDelete = async () => {
     try {
@@ -49,6 +75,29 @@ function PostComponent({ post, setAlertText }: PostProps) {
       }
     } catch (error) {
       console.error(getErrorMessage(error));
+    }
+  };
+
+  const onLikeButtonClick = async () => {
+    if (hasUserLikedPost) {
+      try {
+        await unlikeEntity(post.id).unwrap();
+        setHasUserLikedPost(false);
+        setPostLikeCount(postLikeCount - 1);
+      } catch (error) {
+        console.error(getErrorMessage(error));
+      }
+    } else {
+      try {
+        await likeEntity({
+          entityId: post.id,
+          entityModel: 'Post',
+        }).unwrap();
+        setHasUserLikedPost(true);
+        setPostLikeCount(postLikeCount + 1);
+      } catch (error) {
+        console.error(getErrorMessage(error));
+      }
     }
   };
 
@@ -133,13 +182,19 @@ function PostComponent({ post, setAlertText }: PostProps) {
           className={classes.likeCommentContainer}
           spacing="sm"
         >
+          <UnstyledButton
+            onClick={onLikeButtonClick}
+            data-cy="like-post-btn"
+          >
+            <IconHeart
+              size={28}
+              strokeWidth={1.5}
+              color={hasUserLikedPost ? 'red' : 'black'}
+              fill={hasUserLikedPost ? 'red' : 'none'}
+              className={classes.activeOpacityLight}
+            />
+          </UnstyledButton>
 
-          <IconHeart
-            size={28}
-            strokeWidth={1.5}
-            color="black"
-            className={classes.activeOpacityLight}
-          />
           <Link to={`/p/${post.id}/comments`} data-cy="comments-link">
             <IconMessageCircle
               size={28}
@@ -149,44 +204,61 @@ function PostComponent({ post, setAlertText }: PostProps) {
             />
           </Link>
         </Group>
-        {
-        post.caption && (
-          <div>
-            <Text
-              weight={700}
-              size="sm"
-              className={cx(classes.activeOpacityLight, classes.captionCreatorLink)}
-              component={Link}
-              to={`/${postCreator}`}
-            >
-              {postCreator}
-            </Text>
-            <Text
-              size="sm"
-              className={classes.captionText}
-            >
-              {post.caption}
-            </Text>
-          </div>
-        )
-      }
 
         {
-        postCommentsLength > 0 && (
-          <Text
-            size="sm"
-            className={cx(classes.activeOpacityLight, classes.commentsLink)}
-            component={Link}
-            to={`/p/${post.id}/comments`}
-          >
-            View all
-            {' '}
-            {postCommentsLength}
-            {' '}
-            comments
-          </Text>
-        )
-      }
+          postLikeCount > 0 && (
+            <Text
+              size="sm"
+              weight={700}
+              className={cx(classes.activeOpacityLight, classes.likedByLink)}
+              component={Link}
+              to={`/p/${post.id}/liked_by`}
+            >
+              {postLikeCount}
+              {' '}
+              {postLikeCount === 1 ? 'like' : 'likes'}
+            </Text>
+          )
+        }
+
+        {
+          post.caption && (
+            <div>
+              <Text
+                weight={700}
+                size="sm"
+                className={cx(classes.activeOpacityLight, classes.captionCreatorLink)}
+                component={Link}
+                to={`/${postCreator}`}
+              >
+                {postCreator}
+              </Text>
+              <Text
+                size="sm"
+                className={classes.captionText}
+              >
+                {post.caption}
+              </Text>
+            </div>
+          )
+        }
+
+        {
+          postCommentsLength > 0 && (
+            <Text
+              size="sm"
+              className={cx(classes.activeOpacityLight, classes.commentsLink)}
+              component={Link}
+              to={`/p/${post.id}/comments`}
+            >
+              View all
+              {' '}
+              {postCommentsLength}
+              {' '}
+              comments
+            </Text>
+          )
+        }
 
         <div>
           <Text size="xs" className={classes.createdAt}>

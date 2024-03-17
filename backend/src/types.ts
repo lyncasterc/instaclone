@@ -21,6 +21,12 @@ export interface NewComment {
   parentComment?: string, // ref -> Comment (the root comment)
 }
 
+export interface NewLike {
+  userId: string, // ref -> User
+  entityId: string, // ref -> Post | Comment
+  entityModel: 'Post' | 'Comment',
+}
+
 export interface Post {
   id: string,
   creator: User, // ref -> User

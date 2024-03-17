@@ -74,6 +74,9 @@ export default createStyles((theme) => ({
   },
   followButtonRoot: {
     flexShrink: 2,
+    '@media (max-width: 335px)': {
+      padding: '0 10px',
+    },
   },
   placeholderIcon: {
     width: '100%',
