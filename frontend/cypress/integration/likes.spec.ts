@@ -18,7 +18,7 @@ beforeEach(() => {
   cy.logout();
 });
 
-describe.skip('when liking posts', () => {
+describe('when liking posts', () => {
   it('user can like their own post', () => {
     // the post is created by user1
 
@@ -205,5 +205,42 @@ describe('when liking comments', () => {
 
     cy.get('[data-cy="like-comment-btn"] svg').should('not.have.attr', 'fill', 'red');
     cy.contains('1 like').should('not.exist');
+  });
+});
+
+describe('liked_by view', () => {
+  it('shows the users who liked a post', () => {
+    cy.login({ username: user2.username, password: user2.password });
+
+    cy.get('[data-cy="like-post-btn"]').click();
+    cy.wait(500);
+
+    cy.contains('1 like').click();
+
+    cy.url().should('include', 'liked_by');
+
+    cy.contains(user2.username).should('be.visible');
+  });
+
+  it('shows the users who liked a comment', () => {
+    cy.login({ username: user1.username, password: user1.password });
+
+    cy.get('[data-cy="comments-link"]').click();
+    cy.get('textarea').type(`${user1.username} test comment`);
+    cy.get('button').contains(/post/i).click();
+
+    cy.logout();
+
+    cy.login({ username: user2.username, password: user2.password });
+
+    cy.get('[data-cy="comments-link"]').click();
+
+    cy.get('[data-cy="like-comment-btn"]').click();
+
+    cy.contains('1 like').click();
+
+    cy.url().should('include', 'liked_by');
+
+    cy.contains(user2.username).should('be.visible');
   });
 });

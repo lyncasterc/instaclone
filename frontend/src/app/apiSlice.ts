@@ -148,7 +148,9 @@ export const apiSlice = createApi({
     getEntityLikeCountByID: builder.query<{ likeCount: number }, string>({
       query: (entityId) => `/likes/${entityId}/likeCount`,
     }),
-    getEntityLikeUsersByID: builder.query<number, string>({
+    getEntityLikeUsersByID: builder.query<{
+      likes: { username: string, id: string }[]
+    }, string>({
       query: (entityId) => `/likes/${entityId}/likes`,
     }),
     getHasUserLikedEntity: builder.query<{ hasLiked: boolean }, string>({

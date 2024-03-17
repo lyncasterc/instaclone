@@ -23,6 +23,7 @@ import PostView from '../features/posts/PostView/PostView';
 import MobileHomeNavBar from '../common/components/Navbars/MobileHomeNavbar/MobileHomeNavbar';
 import FollowingFollowersView from '../features/users/FollowingFollowersView/FollowingFollowersView';
 import CommentsView from '../features/comments/CommentsView/CommentsView';
+import LikedByView from '../features/users/LikedByView/LikedByView';
 
 interface LocationState {
   background: string,
@@ -108,6 +109,8 @@ function App() {
         />
         <Route path="/p/:postId" element={<PostView setAlertText={setAlertText} />} />
         <Route path="/p/:postId/comments" element={<CommentsView />} />
+        <Route path="/p/:postId/liked_by" element={<LikedByView entityModel="Post" />} />
+        <Route path="/p/:postId/c/:commentId/liked_by" element={<LikedByView entityModel="Comment" />} />
       </Routes>
     </>
   );

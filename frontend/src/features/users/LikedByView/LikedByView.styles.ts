@@ -1,21 +1,6 @@
 import { createStyles } from '@mantine/core';
 
 export default createStyles((theme) => ({
-  searchInput: {
-    backgroundColor: '#EFEFEF',
-    '&::placeholder': {
-      color: '#737373',
-    },
-  },
-  searchInputRoot: {
-    paddingTop: 10,
-    paddingBottom: 8,
-  },
-  noResultsContainer: {
-    textAlign: 'center',
-    color: '#737373',
-    fontSize: 14,
-  },
   container: {
     maxHeight: theme.other.mobileContainerMaxHeight,
     overflowY: 'auto',

@@ -210,7 +210,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
             <Text
               size="sm"
               weight={700}
-              className={cx(classes.activeOpacityLight)}
+              className={cx(classes.activeOpacityLight, classes.likedByLink)}
               component={Link}
               to={`/p/${post.id}/liked_by`}
             >
