@@ -25,5 +25,5 @@ test('mockLogin stores the token info in the Redux store', () => {
   const state = store.getState();
 
   expect(state.auth.username).toBe(fakeTokenInfo.username);
-  expect(state.auth.token).toBe(fakeTokenInfo.token);
+  expect(state.auth.accessToken).toBe(fakeTokenInfo.token);
 });

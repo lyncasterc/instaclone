@@ -4,15 +4,15 @@ import {
   ThunkAction,
   AnyAction,
 } from '@reduxjs/toolkit';
-import type { RootState } from '../../app/store';
+import { type RootState } from '../../app/store';
 
 export interface AuthState {
-  token: string | null,
+  accessToken: string | null,
   username: string | null,
 }
 
 const initialState: AuthState = {
-  token: null,
+  accessToken: null,
   username: null,
 };
 
@@ -22,14 +22,19 @@ const authSlice = createSlice({
   reducers: {
     setAuthedUser: (
       state,
-      { payload: { username, token } }: PayloadAction<{ username: string, token: string }>,
+      {
+        payload: { username, accessToken },
+      }: PayloadAction<{
+        username: string,
+        accessToken: string
+      }>,
     ) => {
       state.username = username;
-      state.token = token;
+      state.accessToken = accessToken;
     },
     removeCurrentUser: (state) => {
       state.username = null;
-      state.token = null;
+      state.accessToken = null;
     },
     updateCurrentUsername: (
       state,

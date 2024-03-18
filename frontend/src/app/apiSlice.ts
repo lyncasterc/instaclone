@@ -17,9 +17,8 @@ import {
   type DeleteCommentRequestFields,
   type NewLikeRequestFields,
 } from './types';
-import type { AuthState } from '../features/auth/authSlice';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from './store';
+import { type AuthState } from '../features/auth/authSlice';
+import { type RootState } from './store';
 
 // Normalizing users cache
 const usersAdapter = createEntityAdapter<User>({
@@ -35,8 +34,11 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
     prepareHeaders: (headers, { getState }) => {
-      const { token } = (getState() as RootState).auth;
-      if (token) headers.set('authorization', `bearer ${token}`);
+      const { accessToken } = (getState() as RootState).auth;
+
+      if (accessToken) {
+        headers.set('authorization', `bearer ${accessToken}`);
+      }
 
       return headers;
     },

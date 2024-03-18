@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
 import { apiSlice } from './apiSlice';
 import authReducer from '../features/auth/authSlice';
 
