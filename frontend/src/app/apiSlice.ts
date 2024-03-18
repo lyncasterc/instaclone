@@ -160,7 +160,7 @@ export const apiSlice = createApi({
     }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
-        url: '/login',
+        url: '/auth/login',
         method: 'POST',
         body: loginFields,
       }),

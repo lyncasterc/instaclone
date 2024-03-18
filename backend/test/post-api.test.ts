@@ -21,7 +21,7 @@ beforeEach(async () => {
   });
 
   const response = await api
-    .post('/api/login')
+    .post('/api/auth/login')
     .send({
       username: testUser.username,
       password: 'secret',
@@ -200,7 +200,7 @@ describe('when there are posts in the database', () => {
       });
 
       const tokenResponse = await api
-        .post('/api/login')
+        .post('/api/auth/login')
         .send({
           username: differentUser.username,
           password: 'secret',
@@ -300,7 +300,7 @@ describe('when there are posts in the database', () => {
       });
 
       const tokenResponse = await api
-        .post('/api/login')
+        .post('/api/auth/login')
         .send({
           username: differentUser.username,
           password: 'secret',

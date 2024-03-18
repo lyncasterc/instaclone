@@ -11,7 +11,7 @@ Content-Type: application/json
 
 ###
 #log in
-POST http://localhost:3001/api/login
+POST http://localhost:3001/api/auth/login
 Content-Type: application/json
 
 {

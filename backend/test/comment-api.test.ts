@@ -19,7 +19,7 @@ beforeEach(async () => {
   });
 
   const response = await api
-    .post('/api/login')
+    .post('/api/auth/login')
     .send({
       username: testUser.username,
       password: 'secret',

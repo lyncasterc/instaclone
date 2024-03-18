@@ -21,7 +21,7 @@ beforeEach(async () => {
   });
 
   const response = await api
-    .post('/api/login')
+    .post('/api/auth/login')
     .send({
       username: testUser.username,
       password: 'secret',
@@ -528,7 +528,7 @@ describe('when getting has user liked entity', () => {
     });
 
     const otherUserToken = (await api
-      .post('/api/login')
+      .post('/api/auth/login')
       .send({
         username: otherUser.username,
         password: 'secret',

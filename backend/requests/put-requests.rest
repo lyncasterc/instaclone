@@ -24,7 +24,7 @@ Content-Type: application/json
 ###
 #log in first user
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2NWU0ZjZhZTNjMjg4Y2EzODVkYzJhNGEiLCJpYXQiOjE3MDk2MTEzMTAsImV4cCI6MTcwOTYxNDkxMH0.gmUZvHrjxO8ceZVOm0kTh3fYboJldmsCdxMPMyUmbH4
-POST http://localhost:3001/api/login
+POST http://localhost:3001/api/auth/login
 Content-Type: application/json
 
 {

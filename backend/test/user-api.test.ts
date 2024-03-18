@@ -166,7 +166,7 @@ describe('When there are multiple users in the database', () => {
       targetUser = (await testHelpers.usersInDB())[0];
 
       const response = await api
-        .post('/api/login')
+        .post('/api/auth/login')
         .send({
           username: targetUser.username,
           password: 'secret',
@@ -359,7 +359,7 @@ describe('When there are multiple users in the database', () => {
       };
 
       const response = await api
-        .post('/api/login')
+        .post('/api/auth/login')
         .send({ username: targetUser.username, password: 'secret' });
 
       const { token } = response.body;
@@ -400,7 +400,7 @@ describe('When there are multiple users in the database', () => {
   test('user profile image can be posted and deleted', async () => {
     const initalUser = (await testHelpers.usersInDB())[0];
     const tokenResponse = await api
-      .post('/api/login')
+      .post('/api/auth/login')
       .send({
         username: initalUser.username,
         password: 'secret',

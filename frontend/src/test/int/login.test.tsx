@@ -41,7 +41,7 @@ test('user can login successfully', async () => {
 
 test('error is displayed on unsuccessful login', async () => {
   server.use(
-    rest.post('/api/login', (req, res, ctx) => res(ctx.status(401), ctx.json({ error: 'Invalid username or password' }))),
+    rest.post('/api/auth/login', (req, res, ctx) => res(ctx.status(401), ctx.json({ error: 'Invalid username or password' }))),
   );
 
   const { user } = renderWithRouter(<App />);

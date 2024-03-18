@@ -75,8 +75,8 @@ export const handlers = [
 
     return res(ctx.status(404));
   }),
-  rest.post<LoginFields>('/api/login', (req, res, ctx) => {
-    console.log('POST /api/login');
+  rest.post<LoginFields>('/api/auth/login', (req, res, ctx) => {
+    console.log('POST /api/auth/login');
     return res(ctx.status(200), ctx.json({
       username: req.body.username,
       token: 'supersecrettoken',
