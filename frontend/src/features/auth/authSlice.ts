@@ -44,16 +44,6 @@ export const { setAuthedUser, removeCurrentUser, updateCurrentUsername } = authS
 
 export default authSlice.reducer;
 
-export const initAuthedUser = (): ThunkAction<void, RootState, unknown, AnyAction> => {
-  const token = localStorage.getItem('instacloneSCToken');
-  return (dispatch) => {
-    if (token) {
-      const parsedToken = JSON.parse(token);
-      dispatch(setAuthedUser(parsedToken));
-    }
-  };
-};
-
 /**
  * Updates the username in the stored JWT. Necessary for when user edits their username
  * so that the application can continue to display the correct updated username.

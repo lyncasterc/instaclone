@@ -20,12 +20,12 @@ const useAuth = () => {
   const login = async (loginFields: LoginFields) => {
     try {
       const data = await loginMutation(loginFields).unwrap();
-      const tokenInfo = {
+      const loginData = {
         username: data.username!,
-        token: data.token!,
+        accessToken: data.accessToken!,
       };
-      localStorage.setItem('instacloneSCToken', JSON.stringify(tokenInfo));
-      dispatch(setAuthedUser(tokenInfo));
+
+      dispatch(setAuthedUser(loginData));
     } catch (error) {
       throw toErrorWithMessage(error) as Error;
     }
