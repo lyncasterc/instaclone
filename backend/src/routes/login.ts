@@ -4,10 +4,16 @@ import express from 'express';
 import fieldParsers from '../utils/field-parsers';
 import logger from '../utils/logger';
 import { User } from '../mongo';
+import config from '../utils/config';
 
 const router = express.Router();
+const { JWT_SECRET } = config;
 
 router.post('/', async (req, res) => {
+  if (!JWT_SECRET) {
+    return res.status(500).send({ error: 'JWT_SECRET is not set.' });
+  }
+
   const { body } = req;
   let loginFields: {
     username: string,
@@ -21,7 +27,6 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // TODO: populate fields? frontend needs the image and posts of the logged in user.
     const user = await User.findOne({ username: loginFields.username });
     const isUserValidated = !user
       ? false
@@ -38,13 +43,25 @@ router.post('/', async (req, res) => {
       id: user.id,
     };
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       userTokenInfo,
-      process.env.SECRET = 'scrt',
-      { expiresIn: 60 * 60 },
+      JWT_SECRET,
+      // { expiresIn: 60 * 5 }, // 5 minutes
+      { expiresIn: 5 },
+    );
+    const refreshToken = jwt.sign(
+      userTokenInfo,
+      JWT_SECRET,
+      { expiresIn: '30d' },
     );
 
-    return res.status(200).send({ token, username: user.username });
+    res.cookie('refreshToken', refreshToken, {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return res.status(200).send({ accessToken, username: user.username });
   } catch (error) {
     return res.status(500).send({ error: 'Something went wrong!' });
   }
