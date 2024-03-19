@@ -185,6 +185,7 @@ function PostComponent({ post, setAlertText }: PostProps) {
           <UnstyledButton
             onClick={onLikeButtonClick}
             data-cy="like-post-btn"
+            data-testid="like-post-btn"
           >
             <IconHeart
               size={28}

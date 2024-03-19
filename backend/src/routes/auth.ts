@@ -82,6 +82,8 @@ router.post('/refresh', async (req, res, next) => {
         JWT_SECRET,
       ) as jwt.JwtPayload;
     } catch (error) {
+      res.clearCookie('refreshToken');
+
       return next(error);
     }
   }
@@ -91,6 +93,8 @@ router.post('/refresh', async (req, res, next) => {
     || !decodedRefreshToken.id
     || !decodedRefreshToken.username
   ) {
+    res.clearCookie('refreshToken');
+
     return res.status(401).send({
       error: 'refresh token missing or invalid.',
     });
