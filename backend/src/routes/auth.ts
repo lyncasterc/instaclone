@@ -46,8 +46,8 @@ router.post('/login', async (req, res) => {
     const accessToken = jwt.sign(
       userTokenInfo,
       JWT_SECRET,
-      // { expiresIn: 60 * 5 }, // 5 minutes
-      { expiresIn: 5 },
+      // { expiresIn: '15m }, // 15 minutes
+      // { expiresIn: 5 },
     );
     const refreshToken = jwt.sign(
       userTokenInfo,
@@ -105,11 +105,16 @@ router.post('/refresh', async (req, res, next) => {
   const newAccessToken = jwt.sign(
     userTokenInfo,
     JWT_SECRET,
-    // { expiresIn: 60 * 5 }, // 5 minutes
+    // { expiresIn: '15m }, // 15 minutes
     { expiresIn: 5 },
   );
 
-  return res.status(200).send({ accessToken: newAccessToken });
+  return res.status(200).send(
+    {
+      accessToken: newAccessToken,
+      username: decodedRefreshToken.username,
+    },
+  );
 });
 
 router.post('/logout', (_req, res) => {

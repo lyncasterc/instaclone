@@ -167,12 +167,14 @@ describe('successful token refresh', () => {
       .expect('Content-Type', /application\/json/);
   });
 
-  test('responds with a new access token', async () => {
+  test('responds with a new access token and username', async () => {
     const response = await api
       .post('/api/auth/refresh')
       .set('Cookie', refreshTokenCookie);
 
     expect(response.body.accessToken).toBeDefined();
+    expect(response.body.username).toBeDefined();
+    expect(response.body.username).toBe(testUser.username);
   });
 
   test('decoded access token contains username and id', async () => {
