@@ -6,13 +6,13 @@ import {
   mockLogout,
   waitFor,
   within,
+  testStore,
 } from '../utils/test-utils';
 import App from '../../app/App';
 import '@testing-library/jest-dom/extend-expect';
 import { fakeUser } from '../mocks/handlers';
 import server from '../mocks/server';
 import { apiSlice } from '../../app/apiSlice';
-import { store } from '../../app/store';
 
 beforeAll(() => server.listen());
 beforeEach(() => {
@@ -40,7 +40,7 @@ test('when user has a profile image, it is displayed in mobile nav', async () =>
     }]))),
   );
 
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   renderWithRouter(<App />, { route: '/' });
 
   await waitFor(() => {
@@ -52,7 +52,7 @@ test('when user has a profile image, it is displayed in mobile nav', async () =>
 });
 
 test('when user has no profile image, a default image is displayed in mobile nav', async () => {
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   renderWithRouter(<App />, { route: '/' });
 
   const avatar = await screen.findByTestId('bottom-nav-avatar');
@@ -78,7 +78,7 @@ test('when user has a profile image, it is displayed in desktop nav', async () =
     }]))),
   );
 
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   renderWithRouter(<App />, { route: '/' });
 
   await waitFor(() => {

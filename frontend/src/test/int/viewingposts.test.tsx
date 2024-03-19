@@ -9,8 +9,8 @@ import {
   render,
   Providers,
   waitFor,
+  testStore,
 } from '../utils/test-utils';
-import { store } from '../../app/store';
 import { fakeUser } from '../mocks/handlers';
 import server from '../mocks/server';
 import { apiSlice } from '../../app/apiSlice';
@@ -39,7 +39,7 @@ afterAll(() => server.close());
 */
 
 test('post is viewable in homepage after creating it', async () => {
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  await testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
 
@@ -69,7 +69,7 @@ test('post is viewable in homepage after creating it', async () => {
 });
 
 test('post is viewable in the user profile after creating it', async () => {
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  await testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
 
@@ -109,7 +109,7 @@ test('post is viewable in the user profile after creating it', async () => {
 });
 
 test('post is viewable in the post view page', async () => {
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  await testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
 
@@ -159,7 +159,7 @@ test('post is viewable in the post view page', async () => {
 });
 
 test('when a post has a caption, it is viewable in the post view page', async () => {
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  await testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
 

@@ -5,12 +5,12 @@ import {
   mockLogout,
   mockLogin,
   renderWithRouter,
+  testStore,
 } from '../utils/test-utils';
 import App from '../../app/App';
 import server from '../mocks/server';
 import { fakeUser } from '../mocks/handlers';
 import '@testing-library/jest-dom/extend-expect';
-import { store } from '../../app/store';
 import { apiSlice } from '../../app/apiSlice';
 
 const fakeTokenInfo = {
@@ -34,7 +34,7 @@ test('navigating to profile page of non-existing user displays not found page', 
 });
 
 test('navigating to profile page of existing user displays their profile', async () => {
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
 
   renderWithRouter(<App />, { route: '/bobbydob' });
   await waitFor(() => {
@@ -57,7 +57,7 @@ test('if not logged in and profile has avatar image, clicking on avatar does not
     }]))),
   );
 
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
 
   const { user } = renderWithRouter(<App />, { route: `/${fakeUser.username}` });
 
@@ -84,7 +84,7 @@ test('if logged in and profile has avatar image, clicking on avatar displays mod
     }]))),
   );
 
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
   const avatar = await screen.findByTestId('avatar');
@@ -99,7 +99,7 @@ test('if logged in and profile has avatar image, clicking on avatar displays mod
 test('when clicking on avatar, modal does not appear if user does not have an image', async () => {
   mockLogin({ fakeTokenInfo });
 
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
   await waitFor(async () => {

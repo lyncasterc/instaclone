@@ -4,13 +4,13 @@ import {
   mockLogin,
   mockLogout,
   waitFor,
+  testStore,
 } from '../utils/test-utils';
 import App from '../../app/App';
 import '@testing-library/jest-dom/extend-expect';
 import { fakeUser } from '../mocks/handlers';
 import server from '../mocks/server';
 import { apiSlice } from '../../app/apiSlice';
-import { store } from '../../app/store';
 
 beforeAll(() => server.listen());
 afterEach(() => {
@@ -42,7 +42,7 @@ test('logged in user is taken to home page', async () => {
 });
 
 test('when user logs in, it redirects user to route they were attempting to visit', async () => {
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
 
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
   await user.type(screen.getByPlaceholderText(/username/i), fakeUser.username);
