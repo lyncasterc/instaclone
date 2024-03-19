@@ -79,7 +79,14 @@ export const handlers = [
     console.log('POST /api/auth/login');
     return res(ctx.status(200), ctx.json({
       username: req.body.username,
-      token: 'supersecrettoken',
+      accessToken: 'supersecrettoken',
+    }));
+  }),
+  rest.post('/api/auth/refresh', (req, res, ctx) => {
+    console.log('POST /api/auth/refresh');
+    return res(ctx.status(200), ctx.json({
+      username: fakeUser.username,
+      accessToken: 'supersecrettoken',
     }));
   }),
   rest.put<UpdatedUserFields>('/api/users/:id', (req, res, ctx) => {

@@ -35,7 +35,7 @@ module.exports = {
       ]
     }],
     'react/jsx-props-no-spreading': ['error', {'custom': 'ignore'}],
-    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/test/**/*.[jt]s?(x)'] }],
+    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/test/**/*.[jt]s?(x)', '**/*.test.[jt]s?(x)', '**/*.spec.[jt]s?(x)'] }],
     "jsx-a11y/label-has-associated-control": [
       "error",
       {
