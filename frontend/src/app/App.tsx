@@ -42,11 +42,19 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isCancelled = false;
+
     (async () => {
       setLoading(true);
       await refreshAccessToken();
-      setLoading(false);
+      if (!isCancelled) {
+        setLoading(false);
+      }
     })();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   if (loading) {
@@ -59,7 +67,7 @@ function App() {
           justifyContent: 'center',
         })}
       >
-        <Loader size={80} variant="dots" />
+        <Loader size={80} variant="dots" data-testid="app-loader" />
       </Container>
     );
   }

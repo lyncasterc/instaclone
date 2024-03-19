@@ -21,6 +21,11 @@ export const fakeUser: User = {
   following: [],
 };
 
+export const fakeAccessToken = {
+  username: fakeUser.username,
+  accessToken: 'supersecrettoken',
+};
+
 const posts: Post[] = [];
 const users: User[] = [fakeUser];
 
@@ -77,17 +82,17 @@ export const handlers = [
   }),
   rest.post<LoginFields>('/api/auth/login', (req, res, ctx) => {
     console.log('POST /api/auth/login');
-    return res(ctx.status(200), ctx.json({
-      username: req.body.username,
-      accessToken: 'supersecrettoken',
-    }));
+    return res(ctx.status(200), ctx.json(fakeAccessToken));
+  }),
+  rest.post('/api/auth/logout', (_req, res, ctx) => {
+    console.log('POST /api/auth/logout');
+    return res(ctx.status(204));
   }),
   rest.post('/api/auth/refresh', (req, res, ctx) => {
     console.log('POST /api/auth/refresh');
-    return res(ctx.status(200), ctx.json({
-      username: fakeUser.username,
-      accessToken: 'supersecrettoken',
-    }));
+    ctx.delay(2500);
+
+    return res(ctx.status(200), ctx.json(fakeAccessToken));
   }),
   rest.put<UpdatedUserFields>('/api/users/:id', (req, res, ctx) => {
     console.log('PUT /api/users/:id');
