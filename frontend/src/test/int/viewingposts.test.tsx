@@ -21,7 +21,7 @@ beforeAll(() => server.listen());
 beforeEach(() => {
   const fakeTokenInfo = {
     username: fakeUser.username,
-    token: 'supersecrettoken',
+    accessToken: 'supersecrettoken',
   };
   mockLogin({ fakeTokenInfo });
 });

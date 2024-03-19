@@ -1,15 +1,15 @@
 import { mockLogin } from './test-utils';
 import { store } from '../../app/store';
-import { removeCurrentUser } from '../../features/auth/authSlice';
+import { removeAuthenticatedState } from '../../features/auth/authSlice';
 
 afterEach(() => {
   localStorage.removeItem('instacloneSCToken');
-  store.dispatch(removeCurrentUser());
+  store.dispatch(removeAuthenticatedState());
 });
 
 const fakeTokenInfo = {
   username: 'bobbydob',
-  token: 'supersecrettoken',
+  accessToken: 'supersecrettoken',
 };
 
 test('mockLogin saves a token in localStorage', () => {
@@ -25,5 +25,5 @@ test('mockLogin stores the token info in the Redux store', () => {
   const state = store.getState();
 
   expect(state.auth.username).toBe(fakeTokenInfo.username);
-  expect(state.auth.accessToken).toBe(fakeTokenInfo.token);
+  expect(state.auth.accessToken).toBe(fakeTokenInfo.accessToken);
 });

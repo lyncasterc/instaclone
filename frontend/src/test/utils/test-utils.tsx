@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import theme from '../../app/theme';
 import { store } from '../../app/store';
-import { initAuthedUser, removeCurrentUser } from '../../features/auth/authSlice';
+import { removeAuthenticatedState, setAuthenticatedState } from '../../features/auth/authSlice';
 import { apiSlice } from '../../app/apiSlice';
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -40,7 +40,7 @@ export const renderWithRouter = (
   window.history.pushState({}, 'string', route);
   const view = customRender(
     <BrowserRouter>
-      { ui }
+      {ui}
     </BrowserRouter>,
   );
   return {
@@ -50,7 +50,7 @@ export const renderWithRouter = (
 };
 
 interface MockLogInOptions {
-  fakeTokenInfo: { username: string, token: string }
+  fakeTokenInfo: { username: string, accessToken: string }
 }
 
 /**
@@ -60,8 +60,7 @@ interface MockLogInOptions {
  * @param {string} fakeTokenInfo.token - The mock token. Can be any string.
  */
 export const mockLogin = ({ fakeTokenInfo }: MockLogInOptions) => {
-  localStorage.setItem('instacloneSCToken', JSON.stringify(fakeTokenInfo));
-  store.dispatch(initAuthedUser());
+  store.dispatch(setAuthenticatedState(fakeTokenInfo));
 };
 
 /**
@@ -75,7 +74,7 @@ export const mockLogout = ({ resetApiState }: {
     store.dispatch(apiSlice.util.resetApiState());
   }
 
-  store.dispatch(removeCurrentUser());
+  store.dispatch(removeAuthenticatedState());
   localStorage.removeItem('instacloneSCToken');
 };
 

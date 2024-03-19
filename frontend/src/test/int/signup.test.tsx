@@ -75,7 +75,7 @@ test('error is displayed on unsuccessful signup', async () => {
 test('user is redirected to home page if they visit the signup page and are already logged in', async () => {
   const fakeTokenInfo = {
     username: 'bobbydob',
-    token: 'supersecrettoken',
+    accessToken: 'supersecrettoken',
   };
   mockLogin({ fakeTokenInfo });
 

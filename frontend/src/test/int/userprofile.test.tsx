@@ -15,7 +15,7 @@ import { apiSlice } from '../../app/apiSlice';
 
 const fakeTokenInfo = {
   username: fakeUser.username,
-  token: 'supersecrettoken',
+  accessToken: 'supersecrettoken',
 };
 
 beforeAll(() => server.listen());

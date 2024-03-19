@@ -30,7 +30,7 @@ test('redirects user to login form when not logged in', () => {
 test('logged in user is taken to home page', async () => {
   const fakeTokenInfo = {
     username: 'bobbydob',
-    token: 'supersecrettoken',
+    accessToken: 'supersecrettoken',
   };
   mockLogin({ fakeTokenInfo });
 
