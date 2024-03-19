@@ -165,6 +165,19 @@ export const apiSlice = createApi({
         body: loginFields,
       }),
     }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+    }),
+    refreshAccessToken: builder.mutation<AuthState, void>({
+      query: () => ({
+        url: '/auth/refresh',
+        method: 'POST',
+        credentials: 'include',
+      }),
+    }),
   }),
 });
 
@@ -188,6 +201,8 @@ export const {
   useGetEntityLikeCountByIDQuery,
   useGetEntityLikeUsersByIDQuery,
   useGetHasUserLikedEntityQuery,
+  useLogoutMutation,
+  useRefreshAccessTokenMutation,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();

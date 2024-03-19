@@ -3,11 +3,12 @@ import {
   Route,
   useLocation,
 } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
+import { Container, Loader } from '@mantine/core';
 import Damion from '../common/components/Damion';
 import GlobalStyles from '../common/components/GlobalStyles';
-import Login from '../features/auth/Login';
+import Login from '../features/auth/Login/Login';
 import SignUp from '../features/users/SignUp';
 import Home from '../features/posts/Home/Home';
 import RequireAuth from '../features/auth/RequireAuth';
@@ -30,7 +31,7 @@ interface LocationState {
 }
 
 function App() {
-  const [user] = useAuth();
+  const [user, { refreshAccessToken }] = useAuth();
   const location = useLocation();
   const [alertText, setAlertText] = useState('');
   const isCreatePage = /create/i.test(location.pathname);
@@ -38,6 +39,30 @@ function App() {
   const state = location.state as LocationState;
   const background = state && state.background;
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      await refreshAccessToken();
+      setLoading(false);
+    })();
+  }, []);
+
+  if (loading) {
+    return (
+      <Container
+        sx={() => ({
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        })}
+      >
+        <Loader size={80} variant="dots" />
+      </Container>
+    );
+  }
 
   return (
     <>
@@ -76,7 +101,7 @@ function App() {
             <RequireAuth>
               <Home setAlertText={setAlertText} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route path="/login" element={user ? <Home setAlertText={setAlertText} /> : <Login />} />
         <Route path="/signup" element={user ? <Home setAlertText={setAlertText} /> : <SignUp />} />
@@ -89,7 +114,7 @@ function App() {
             <RequireAuth>
               <EditPostImage setAlertText={setAlertText} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route
           path="/create/details"
@@ -97,7 +122,7 @@ function App() {
             <RequireAuth>
               <EditPostDetails username={user!} setAlertText={setAlertText} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route
           path="/accounts/edit"
@@ -105,7 +130,7 @@ function App() {
             <RequireAuth>
               <UserProfileEdit user={user} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route path="/p/:postId" element={<PostView setAlertText={setAlertText} />} />
         <Route path="/p/:postId/comments" element={<CommentsView />} />

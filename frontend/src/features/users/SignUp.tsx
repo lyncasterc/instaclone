@@ -14,7 +14,7 @@ import { useAddUserMutation } from '../../app/apiSlice';
 import useAuth from '../../common/hooks/useAuth';
 import FormContainer from '../../common/components/FormContainer';
 import Button from '../../common/components/Button';
-import { useStyles } from '../auth/Login';
+import { useStyles } from '../auth/Login/Login';
 import getErrorMessage from '../../common/utils/getErrorMessage';
 
 function SignUp() {
@@ -62,94 +62,94 @@ function SignUp() {
       >
 
         {
-        ({ dirty, isValid }) => (
-          <FormContainer>
-            <Title
-              align="center"
-              order={1}
-              sx={{
-                fontFamily: 'Damion',
-                fontSize: '3rem',
-              }}
-              mb="sm"
-            >
-              Instaclone
-            </Title>
-            <Title
-              align="center"
-              order={4}
-              sx={(theme) => ({
-                color: theme.colors.gray[6],
-                fontSize: 17,
-                width: '80%',
-              })}
-              mb="sm"
-            >
-              Sign up to see photos from people you don&apos;t really care about.
-            </Title>
-
-            <SignUpLogInTextInput
-              name="email"
-              placeholder="Email"
-              variant="filled"
-              aria-label="Email"
-              type="email"
-              sx={{
-                width: '80%',
-              }}
-            />
-            <SignUpLogInTextInput
-              name="fullName"
-              placeholder="Full Name"
-              variant="filled"
-              aria-label="full name"
-              sx={{
-                width: '80%',
-              }}
-            />
-            <SignUpLogInTextInput
-              name="username"
-              placeholder="Username"
-              variant="filled"
-              aria-label="username"
-              sx={{
-                width: '80%',
-              }}
-            />
-            <SignUpLogInTextInput
-              name="password"
-              placeholder="Password"
-              variant="filled"
-              aria-label="password"
-              type="password"
-              sx={{
-                width: '80%',
-                marginBottom: 15,
-              }}
-            />
-            <Button
-              type="submit"
-              text="Sign Up"
-              disabled={!dirty || !isValid}
-            />
-
-            {
-              errorMessage && <Text sx={{ color: 'red', marginTop: 10 }}>{errorMessage}</Text>
-            }
-
-            <Text sx={{ marginTop: 10 }}>
-              Have an account?
-              {' '}
-              <Anchor
-                component={Link}
-                to="/login"
+          ({ dirty, isValid }) => (
+            <FormContainer>
+              <Title
+                align="center"
+                order={1}
+                sx={{
+                  fontFamily: 'Damion',
+                  fontSize: '3rem',
+                }}
+                mb="sm"
               >
-                Log in
-              </Anchor>
-            </Text>
-          </FormContainer>
-        )
-      }
+                Instaclone
+              </Title>
+              <Title
+                align="center"
+                order={4}
+                sx={(theme) => ({
+                  color: theme.colors.gray[6],
+                  fontSize: 17,
+                  width: '80%',
+                })}
+                mb="sm"
+              >
+                Sign up to see photos from people you don&apos;t really care about.
+              </Title>
+
+              <SignUpLogInTextInput
+                name="email"
+                placeholder="Email"
+                variant="filled"
+                aria-label="Email"
+                type="email"
+                sx={{
+                  width: '80%',
+                }}
+              />
+              <SignUpLogInTextInput
+                name="fullName"
+                placeholder="Full Name"
+                variant="filled"
+                aria-label="full name"
+                sx={{
+                  width: '80%',
+                }}
+              />
+              <SignUpLogInTextInput
+                name="username"
+                placeholder="Username"
+                variant="filled"
+                aria-label="username"
+                sx={{
+                  width: '80%',
+                }}
+              />
+              <SignUpLogInTextInput
+                name="password"
+                placeholder="Password"
+                variant="filled"
+                aria-label="password"
+                type="password"
+                sx={{
+                  width: '80%',
+                  marginBottom: 15,
+                }}
+              />
+              <Button
+                type="submit"
+                text="Sign Up"
+                disabled={!dirty || !isValid}
+              />
+
+              {
+                errorMessage && <Text sx={{ color: 'red', marginTop: 10 }}>{errorMessage}</Text>
+              }
+
+              <Text sx={{ marginTop: 10 }}>
+                Have an account?
+                {' '}
+                <Anchor
+                  component={Link}
+                  to="/login"
+                >
+                  Log in
+                </Anchor>
+              </Text>
+            </FormContainer>
+          )
+        }
       </Formik>
     </Container>
   );
