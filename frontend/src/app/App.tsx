@@ -11,7 +11,7 @@ import GlobalStyles from '../common/components/GlobalStyles';
 import Login from '../features/auth/Login/Login';
 import SignUp from '../features/users/SignUp';
 import Home from '../features/posts/Home/Home';
-import RequireAuth from '../features/auth/RequireAuth';
+import RequireAuth from '../features/auth/RequireAuth/RequireAuth';
 import useAuth from '../common/hooks/useAuth';
 import DesktopNavbar from '../common/components/Navbars/DesktopNavbar/DesktopNavbar';
 import BottomNavBar from '../common/components/Navbars/BottomNavbar/BottomNavbar';

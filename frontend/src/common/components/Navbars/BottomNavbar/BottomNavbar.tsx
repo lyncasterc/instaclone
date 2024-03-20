@@ -15,7 +15,6 @@ interface BottomNavBarProps {
   user: string | null,
 }
 
-// TODO: render a blank bar when not logged in
 function BottomNavBar({ user }: BottomNavBarProps) {
   const { classes } = useStyles();
   const [image, setImage] = useState('');

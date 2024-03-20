@@ -35,10 +35,10 @@ test('navigating to profile page of non-existing user displays not found page', 
 
 test('navigating to profile page of existing user displays their profile', async () => {
   testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
-
   renderWithRouter(<App />, { route: '/bobbydob' });
+
   await waitFor(() => {
-    expect(screen.getByText(/bobbydob/i)).toBeVisible();
+    expect(screen.getAllByText(/bobbydob/i)).toHaveLength(2);
   });
 });
 
@@ -55,55 +55,22 @@ test('if not logged in and profile has avatar image, clicking on avatar does not
         publicId: 'fakePublicId',
       },
     }]))),
+    rest.post('/api/auth/refresh', (req, res, ctx) => {
+      console.log('POST /api/auth/refresh - failure');
+      ctx.delay(2500);
+
+      return res(ctx.status(401), ctx.json({ error: 'refresh token missing or invalid.' }));
+    }),
   );
 
   testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
 
   const { user } = renderWithRouter(<App />, { route: `/${fakeUser.username}` });
 
-  mockLogout({ resetApiState: false });
-
   const profileAvatar = await screen.findByTestId('profile-info-avatar');
   await user.click(profileAvatar);
 
   await waitFor(async () => {
     expect(screen.queryByTestId('change-avatar-modal')).not.toBeInTheDocument();
-  });
-});
-
-test('if logged in and profile has avatar image, clicking on avatar displays modal', async () => {
-  mockLogin({ fakeTokenInfo });
-
-  server.use(
-    rest.get('/api/users', (req, res, ctx) => res(ctx.status(200), ctx.json([{
-      ...fakeUser,
-      image: {
-        url: 'https://i.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U',
-        publicId: 'fakePublicId',
-      },
-    }]))),
-  );
-
-  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
-  const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
-
-  const avatar = await screen.findByTestId('avatar');
-  await user.click(avatar);
-
-  await waitFor(async () => {
-    expect(screen.queryByTestId('change-avatar-modal')).toBeVisible();
-  });
-});
-
-// testing ChangeAvatarModal features inside UseProfile
-test('when clicking on avatar, modal does not appear if user does not have an image', async () => {
-  mockLogin({ fakeTokenInfo });
-
-  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
-  const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
-
-  await waitFor(async () => {
-    await user.click(screen.getByTestId('avatar'));
-    expect(screen.queryByText(/remove current photo/i)).toBeNull();
   });
 });

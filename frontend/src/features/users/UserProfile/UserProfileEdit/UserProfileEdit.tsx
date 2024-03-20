@@ -79,7 +79,6 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
     modalOpened,
     setModalOpened,
   }] = useUserProfileImageUpload(setAlertText);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

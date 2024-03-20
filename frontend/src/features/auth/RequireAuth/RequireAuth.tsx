@@ -1,6 +1,6 @@
 import { useLocation, Navigate } from 'react-router-dom';
 import { ReactElement } from 'react';
-import useAuth from '../../common/hooks/useAuth';
+import useAuth from '../../../common/hooks/useAuth';
 
 function RequireAuth({ children }: { children: ReactElement }) {
   const [user] = useAuth();
