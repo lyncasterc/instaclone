@@ -7,7 +7,7 @@ import { User } from '../src/types';
 import cloudinary from '../src/utils/cloudinary';
 
 const api = supertest(app);
-let token: string;
+let accessToken: string;
 let testUser: User;
 
 beforeAll(async () => { await testMongodb.connect(); });
@@ -27,7 +27,7 @@ beforeEach(async () => {
       password: 'secret',
     });
 
-  token = response.body.token;
+  accessToken = response.body.accessToken;
 
   const initialPosts = [
     {
@@ -62,7 +62,7 @@ describe('when there are posts in the database', () => {
 
       await api
         .get(`/api/posts/${targetPost.id}`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
     });
@@ -72,7 +72,7 @@ describe('when there are posts in the database', () => {
 
       const response = await api
         .get(`/api/posts/${targetPost.id}`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       const fetchedPost = response.body;
@@ -85,7 +85,7 @@ describe('when there are posts in the database', () => {
       const targetPost = (await testHelpers.postsInDB())[0];
       const response = await api
         .get(`/api/posts/${targetPost.id}`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       const fetchedPost = response.body;
@@ -96,7 +96,7 @@ describe('when there are posts in the database', () => {
   });
 
   describe('when creating posts', () => {
-    test('request without token fails with 401 error code.', async () => {
+    test('request without accessToken fails with 401 error code.', async () => {
       const response = await api
         .post('/api/posts')
         .expect(401)
@@ -117,7 +117,7 @@ describe('when there are posts in the database', () => {
       const response = await api
         .post('/api/posts')
         .send(invalidPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(400);
 
       expect(response.body.error).toMatch(/missing image/i);
@@ -132,7 +132,7 @@ describe('when there are posts in the database', () => {
       await api
         .post('/api/posts')
         .send(validPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(201);
 
       const posts = await testHelpers.postsInDB();
@@ -149,7 +149,7 @@ describe('when there are posts in the database', () => {
       await api
         .post('/api/posts')
         .send(validPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(201);
 
       const posts = await testHelpers.postsInDB();
@@ -165,7 +165,7 @@ describe('when there are posts in the database', () => {
       await api
         .post('/api/posts')
         .send(validPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(201);
 
       const endPosts = await testHelpers.postsInDB();
@@ -175,7 +175,7 @@ describe('when there are posts in the database', () => {
   });
 
   describe('when updating posts', () => {
-    test('request without token fails with 401 error code', async () => {
+    test('request without accessToken fails with 401 error code', async () => {
       const targetPost = (await testHelpers.postsInDB())[0];
       const updatedPostFields = {
         caption: 'new caption',
@@ -206,7 +206,7 @@ describe('when there are posts in the database', () => {
           password: 'secret',
         });
 
-      const wrongUserToken = tokenResponse.body.token;
+      const wrongUserToken = tokenResponse.body.accessToken;
 
       const updatedPostFields = {
         caption: 'new caption',
@@ -232,7 +232,7 @@ describe('when there are posts in the database', () => {
       await api
         .put(`/api/posts/${targetPost.id}`)
         .send(updatedPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
     });
 
@@ -246,7 +246,7 @@ describe('when there are posts in the database', () => {
       const response = await api
         .put(`/api/posts/${targetPost.id}`)
         .send(updatedPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
@@ -265,7 +265,7 @@ describe('when there are posts in the database', () => {
       const response = await api
         .put(`/api/posts/${targetPost.id}`)
         .send(updatedPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
@@ -278,7 +278,7 @@ describe('when there are posts in the database', () => {
   });
 
   describe('when deleting posts', () => {
-    test('request without token fails with 401 error code', async () => {
+    test('request without accessToken fails with 401 error code', async () => {
       const targetPost = (await testHelpers.postsInDB())[0];
 
       await api
@@ -290,7 +290,7 @@ describe('when there are posts in the database', () => {
     test('when user making request is not creator of post, fails with 401 error code', async () => {
       const targetPost = (await testHelpers.postsInDB())[0];
 
-      // creating a new user and logging them in to get a token
+      // creating a new user and logging them in to get a accessToken
 
       const differentUser = await testHelpers.createTestUser({
         username: 'dobbybo',
@@ -306,7 +306,7 @@ describe('when there are posts in the database', () => {
           password: 'secret',
         });
 
-      const wrongUserToken = tokenResponse.body.token;
+      const wrongUserToken = tokenResponse.body.accessToken;
 
       const response = await api
         .delete(`/api/posts/${targetPost.id}`)
@@ -323,7 +323,7 @@ describe('when there are posts in the database', () => {
 
       const response = await api
         .delete(`/api/posts/${targetPostId}`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(404);
 
       expect(response.body.error).toMatch(/post not found/i);
@@ -335,7 +335,7 @@ describe('when there are posts in the database', () => {
 
       await api
         .delete(`/api/posts/${targetPost.id}`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(204);
 
       const endPosts = await testHelpers.postsInDB();
@@ -356,7 +356,7 @@ describe('when there are posts in the database', () => {
       const response = await api
         .post('/api/posts')
         .send(validPostFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(201);
 
       const newPost = response.body;
@@ -365,7 +365,7 @@ describe('when there are posts in the database', () => {
 
       await api
         .delete(`/api/posts/${newPost.id}`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(204);
 
       expect(await cloudinary.checkIfImageExists(newPost.image.publicId)).toBe(false);

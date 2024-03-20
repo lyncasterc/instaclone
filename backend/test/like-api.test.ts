@@ -7,7 +7,7 @@ import testHelpers from './helpers/test-helpers';
 import { User } from '../src/types';
 
 const api = supertest(app);
-let token: string;
+let accessToken: string;
 let testUser: User;
 
 beforeAll(async () => { await testMongodb.connect(); });
@@ -27,7 +27,7 @@ beforeEach(async () => {
       password: 'secret',
     });
 
-  token = response.body.token;
+  accessToken = response.body.accessToken;
 
   const initialPosts = [
     {
@@ -56,7 +56,7 @@ beforeEach(async () => {
 afterAll(async () => { await testMongodb.close(); });
 
 describe('when liking entities', () => {
-  test('request without token should fail', async () => {
+  test('request without accessToken should fail', async () => {
     const post = await Post.findOne({ creator: testUser.id });
 
     const response = await api
@@ -78,7 +78,7 @@ describe('when liking entities', () => {
 
     const response = await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -94,7 +94,7 @@ describe('when liking entities', () => {
 
     const response = await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Comment',
@@ -110,7 +110,7 @@ describe('when liking entities', () => {
 
     const response = await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'InvalidModel',
@@ -126,7 +126,7 @@ describe('when liking entities', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -157,7 +157,7 @@ describe('when liking entities', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Comment',
@@ -178,7 +178,7 @@ describe('when liking entities', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -191,7 +191,7 @@ describe('when liking entities', () => {
 
     const response = await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -207,7 +207,7 @@ describe('when liking entities', () => {
 });
 
 describe('when unliking entities', () => {
-  test('request without token should fail', async () => {
+  test('request without accessToken should fail', async () => {
     const post = await Post.findOne({ creator: testUser.id });
     const entityId = post.id;
 
@@ -226,7 +226,7 @@ describe('when unliking entities', () => {
 
     await api
       .delete(`/api/likes/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
   });
 
@@ -236,7 +236,7 @@ describe('when unliking entities', () => {
 
     await api
       .delete(`/api/likes/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
   });
 
@@ -246,7 +246,7 @@ describe('when unliking entities', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -259,7 +259,7 @@ describe('when unliking entities', () => {
 
     await api
       .delete(`/api/likes/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const postLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });
@@ -283,7 +283,7 @@ describe('when unliking entities', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Comment',
@@ -296,7 +296,7 @@ describe('when unliking entities', () => {
 
     await api
       .delete(`/api/likes/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const commentLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });
@@ -310,7 +310,7 @@ describe('when unliking entities', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -323,12 +323,12 @@ describe('when unliking entities', () => {
 
     await api
       .delete(`/api/likes/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     await api
       .delete(`/api/likes/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const postLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });
@@ -344,7 +344,7 @@ describe('when getting like count', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -414,7 +414,7 @@ describe('when getting like users', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -432,7 +432,7 @@ describe('when getting like users', () => {
 });
 
 describe('when getting has user liked entity', () => {
-  test('request without token should fail', async () => {
+  test('request without accessToken should fail', async () => {
     const post = await Post.findOne({ creator: testUser.id });
     const entityId = post.id;
 
@@ -451,7 +451,7 @@ describe('when getting has user liked entity', () => {
 
     const response = await api
       .get(`/api/likes/${entityId}/hasLiked`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
     expect(response.body.hasLiked).toBe(false);
@@ -463,7 +463,7 @@ describe('when getting has user liked entity', () => {
 
     const response = await api
       .get(`/api/likes/${entityId}/hasLiked`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
     expect(response.body.hasLiked).toBe(false);
@@ -475,7 +475,7 @@ describe('when getting has user liked entity', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -484,7 +484,7 @@ describe('when getting has user liked entity', () => {
 
     const response = await api
       .get(`/api/likes/${entityId}/hasLiked`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
     expect(response.body.hasLiked).toBe(true);
@@ -496,7 +496,7 @@ describe('when getting has user liked entity', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -505,12 +505,12 @@ describe('when getting has user liked entity', () => {
 
     await api
       .delete(`/api/likes/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const response = await api
       .get(`/api/likes/${entityId}/hasLiked`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
     expect(response.body.hasLiked).toBe(false);
@@ -532,7 +532,7 @@ describe('when getting has user liked entity', () => {
       .send({
         username: otherUser.username,
         password: 'secret',
-      })).body.token;
+      })).body.accessToken;
 
     // liking the post with the other user
 
@@ -549,7 +549,7 @@ describe('when getting has user liked entity', () => {
 
     const response = await api
       .get(`/api/likes/${entityId}/hasLiked`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
     expect(response.body.hasLiked).toBe(false);
@@ -563,7 +563,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Post',
@@ -576,7 +576,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .delete(`/api/posts/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const postLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });
@@ -601,7 +601,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Comment',
@@ -614,7 +614,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .delete(`/api/posts/${post.id}/comments/${entityId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const commentLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });
@@ -639,7 +639,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Comment',
@@ -652,7 +652,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .delete(`/api/posts/${post.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const commentLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });
@@ -686,7 +686,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .post('/api/likes')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         entityId,
         entityModel: 'Comment',
@@ -699,7 +699,7 @@ describe('when deleting entities with likes', () => {
 
     await api
       .delete(`/api/posts/${post.id}/comments/${parentComment.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const replyLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });

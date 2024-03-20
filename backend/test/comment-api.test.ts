@@ -5,7 +5,7 @@ import { User } from '../src/types';
 import testHelpers from './helpers/test-helpers';
 
 const api = supertest(app);
-let token: string;
+let accessToken: string;
 let testUser: User;
 
 beforeAll(async () => { await testMongodb.connect(); });
@@ -25,7 +25,7 @@ beforeEach(async () => {
       password: 'secret',
     });
 
-  token = response.body.token;
+  accessToken = response.body.accessToken;
 
   const initialPosts = [
     {
@@ -54,7 +54,7 @@ beforeEach(async () => {
 afterAll(async () => { await testMongodb.close(); });
 
 describe('when creating comments', () => {
-  test('request without token should fail', async () => {
+  test('request without accessToken should fail', async () => {
     const post = await Post.findOne({ creator: testUser.id });
 
     const response = await api
@@ -67,7 +67,6 @@ describe('when creating comments', () => {
 
   test('request without comment body should fail', async () => {
     const post = await Post.findOne({ creator: testUser.id });
-
     const invalidComment = {
       post: post.id,
       author: testUser.id,
@@ -80,13 +79,13 @@ describe('when creating comments', () => {
 
     const responseOne = await api
       .post(`/api/posts/${post.id}/comments`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(invalidComment)
       .expect(400);
 
     const responseTwo = await api
       .post(`/api/posts/${post.id}/comments`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(alsoInvalidComment)
       .expect(400);
 
@@ -106,7 +105,7 @@ describe('when creating comments', () => {
 
     const response = await api
       .post(`/api/posts/${postId}/comments`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(comment)
       .expect(404);
 
@@ -122,7 +121,7 @@ describe('when creating comments', () => {
 
     await api
       .post(`/api/posts/${post.id}/comments`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(validComment)
       .expect(201);
 
@@ -150,7 +149,7 @@ describe('when creating comments', () => {
 
     const response = await api
       .post(`/api/posts/${post.id}/comments`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(reply)
       .expect(404);
 
@@ -176,7 +175,7 @@ describe('when creating comments', () => {
 
     await api
       .post(`/api/posts/${post.id}/comments`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(reply)
       .expect(201);
 
@@ -206,7 +205,7 @@ describe('when getting parent comments', () => {
 
     await api
       .delete(`/api/posts/${postId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const response = await api
@@ -268,7 +267,7 @@ describe('when getting replies', () => {
 
     await api
       .delete(`/api/posts/${postId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const response = await api
@@ -370,12 +369,12 @@ describe('when deleting comments', () => {
 
     await api
       .delete(`/api/posts/${postId}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const response = await api
       .delete(`/api/posts/${postId}/comments/${comment.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(404);
 
     expect(response.body.error).toMatch(/post not found/i);
@@ -397,7 +396,7 @@ describe('when deleting comments', () => {
 
     const response = await api
       .delete(`/api/posts/${post.id}/comments/${comment.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(404);
 
     expect(response.body.error).toMatch(/comment not found/i);
@@ -427,7 +426,7 @@ describe('when deleting comments', () => {
 
     const response = await api
       .delete(`/api/posts/${post.id}/comments/${replyComment.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(404);
 
     expect(response.body.error).toMatch(/comment not found/i);
@@ -447,7 +446,7 @@ describe('when deleting comments', () => {
 
     await api
       .delete(`/api/posts/${post.id}/comments/${comment.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const updatedPost = await Post.findById(post.id);
@@ -477,7 +476,7 @@ describe('when deleting comments', () => {
 
     await api
       .delete(`/api/posts/${post.id}/comments/${replyComment.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const updatedParentComment = await Comment.findById(parentComment.id);
@@ -512,7 +511,7 @@ describe('when deleting comments', () => {
 
     await api
       .delete(`/api/posts/${post.id}/comments/${parentComment.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(204);
 
     const updatedPost = await Post.findById(post.id);
