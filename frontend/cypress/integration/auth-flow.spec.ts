@@ -37,6 +37,35 @@ describe('login view', () => {
   });
 });
 
+describe('logout', () => {
+  const user1 = Cypress.env('user1');
+
+  beforeEach(() => {
+    cy.createUser(user1);
+    cy.login({ username: user1.username, password: user1.password });
+  });
+
+  it('user can logout on desktop', () => {
+    cy.get('[data-testid="usermenu"]').click();
+    cy.contains(/log out/i).click();
+
+    cy.get('[data-testid="homepage-container"]').should('not.exist');
+    cy.contains(/don't have an account/i).should('be.visible');
+  });
+
+  it('user can logout on mobile', () => {
+    cy.viewport('iphone-6');
+    cy.visit(`http://localhost:3000/${user1.username}`);
+
+    cy.get('[data-testid="user-profile-info-dots"]').click();
+
+    cy.contains(/log out/i).click();
+
+    cy.get('[data-testid="homepage-container"]').should('not.exist');
+    cy.contains(/don't have an account/i).should('be.visible');
+  });
+});
+
 describe('logged in state persistence', () => {
   it('maintains the logged in state of a user after a page reload', () => {
     const user1 = Cypress.env('user1');

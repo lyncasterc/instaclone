@@ -152,6 +152,7 @@ function UserProfileInfo({
                         <IconDots
                           size={20}
                           onClick={() => setIsLogoutPopoverOpen(!isLogoutPopoverOpen)}
+                          data-testid="user-profile-info-dots"
                         />
                   )}
                       position="left"
