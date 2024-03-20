@@ -249,6 +249,7 @@ export const {
   useGetHasUserLikedEntityQuery,
   useLogoutMutation,
   useRefreshAccessTokenMutation,
+  usePrefetch,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();

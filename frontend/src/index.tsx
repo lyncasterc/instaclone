@@ -8,9 +8,6 @@ import App from './app/App';
 import theme from './app/theme';
 import reportWebVitals from './reportWebVitals';
 import { store } from './app/store';
-import { apiSlice } from './app/apiSlice';
-
-store.dispatch(apiSlice.endpoints.getUsers.initiate());
 
 ReactDOM.render(
   <React.StrictMode>

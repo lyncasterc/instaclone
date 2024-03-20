@@ -25,6 +25,7 @@ import MobileHomeNavBar from '../common/components/Navbars/MobileHomeNavbar/Mobi
 import FollowingFollowersView from '../features/users/FollowingFollowersView/FollowingFollowersView';
 import CommentsView from '../features/comments/CommentsView/CommentsView';
 import LikedByView from '../features/users/LikedByView/LikedByView';
+import { usePrefetch } from './apiSlice';
 
 interface LocationState {
   background: string,
@@ -40,6 +41,7 @@ function App() {
   const background = state && state.background;
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
   const [loading, setLoading] = useState(true);
+  const prefetchUsers = usePrefetch('getUsers', { force: true });
 
   useEffect(() => {
     let isCancelled = false;
@@ -47,6 +49,7 @@ function App() {
     (async () => {
       setLoading(true);
       await refreshAccessToken();
+      prefetchUsers();
       if (!isCancelled) {
         setLoading(false);
       }
