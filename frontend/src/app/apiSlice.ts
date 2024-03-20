@@ -1,4 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  createApi,
+  fetchBaseQuery,
+  type BaseQueryFn,
+  type FetchBaseQueryError,
+  type FetchArgs,
+} from '@reduxjs/toolkit/query/react';
 import {
   createEntityAdapter,
   EntityState,
@@ -17,9 +23,8 @@ import {
   type DeleteCommentRequestFields,
   type NewLikeRequestFields,
 } from './types';
-import type { AuthState } from '../features/auth/authSlice';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from './store';
+import { type AuthState, setAuthenticatedState, removeAuthenticatedState } from '../features/auth/authSlice';
+import { type RootState } from './store';
 
 // Normalizing users cache
 const usersAdapter = createEntityAdapter<User>({
@@ -31,16 +36,59 @@ interface EditUserMutationArg {
   id: string,
 }
 
-export const apiSlice = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api',
-    prepareHeaders: (headers, { getState }) => {
-      const { token } = (getState() as RootState).auth;
-      if (token) headers.set('authorization', `bearer ${token}`);
+const baseQuery = fetchBaseQuery({
+  baseUrl: '/api',
+  prepareHeaders: (headers, { getState }) => {
+    const { accessToken } = (getState() as RootState).auth;
 
-      return headers;
-    },
-  }),
+    if (accessToken) {
+      headers.set('authorization', `bearer ${accessToken}`);
+    }
+
+    return headers;
+  },
+});
+
+const baseQueryWithRefresh: BaseQueryFn<
+string | FetchArgs,
+unknown,
+FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  if (result.error && result.error.status === 401) {
+    // trying to refresh the access token
+    const refreshResult = await baseQuery({
+      url: '/auth/refresh',
+      method: 'POST',
+      credentials: 'include',
+    }, api, extraOptions) as { data?: AuthState };
+
+    if (
+      refreshResult.data
+      && refreshResult.data.accessToken
+      && refreshResult.data.username
+    ) {
+      const { accessToken, username } = refreshResult.data;
+
+      api.dispatch(setAuthenticatedState({ accessToken, username }));
+
+      // retry the original request
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      await baseQuery({
+        url: '/auth/logout',
+        method: 'POST',
+        credentials: 'include',
+      }, api, extraOptions);
+      api.dispatch(removeAuthenticatedState());
+    }
+  }
+  return result;
+};
+
+export const apiSlice = createApi({
+  baseQuery: baseQueryWithRefresh,
   tagTypes: ['User', 'Post', 'Comment'],
   endpoints: (builder) => ({
     addUser: builder.mutation<User, NewUserFields>({
@@ -158,9 +206,22 @@ export const apiSlice = createApi({
     }),
     login: builder.mutation<AuthState, LoginFields>({
       query: (loginFields) => ({
-        url: '/login',
+        url: '/auth/login',
         method: 'POST',
         body: loginFields,
+      }),
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+    }),
+    refreshAccessToken: builder.mutation<AuthState, void>({
+      query: () => ({
+        url: '/auth/refresh',
+        method: 'POST',
+        credentials: 'include',
       }),
     }),
   }),
@@ -186,6 +247,9 @@ export const {
   useGetEntityLikeCountByIDQuery,
   useGetEntityLikeUsersByIDQuery,
   useGetHasUserLikedEntityQuery,
+  useLogoutMutation,
+  useRefreshAccessTokenMutation,
+  usePrefetch,
 } = apiSlice;
 
 const selectUsersResult = apiSlice.endpoints.getUsers.select();

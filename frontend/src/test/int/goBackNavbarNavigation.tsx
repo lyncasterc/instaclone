@@ -1,20 +1,20 @@
 import {
-  screen, renderWithRouter, mockLogin, mockLogout,
+  screen,
+  renderWithRouter,
+  mockLogin,
+  mockLogout,
 } from '../utils/test-utils';
 import { fakeUser } from '../mocks/handlers';
-import { store } from '../../app/store';
 import server from '../mocks/server';
-import { apiSlice } from '../../app/apiSlice';
 import App from '../../app/App';
 
 beforeAll(() => server.listen());
 beforeEach(() => {
   const fakeTokenInfo = {
     username: fakeUser.username,
-    token: 'supersecrettoken',
+    accessToken: 'supersecrettoken',
   };
   mockLogin({ fakeTokenInfo });
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
 });
 afterEach(() => {
   mockLogout({ resetApiState: true });

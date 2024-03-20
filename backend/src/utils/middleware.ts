@@ -1,15 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import logger from './logger';
+import config from './config';
+
+const { JWT_SECRET } = config;
 
 export const authenticator = () => (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
+  if (!JWT_SECRET) {
+    return res.status(500).send({ error: 'JWT_SECRET is not set.' });
+  }
+
   let token;
   let decodedToken;
   const authorization = req.get('authorization');
+
   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
     token = authorization.substring(7);
   }
@@ -17,7 +25,7 @@ export const authenticator = () => (
   if (token) {
     decodedToken = jwt.verify(
       token,
-      process.env.SECRET as string,
+      JWT_SECRET,
     ) as JwtPayload;
   }
 

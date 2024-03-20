@@ -23,6 +23,7 @@ import GoBackNavbar from '../../../common/components/Navbars/GoBackNavbar/GoBack
 import baseStyles from '../../../common/components/Navbars/mobile-nav-styles';
 import useStyles from './EditPostDetails.styles';
 import { NewPostFields } from '../../../app/types';
+import useGoBack from '../../../common/hooks/useGoBack';
 
 interface EditPostDetailsProps {
   username: string;
@@ -54,18 +55,11 @@ function EditPostDetails({ username, setAlertText }: EditPostDetailsProps) {
   const { classes: baseClasses } = baseStyles();
   const { classes } = useStyles();
   const isMediumOrWider = useMediaQuery('(min-width: 992px)');
+  const goBack = useGoBack();
 
   const handleSubmit = () => {
     if (formRef.current) {
       formRef.current.submitForm();
-    }
-  };
-
-  const handleGoBack = () => {
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate('/', { replace: true });
     }
   };
 
@@ -180,7 +174,7 @@ function EditPostDetails({ username, setAlertText }: EditPostDetailsProps) {
                     >
                       <Button
                         color="gray"
-                        onClick={handleGoBack}
+                        onClick={goBack}
                         size="xs"
                         disabled={isPosting}
                       >

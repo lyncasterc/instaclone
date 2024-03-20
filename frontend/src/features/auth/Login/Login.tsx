@@ -13,12 +13,12 @@ import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import type { LoginFields } from '../../app/types';
-import SignUpLogInTextInput from '../../common/components/SignUpLogInTextInput/SignUpLogInTextInput';
-import Button from '../../common/components/Button';
-import FormContainer from '../../common/components/FormContainer';
-import useAuth from '../../common/hooks/useAuth';
-import getErrorMessage from '../../common/utils/getErrorMessage';
+import type { LoginFields } from '../../../app/types';
+import SignUpLogInTextInput from '../../../common/components/SignUpLogInTextInput/SignUpLogInTextInput';
+import Button from '../../../common/components/Button';
+import FormContainer from '../../../common/components/FormContainer';
+import useAuth from '../../../common/hooks/useAuth';
+import getErrorMessage from '../../../common/utils/getErrorMessage';
 
 // exported for use in SignUp.tsx, which follows the same structure and design.
 export const useStyles = createStyles(() => ({

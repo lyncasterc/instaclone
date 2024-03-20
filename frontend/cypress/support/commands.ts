@@ -47,24 +47,27 @@ Cypress.Commands.add('login', ({
   username, password,
 }) => {
   cy.request({
-    url: 'http://localhost:3001/api/login',
+    url: 'http://localhost:3001/api/auth/login',
     method: 'POST',
     body: {
       username, password,
     },
   }).then((res) => {
-    localStorage.setItem('instacloneSCToken', JSON.stringify(res.body));
+    localStorage.setItem('cy-login-res-data', JSON.stringify(res.body));
   });
   cy.visit('http://localhost:3000');
 });
 
 Cypress.Commands.add('logout', () => {
-  localStorage.removeItem('instacloneSCToken');
-  cy.visit('http://localhost:3000');
+  localStorage.removeItem('cy-login-res-data');
+  cy.request({
+    url: 'http://localhost:3001/api/auth/logout',
+    method: 'POST',
+  });
 });
 
 Cypress.Commands.add('createPost', () => {
-  const { token, username } = JSON.parse(localStorage.getItem('instacloneSCToken'));
+  const { accessToken, username } = JSON.parse(localStorage.getItem('cy-login-res-data'));
 
   cy.request({
     url: 'http://localhost:3001/api/posts',
@@ -74,13 +77,13 @@ Cypress.Commands.add('createPost', () => {
       imageDataUrl: testImageDataUrl,
     },
     headers: {
-      Authorization: `bearer ${token}`,
+      Authorization: `bearer ${accessToken}`,
     },
   });
 });
 
 Cypress.Commands.add('editUser', (updatedUserFields) => {
-  const { token, username } = JSON.parse(localStorage.getItem('instacloneSCToken'));
+  const { accessToken, username } = JSON.parse(localStorage.getItem('cy-login-res-data'));
   const userId = localStorage.getItem(`cy-${username}-id`);
 
   cy.request({
@@ -88,20 +91,20 @@ Cypress.Commands.add('editUser', (updatedUserFields) => {
     method: 'PUT',
     body: updatedUserFields,
     headers: {
-      Authorization: `bearer ${token}`,
+      Authorization: `bearer ${accessToken}`,
     },
   });
 });
 
 Cypress.Commands.add('followUser', (username) => {
-  const { token } = JSON.parse(localStorage.getItem('instacloneSCToken'));
+  const { accessToken } = JSON.parse(localStorage.getItem('cy-login-res-data'));
   const userId = localStorage.getItem(`cy-${username}-id`);
 
   cy.request({
     url: `http://localhost:3001/api/users/${userId}/follow`,
     method: 'PUT',
     headers: {
-      Authorization: `bearer ${token}`,
+      Authorization: `bearer ${accessToken}`,
     },
   });
 });

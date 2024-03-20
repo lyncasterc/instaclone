@@ -6,6 +6,7 @@ const {
   CLOUDINARY_NAME,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
+  JWT_SECRET,
 } = process.env;
 
 export default {
@@ -14,4 +15,5 @@ export default {
   CLOUDINARY_NAME,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
+  JWT_SECRET,
 };

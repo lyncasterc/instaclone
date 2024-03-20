@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useMediaQuery } from '@mantine/hooks';
 import { useEffect } from 'react';
 import GoBackNavbar from '../../../common/components/Navbars/GoBackNavbar/GoBackNavbar';
-import UserProfileInfo from './UserProfileInfo';
+import UserProfileInfo from './UserProfileInfo/UserProfileInfo';
 import UserProfileInfoBar from './UserProfileInfoBar/UserProfileInfoBar';
 import UserProfileImageGrid from './UserProfileImageGrid/UserProfileImageGrid';
 import DesktopNavbar from '../../../common/components/Navbars/DesktopNavbar/DesktopNavbar';
@@ -37,19 +37,18 @@ function UserProfile() {
     return (
       <>
         {
-        user ? (
-          <GoBackNavbar
-            text={username as string}
-            isCurrentUserProfile={isCurrentUserProfile}
-          />
-        ) : (
-          <DesktopNavbar displayOnMobile />
-        )
-      }
+          user ? (
+            <GoBackNavbar
+              text={username as string}
+              isCurrentUserProfile={isCurrentUserProfile}
+            />
+          ) : (
+            <DesktopNavbar displayOnMobile />
+          )
+        }
         <UserProfileInfo
           user={selectedUser}
           isCurrentUserProfile={isCurrentUserProfile}
-          isCurrentUserLoggedIn={user != null}
           isCurrentUserFollowing={isCurrentUserFollowing}
         />
         {

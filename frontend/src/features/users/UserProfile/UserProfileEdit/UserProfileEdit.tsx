@@ -16,9 +16,9 @@ import {
   useField,
 } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 import FormikTextInput from '../../../../common/components/FormikTextInput';
-import { useAppSelector } from '../../../../common/hooks/selector-dispatch-hooks';
-import useAuth from '../../../../common/hooks/useAuth';
+import { useAppSelector, useAppDispatch } from '../../../../common/hooks/selector-dispatch-hooks';
 import {
   selectUserByUsername,
   useEditUserMutation,
@@ -30,6 +30,7 @@ import placeholderIcon from '../../../../assets/placeholder-icon.jpeg';
 import ChangeAvatarModal from './ChangeAvatarModal/ChangeAvatarModal';
 import GoBackNavbar from '../../../../common/components/Navbars/GoBackNavbar/GoBackNavbar';
 import Alert from '../../../../common/components/Alert/Alert';
+import { updateCurrentUsername } from '../../../auth/authSlice';
 
 interface UserProfileEditProps {
   user: string | null
@@ -78,7 +79,8 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
     modalOpened,
     setModalOpened,
   }] = useUserProfileImageUpload(setAlertText);
-  const [, { updateTokenUsername }] = useAuth();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   if (userObject) {
     const { id: userId } = userObject;
@@ -112,9 +114,18 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
             ) => {
               try {
                 await editUser({ updatedUserFields: values, id: userId }).unwrap();
-                setAlertText('Profile saved.');
                 actions.resetForm({ values });
-                if (values.username) updateTokenUsername(values.username);
+
+                const wasUsernameChanged = values.username
+                    && values.username
+                    !== userObject.username;
+
+                if (wasUsernameChanged) {
+                  dispatch(updateCurrentUsername(values.username!));
+                  navigate(`/${values.username}`);
+                } else {
+                  setAlertText('Profile saved.');
+                }
               } catch (error) {
                 console.log(error);
               }
