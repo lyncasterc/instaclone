@@ -191,6 +191,29 @@ describe('successful token refresh', () => {
     expect(decodedToken.id).toBe(testUser.id);
     expect(decodedToken.username).toBe(testUser.username);
   });
+
+  test('when user updates their username and refreshes token, the new username is returned', async () => {
+    const updatedUserFields = { username: 'newusername' };
+
+    // logging in to get access token
+    const loginResponse = await api
+      .post(LOGIN_URL)
+      .send({ username: testUser.username, password: 'secret' });
+
+    const { accessToken } = loginResponse.body;
+
+    await api
+      .put(`/api/users/${testUser.id}`)
+      .send(updatedUserFields)
+      .set('authorization', `bearer ${accessToken}`)
+      .expect(200);
+
+    const refreshResponse = await api
+      .post('/api/auth/refresh')
+      .set('Cookie', refreshTokenCookie);
+
+    expect(refreshResponse.body.username).toBe(updatedUserFields.username);
+  });
 });
 
 describe('unsuccessful token refresh', () => {

@@ -99,9 +99,19 @@ router.post('/refresh', async (req, res, next) => {
     });
   }
 
+  const user = await User.findById(decodedRefreshToken.id);
+
+  if (!user) {
+    res.clearCookie('refreshToken');
+
+    return res.status(401).send({
+      error: 'refresh token is not valid for any user.',
+    });
+  }
+
   // generate new access token
   const userTokenInfo = {
-    username: decodedRefreshToken.username,
+    username: user.username,
     id: decodedRefreshToken.id,
   };
 
@@ -114,7 +124,7 @@ router.post('/refresh', async (req, res, next) => {
   return res.status(200).send(
     {
       accessToken: newAccessToken,
-      username: decodedRefreshToken.username,
+      username: user.username,
     },
   );
 });
