@@ -46,8 +46,7 @@ router.post('/login', async (req, res) => {
     const accessToken = jwt.sign(
       userTokenInfo,
       JWT_SECRET,
-      // { expiresIn: '15m }, // 15 minutes
-      // { expiresIn: 5 },
+      { expiresIn: '15m' },
     );
     const refreshToken = jwt.sign(
       userTokenInfo,
@@ -109,8 +108,7 @@ router.post('/refresh', async (req, res, next) => {
   const newAccessToken = jwt.sign(
     userTokenInfo,
     JWT_SECRET,
-    // { expiresIn: '15m }, // 15 minutes
-    { expiresIn: 5 },
+    { expiresIn: '15m' },
   );
 
   return res.status(200).send(
