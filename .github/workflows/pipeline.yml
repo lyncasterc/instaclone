@@ -58,7 +58,7 @@ jobs:
           echo DEV_MONGODB_URI=${{ secrets.DEV_MONGODB_URI }} >> .env
           echo CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }} >> .env
           echo CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} >> .env
-          echo CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} >> .env'
+          echo CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} >> .env
           echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
           npm install
       - name: cypress tests
