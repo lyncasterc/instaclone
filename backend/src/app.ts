@@ -9,7 +9,7 @@ import userRouter from './routes/users';
 import authRouter from './routes/auth';
 import testRouter from './routes/tests';
 import likeRouter from './routes/likes';
-import { errorHandler } from './utils/middleware';
+import { errorHandler, logErrorCodes } from './utils/middleware';
 
 const { NODE_ENV } = process.env;
 const app = express();
@@ -21,6 +21,8 @@ if (NODE_ENV === 'development') {
     await testMongodb.connect();
   })();
 }
+
+app.use(logErrorCodes);
 
 app.get('/health', (_req, res) => {
   res.send('ok');

@@ -43,9 +43,12 @@ export const authenticator = () => (
 export const errorHandler = (error: Error, _req: Request, res: Response, next: NextFunction) => {
   const errorMessage = logger.getErrorMessage(error);
 
-  if (process.env.NODE_ENV !== 'test') {
-    logger.error(errorMessage);
-  }
+  logger.error({
+    errorMessage,
+    name: error.name,
+    message: error.message,
+    stack: error.stack,
+  });
 
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' });
@@ -65,3 +68,22 @@ export const errorHandler = (error: Error, _req: Request, res: Response, next: N
 
   return next(error);
 };
+
+export function logErrorCodes(req: Request, res:Response, next: NextFunction) {
+  const originalSend = res.send.bind(res);
+
+  res.send = function logIfError(data) {
+    if (res.statusCode >= 400) {
+      logger.error({
+        method: req.method,
+        url: req.originalUrl,
+        statusCode: res.statusCode,
+        errorMessage: data,
+      });
+    }
+
+    return originalSend(data);
+  };
+
+  next();
+}

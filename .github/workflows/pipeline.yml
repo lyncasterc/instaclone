@@ -28,12 +28,13 @@ jobs:
           echo CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }} >> .env
           echo CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} >> .env
           echo CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
       - name: npm install
         run: npm install
       - name: lint
         run: npm run lint
       - name: test
-        run: npm test -- auth
+        run: npm test
   test_lint_frontend:
     runs-on: ubuntu-20.04
     defaults:
@@ -57,7 +58,8 @@ jobs:
           echo DEV_MONGODB_URI=${{ secrets.DEV_MONGODB_URI }} >> .env
           echo CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }} >> .env
           echo CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} >> .env
-          echo CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} >> .env
+          echo CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} >> .env'
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
           npm install
       - name: cypress tests
         uses: cypress-io/github-action@v2
