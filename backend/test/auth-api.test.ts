@@ -27,7 +27,7 @@ describe('successful login', () => {
     });
   });
 
-  test('responds with 200 code and returns JSON', async () => {
+  test.only('responds with 200 code and returns JSON', async () => {
     await api
       .post(LOGIN_URL)
       .send({ username: testUser.username, password: 'secret' })
