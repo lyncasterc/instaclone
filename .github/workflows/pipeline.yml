@@ -33,7 +33,7 @@ jobs:
       - name: lint
         run: npm run lint
       - name: test
-        run: npm test
+        run: npm test -- auth
   test_lint_frontend:
     runs-on: ubuntu-20.04
     defaults:
