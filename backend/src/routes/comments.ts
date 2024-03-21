@@ -31,7 +31,6 @@ router.get('/', async (req, res, next) => {
     return res.send(comments);
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
-    logger.error(errorMessage);
 
     if (/not found/i.test(errorMessage)) {
       return res.status(404).send({ error: errorMessage });
@@ -51,7 +50,6 @@ router.get('/:parentCommentId', async (req, res, next) => {
     return res.send(replies);
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
-    logger.error(errorMessage);
 
     if (/not found/i.test(errorMessage)) {
       return res.status(404).send({ error: errorMessage });
@@ -77,7 +75,6 @@ router.post('/', authenticator(), async (req, res, next) => {
     return res.status(201).end();
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
-    logger.error(errorMessage);
 
     if (/not found/i.test(errorMessage)) {
       return res.status(404).send({ error: errorMessage });
@@ -100,7 +97,6 @@ router.delete('/:commentId', authenticator(), async (req, res, next) => {
     return res.status(204).end();
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
-    logger.error(errorMessage);
 
     if (/not found/i.test(errorMessage)) {
       return res.status(404).send({ error: errorMessage });

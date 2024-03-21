@@ -96,7 +96,6 @@ router.put('/:id/follow', authenticator(), async (req, res, next) => {
     return res.status(200).end();
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
-    logger.error(errorMessage);
     const errorResponseObj = { error: errorMessage };
 
     if (/user not found/i.test(errorMessage)) return res.status(404).send(errorResponseObj);

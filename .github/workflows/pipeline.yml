@@ -28,6 +28,7 @@ jobs:
           echo CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }} >> .env
           echo CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} >> .env
           echo CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
       - name: npm install
         run: npm install
       - name: lint
@@ -58,6 +59,7 @@ jobs:
           echo CLOUDINARY_NAME=${{ secrets.CLOUDINARY_NAME }} >> .env
           echo CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} >> .env
           echo CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
           npm install
       - name: cypress tests
         uses: cypress-io/github-action@v2

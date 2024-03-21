@@ -26,14 +26,12 @@ router.post('/', authenticator(), async (req, res, next) => {
   try {
     newPostFields = fieldParsers.proofPostFields(req.body);
   } catch (error) {
-    logger.error(logger.getErrorMessage(error));
     return res.status(400).send({ error: logger.getErrorMessage(error) });
   }
 
   try {
     image = await cloudinary.upload(newPostFields.imageDataUrl);
   } catch (error) {
-    logger.error(logger.getErrorMessage(error));
     return res.status(500).send({ error: 'Something went wrong uploading the photo!' });
   }
 
@@ -46,7 +44,6 @@ router.post('/', authenticator(), async (req, res, next) => {
     await user.save();
     return res.status(201).send(savedPost);
   } catch (error) {
-    logger.error(logger.getErrorMessage(error));
     return next(error);
   }
 });
@@ -57,7 +54,6 @@ router.put('/:id', authenticator(), async (req, res, next) => {
   try {
     if (updatedPostFields.caption) updatedPostFields.caption = parseStringField(updatedPostFields.caption, 'caption');
   } catch (error) {
-    logger.error(logger.getErrorMessage(error));
     return res.status(400).send({ error: logger.getErrorMessage(error) });
   }
 
@@ -70,7 +66,7 @@ router.put('/:id', authenticator(), async (req, res, next) => {
     return res.status(200).send(updatedPost);
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
-    logger.error(errorMessage);
+
     if (errorMessage === 'Unauthorized') return res.status(401).send({ error: errorMessage });
 
     return next(error);
@@ -83,7 +79,6 @@ router.delete('/:id', authenticator(), async (req, res, next) => {
     return res.status(204).end();
   } catch (error) {
     const errorMessage = logger.getErrorMessage(error);
-    logger.error(errorMessage);
 
     if (/unauthorized/i.test(errorMessage)) {
       return res.status(401).send({ error: errorMessage });
