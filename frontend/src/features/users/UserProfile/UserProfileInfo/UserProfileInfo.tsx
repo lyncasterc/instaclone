@@ -3,28 +3,52 @@ import {
   Avatar,
   Text,
   Container,
-  Button,
   UnstyledButton,
   Loader,
+  Group,
+  Popover,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { Link } from 'react-router-dom';
+import { IconDots } from '@tabler/icons-react';
 import useStyles from './UserProfileInfo.styles';
-import { User } from '../../../app/types';
-import UserProfileInfoBar from './UserProfileInfoBar/UserProfileInfoBar';
-import useUserProfileImageUpload from '../../../common/hooks/useUserProfileImageUpload';
-import placeholderIcon from '../../../assets/placeholder-icon.jpeg';
-import ChangeAvatarModal from './UserProfileEdit/ChangeAvatarModal/ChangeAvatarModal';
-import Alert from '../../../common/components/Alert/Alert';
-import { useFollowUserByIdMutation, useUnfollowUserByIdMutation } from '../../../app/apiSlice';
-import getErrorMessage from '../../../common/utils/getErrorMessage';
+import { User } from '../../../../app/types';
+import UserProfileInfoBar from '../UserProfileInfoBar/UserProfileInfoBar';
+import useUserProfileImageUpload from '../../../../common/hooks/useUserProfileImageUpload';
+import placeholderIcon from '../../../../assets/placeholder-icon.jpeg';
+import ChangeAvatarModal from '../UserProfileEdit/ChangeAvatarModal/ChangeAvatarModal';
+import Alert from '../../../../common/components/Alert/Alert';
+import UserProfileInfoButtons from './UserProfileInfoButtons/UserProfileInfoButtons';
+import useAuth from '../../../../common/hooks/useAuth';
 
 interface UserProfileInfoProps {
   user: User;
-  isCurrentUserLoggedIn: boolean;
   isCurrentUserProfile?: boolean;
   isCurrentUserFollowing: boolean;
 }
+
+interface UserProfileBioNameProps {
+  fullName: string;
+  bio?: string;
+}
+
+function UserProfileBioName({ fullName, bio }: UserProfileBioNameProps) {
+  return (
+    <div style={{ whiteSpace: 'pre-wrap' }}>
+      <Text weight={600}>{fullName}</Text>
+      {
+        bio && (
+          <Text>
+            {bio}
+          </Text>
+        )
+      }
+    </div>
+  );
+}
+
+UserProfileBioName.defaultProps = {
+  bio: '',
+};
 
 /**
  * Component that displays the user's profile image, username, and bio
@@ -33,10 +57,9 @@ interface UserProfileInfoProps {
 function UserProfileInfo({
   user,
   isCurrentUserProfile,
-  isCurrentUserLoggedIn,
   isCurrentUserFollowing,
 }: UserProfileInfoProps) {
-  const { classes, cx } = useStyles();
+  const { classes } = useStyles();
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
   const [alertText, setAlertText] = useState('');
   const [
@@ -46,74 +69,8 @@ function UserProfileInfo({
       isDeleting, isImageUpdating, modalOpened, setModalOpened,
     },
   ] = useUserProfileImageUpload(setAlertText);
-
-  const [followUser, { isLoading: isFollowLoading }] = useFollowUserByIdMutation();
-  const [unfollowUser, { isLoading: isUnfollowLoading }] = useUnfollowUserByIdMutation();
-
-  const onFollowBtnClick = async () => {
-    const followFunc = isCurrentUserFollowing ? unfollowUser : followUser;
-
-    try {
-      await followFunc(user.id).unwrap();
-    } catch (error) {
-      console.error(getErrorMessage(error));
-    }
-  };
-
-  const buttons = () => {
-    if (isCurrentUserProfile) {
-      return (
-        <Button
-          classNames={{
-            root: cx(classes.buttonRoot, classes.editButtonRoot),
-            outline: classes.buttonOutline,
-          }}
-          variant="outline"
-          component={Link}
-          to="/accounts/edit"
-        >
-          Edit Profile
-        </Button>
-      );
-    }
-
-    if (isCurrentUserLoggedIn) {
-      return (
-        <div className={classes.mainSectionButtonGroup}>
-          <Button
-            classNames={{
-              root: classes.buttonRoot,
-              outline: classes.buttonOutline,
-            }}
-            variant="outline"
-          >
-            Message
-          </Button>
-          <Button
-            classNames={{
-              root: cx(classes.buttonRoot, classes.followButtonRoot),
-            }}
-            onClick={onFollowBtnClick}
-            loading={isFollowLoading || isUnfollowLoading}
-            data-cy="follow-btn"
-          >
-            {isCurrentUserFollowing ? 'Following' : 'Follow'}
-          </Button>
-        </div>
-      );
-    }
-
-    return null;
-  };
-
-  const bio = () => (
-    <div style={{ whiteSpace: 'pre-wrap' }}>
-      <Text weight={600}>{user.fullName}</Text>
-      <Text>
-        {user.bio}
-      </Text>
-    </div>
-  );
+  const [isLogoutPopoverOpen, setIsLogoutPopoverOpen] = useState(false);
+  const [, { logout }] = useAuth();
 
   return (
     <>
@@ -181,10 +138,45 @@ function UserProfileInfo({
 
           <div className={classes.mainSectionRight}>
             <div className={classes.mainSectionNameBtns}>
-              <Text className={classes.mainSectionUsername}>
-                {user.username}
-              </Text>
-              {buttons()}
+              <Group position="apart" px="md">
+                <Text className={classes.mainSectionUsername}>
+                  {user.username}
+                </Text>
+
+                {
+                  (isCurrentUserProfile && !isMediumScreenOrWider) && (
+                    <Popover
+                      opened={isLogoutPopoverOpen}
+                      onClose={() => setIsLogoutPopoverOpen(false)}
+                      target={(
+                        <IconDots
+                          size={20}
+                          onClick={() => setIsLogoutPopoverOpen(!isLogoutPopoverOpen)}
+                          data-testid="user-profile-info-dots"
+                        />
+                  )}
+                      position="left"
+                      spacing="xs"
+                    >
+                      <UnstyledButton
+                        onClick={
+                          async () => {
+                            await logout();
+                          }
+                        }
+                      >
+                        <Text color="red" size="sm">Log out</Text>
+                      </UnstyledButton>
+                    </Popover>
+                  )
+                }
+
+              </Group>
+              <UserProfileInfoButtons
+                isCurrentUserProfile={isCurrentUserProfile}
+                isCurrentUserFollowing={isCurrentUserFollowing}
+                userId={user.id}
+              />
             </div>
             {isMediumScreenOrWider && (
               <>
@@ -193,13 +185,21 @@ function UserProfileInfo({
                   followerCount={user.followers?.length ?? 0}
                   followingCount={user.following?.length ?? 0}
                 />
-                {bio()}
+                <UserProfileBioName
+                  fullName={user.fullName}
+                  bio={user.bio}
+                />
               </>
             )}
           </div>
         </div>
 
-        {!isMediumScreenOrWider && bio()}
+        {!isMediumScreenOrWider && (
+          <UserProfileBioName
+            fullName={user.fullName}
+            bio={user.bio}
+          />
+        )}
       </Container>
     </>
   );

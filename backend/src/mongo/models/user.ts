@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { imageSchema } from './post';
+import imageSchema from './image-schema';
 
 const userSchema = new mongoose.Schema({
   fullName: {

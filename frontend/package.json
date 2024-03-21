@@ -41,7 +41,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:tests": "concurrently \"npm run server:test\" \"npm start\" \"npm run cypress:open\"",
-    "cypress:tests-cli": "concurrently \"npm run server:test\" \"npm start\" \"npm run cypress:run\"",
+    "cypress:tests-cli": "start-test server:test 3001/health start 3000 cypress:run",
     "lint": "eslint .",
     "ts-jest:init": "npx ts-jest config:init",
     "jest-preview": "jest-preview"
@@ -71,6 +71,7 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
     "msw": "^0.39.2",
+    "start-server-and-test": "^2.0.3",
     "ts-jest": "^27.1.4"
   }
 }

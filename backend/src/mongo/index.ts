@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import mongoose from 'mongoose';
 import logger from '../utils/logger';
 
@@ -17,3 +16,4 @@ export { default as User } from './models/user';
 export { default as Post } from './models/post';
 export { default as Comment } from './models/comment';
 export { default as testMongodb } from './test-mongodb';
+export { default as Like } from './models/like';

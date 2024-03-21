@@ -4,15 +4,15 @@ import {
   ThunkAction,
   AnyAction,
 } from '@reduxjs/toolkit';
-import type { RootState } from '../../app/store';
+import { type RootState } from '../../app/store';
 
 export interface AuthState {
-  token: string | null,
+  accessToken: string | null,
   username: string | null,
 }
 
 const initialState: AuthState = {
-  token: null,
+  accessToken: null,
   username: null,
 };
 
@@ -20,16 +20,21 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuthedUser: (
+    setAuthenticatedState: (
       state,
-      { payload: { username, token } }: PayloadAction<{ username: string, token: string }>,
+      {
+        payload: { username, accessToken },
+      }: PayloadAction<{
+        username: string,
+        accessToken: string
+      }>,
     ) => {
       state.username = username;
-      state.token = token;
+      state.accessToken = accessToken;
     },
-    removeCurrentUser: (state) => {
+    removeAuthenticatedState: (state) => {
       state.username = null;
-      state.token = null;
+      state.accessToken = null;
     },
     updateCurrentUsername: (
       state,
@@ -40,19 +45,13 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthedUser, removeCurrentUser, updateCurrentUsername } = authSlice.actions;
+export const {
+  setAuthenticatedState,
+  removeAuthenticatedState,
+  updateCurrentUsername,
+} = authSlice.actions;
 
 export default authSlice.reducer;
-
-export const initAuthedUser = (): ThunkAction<void, RootState, unknown, AnyAction> => {
-  const token = localStorage.getItem('instacloneSCToken');
-  return (dispatch) => {
-    if (token) {
-      const parsedToken = JSON.parse(token);
-      dispatch(setAuthedUser(parsedToken));
-    }
-  };
-};
 
 /**
  * Updates the username in the stored JWT. Necessary for when user edits their username

@@ -3,14 +3,15 @@ import {
   Route,
   useLocation,
 } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
+import { Container, Loader } from '@mantine/core';
 import Damion from '../common/components/Damion';
 import GlobalStyles from '../common/components/GlobalStyles';
-import Login from '../features/auth/Login';
+import Login from '../features/auth/Login/Login';
 import SignUp from '../features/users/SignUp';
 import Home from '../features/posts/Home/Home';
-import RequireAuth from '../features/auth/RequireAuth';
+import RequireAuth from '../features/auth/RequireAuth/RequireAuth';
 import useAuth from '../common/hooks/useAuth';
 import DesktopNavbar from '../common/components/Navbars/DesktopNavbar/DesktopNavbar';
 import BottomNavBar from '../common/components/Navbars/BottomNavbar/BottomNavbar';
@@ -23,13 +24,15 @@ import PostView from '../features/posts/PostView/PostView';
 import MobileHomeNavBar from '../common/components/Navbars/MobileHomeNavbar/MobileHomeNavbar';
 import FollowingFollowersView from '../features/users/FollowingFollowersView/FollowingFollowersView';
 import CommentsView from '../features/comments/CommentsView/CommentsView';
+import LikedByView from '../features/users/LikedByView/LikedByView';
+import { usePrefetch } from './apiSlice';
 
 interface LocationState {
   background: string,
 }
 
 function App() {
-  const [user] = useAuth();
+  const [user, { refreshAccessToken }] = useAuth();
   const location = useLocation();
   const [alertText, setAlertText] = useState('');
   const isCreatePage = /create/i.test(location.pathname);
@@ -37,6 +40,40 @@ function App() {
   const state = location.state as LocationState;
   const background = state && state.background;
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
+  const [loading, setLoading] = useState(true);
+  const prefetchUsers = usePrefetch('getUsers', { force: true });
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    (async () => {
+      setLoading(true);
+      await refreshAccessToken();
+      prefetchUsers();
+      if (!isCancelled) {
+        setLoading(false);
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <Container
+        sx={() => ({
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        })}
+      >
+        <Loader size={80} variant="dots" data-testid="app-loader" />
+      </Container>
+    );
+  }
 
   return (
     <>
@@ -75,7 +112,7 @@ function App() {
             <RequireAuth>
               <Home setAlertText={setAlertText} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route path="/login" element={user ? <Home setAlertText={setAlertText} /> : <Login />} />
         <Route path="/signup" element={user ? <Home setAlertText={setAlertText} /> : <SignUp />} />
@@ -88,7 +125,7 @@ function App() {
             <RequireAuth>
               <EditPostImage setAlertText={setAlertText} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route
           path="/create/details"
@@ -96,7 +133,7 @@ function App() {
             <RequireAuth>
               <EditPostDetails username={user!} setAlertText={setAlertText} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route
           path="/accounts/edit"
@@ -104,10 +141,12 @@ function App() {
             <RequireAuth>
               <UserProfileEdit user={user} />
             </RequireAuth>
-        )}
+          )}
         />
         <Route path="/p/:postId" element={<PostView setAlertText={setAlertText} />} />
         <Route path="/p/:postId/comments" element={<CommentsView />} />
+        <Route path="/p/:postId/liked_by" element={<LikedByView entityModel="Post" />} />
+        <Route path="/p/:postId/c/:commentId/liked_by" element={<LikedByView entityModel="Comment" />} />
       </Routes>
     </>
   );

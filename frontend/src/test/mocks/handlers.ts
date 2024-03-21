@@ -21,6 +21,11 @@ export const fakeUser: User = {
   following: [],
 };
 
+export const fakeAccessToken = {
+  username: fakeUser.username,
+  accessToken: 'supersecrettoken',
+};
+
 const posts: Post[] = [];
 const users: User[] = [fakeUser];
 
@@ -75,12 +80,19 @@ export const handlers = [
 
     return res(ctx.status(404));
   }),
-  rest.post<LoginFields>('/api/login', (req, res, ctx) => {
-    console.log('POST /api/login');
-    return res(ctx.status(200), ctx.json({
-      username: req.body.username,
-      token: 'supersecrettoken',
-    }));
+  rest.post<LoginFields>('/api/auth/login', (req, res, ctx) => {
+    console.log('POST /api/auth/login');
+    return res(ctx.status(200), ctx.json(fakeAccessToken));
+  }),
+  rest.post('/api/auth/logout', (_req, res, ctx) => {
+    console.log('POST /api/auth/logout');
+    return res(ctx.status(204));
+  }),
+  rest.post('/api/auth/refresh', (req, res, ctx) => {
+    console.log('POST /api/auth/refresh');
+    ctx.delay(2500);
+
+    return res(ctx.status(200), ctx.json(fakeAccessToken));
   }),
   rest.put<UpdatedUserFields>('/api/users/:id', (req, res, ctx) => {
     console.log('PUT /api/users/:id');
@@ -98,5 +110,13 @@ export const handlers = [
   rest.get('/api/users', (req, res, ctx) => {
     console.log('GET /api/users');
     return res(ctx.status(200), ctx.json(users));
+  }),
+  rest.get('/api/likes/:entityId/likeCount', (req, res, ctx) => {
+    console.log('GET /api/likes/:entityId/likeCount');
+    return res(ctx.status(200), ctx.json({ likeCount: 0 }));
+  }),
+  rest.get('/api/likes/:entityId/hasLiked', (req, res, ctx) => {
+    console.log('GET /api/likes/:entityId/likeCount');
+    return res(ctx.status(200), ctx.json({ hasLiked: false }));
   }),
 ];

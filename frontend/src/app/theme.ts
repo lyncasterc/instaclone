@@ -9,6 +9,7 @@ const theme: MantineProviderProps['theme'] = {
   other: {
     topMobileNavHeight: 44,
     bottomMobileNavHeight: 44.9,
+    mobileContainerMaxHeight: 'calc(100vh - 88.9px)',
   },
 };
 
@@ -17,6 +18,12 @@ type CustomColors = 'instaBlue' | 'instaDark';
 declare module '@mantine/core' {
   export interface MantineThemeColorsOverride {
     colors: Record<CustomColors | DefaultMantineColor, Tuple<string, 10>>;
+  }
+
+  export interface MantineThemeOther {
+    topMobileNavHeight: number;
+    bottomMobileNavHeight: number;
+    mobileContainerMaxHeight: string;
   }
 }
 

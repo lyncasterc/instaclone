@@ -158,7 +158,7 @@ describe('When there are multiple users in the database', () => {
 
   describe('When updating a user', () => {
     let targetUser: UserType;
-    let token: string;
+    let accessToken: string;
     jest.setTimeout(15000);
 
     beforeEach(async () => {
@@ -166,13 +166,13 @@ describe('When there are multiple users in the database', () => {
       targetUser = (await testHelpers.usersInDB())[0];
 
       const response = await api
-        .post('/api/login')
+        .post('/api/auth/login')
         .send({
           username: targetUser.username,
           password: 'secret',
         });
 
-      token = response.body.token;
+      accessToken = response.body.accessToken;
     });
 
     test('update request without token fails with 401 error code', async () => {
@@ -201,7 +201,7 @@ describe('When there are multiple users in the database', () => {
       const response = await api
         .put(`/api/users/${differentId}`)
         .send(updatedUserFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(401);
 
       expect(response.body.error).toMatch(/unauthorized/i);
@@ -215,7 +215,7 @@ describe('When there are multiple users in the database', () => {
       const response = await api
         .put(`/api/users/${targetUser.id}`)
         .send(updatedUserFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
@@ -231,7 +231,7 @@ describe('When there are multiple users in the database', () => {
       const response = await api
         .put(`/api/users/${targetUser.id}`)
         .send(updatedUserFields)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       const returnedUser = response.body;
@@ -246,7 +246,7 @@ describe('When there are multiple users in the database', () => {
     test('user can not follow themselves', async () => {
       const response = await api
         .put(`/api/users/${targetUser.id}/follow`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(400);
 
       const nonUpdatedUser = (await testHelpers.usersInDB())
@@ -262,12 +262,12 @@ describe('When there are multiple users in the database', () => {
 
       await api
         .put(`/api/users/${differentUser.id}/follow`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       const response = await api
         .put(`/api/users/${differentUser.id}/follow`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(400);
 
       expect(response.body.error).toMatch(/you already follow that user/i);
@@ -279,7 +279,7 @@ describe('When there are multiple users in the database', () => {
 
       await api
         .put(`/api/users/${differentUser.id}/follow`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       const followedUser = (await testHelpers.usersInDB()).find(
@@ -296,7 +296,7 @@ describe('When there are multiple users in the database', () => {
 
       await api
         .put(`/api/users/${differentUser.id}/follow`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       const updatedTargetUser = (await testHelpers.usersInDB())
@@ -313,7 +313,7 @@ describe('When there are multiple users in the database', () => {
 
       await api
         .put(`/api/users/${differentUserId}/follow`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       let updatedTargetUser = (await testHelpers.usersInDB()).find(
@@ -330,7 +330,7 @@ describe('When there are multiple users in the database', () => {
 
       await api
         .put(`/api/users/${differentUserId}/unfollow`)
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .expect(200);
 
       updatedTargetUser = (await testHelpers.usersInDB()).find(
@@ -359,14 +359,14 @@ describe('When there are multiple users in the database', () => {
       };
 
       const response = await api
-        .post('/api/login')
+        .post('/api/auth/login')
         .send({ username: targetUser.username, password: 'secret' });
 
-      const { token } = response.body;
+      const { accessToken } = response.body;
 
       await api
         .post('/api/posts')
-        .set('Authorization', `bearer ${token}`)
+        .set('Authorization', `bearer ${accessToken}`)
         .send(post);
     });
 
@@ -400,16 +400,16 @@ describe('When there are multiple users in the database', () => {
   test('user profile image can be posted and deleted', async () => {
     const initalUser = (await testHelpers.usersInDB())[0];
     const tokenResponse = await api
-      .post('/api/login')
+      .post('/api/auth/login')
       .send({
         username: initalUser.username,
         password: 'secret',
       });
-    const { token } = tokenResponse.body;
+    const { accessToken } = tokenResponse.body;
 
     await api
       .put(`/api/users/${initalUser.id}`)
-      .set('Authorization', `bearer ${token}`)
+      .set('Authorization', `bearer ${accessToken}`)
       .send({ imageDataUrl: testDataUri })
       .expect(200);
 
@@ -421,7 +421,7 @@ describe('When there are multiple users in the database', () => {
 
     await api
       .delete(`/api/users/${initalUser.id}/image`)
-      .set('Authorization', `bearer ${token}`)
+      .set('Authorization', `bearer ${accessToken}`)
       .expect(204);
 
     const endUser = (await testHelpers.usersInDB()).find((user) => user.id === initalUser.id);

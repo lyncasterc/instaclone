@@ -11,20 +11,6 @@ export default createStyles((theme) => ({
       marginBottom: 25,
     },
   },
-  buttonRoot: {
-    height: 30,
-    width: '100%',
-  },
-  buttonOutline: {
-    borderColor: theme.colors.gray[4],
-    color: theme.colors.instaDark[6],
-  },
-  editButtonRoot: {
-    [`@media (min-width: ${theme.breakpoints.md}px)`]: {
-      width: 'inherit',
-    },
-  },
-
   // main section -> container holding avatar and name/buttons
   mainSection: {
     display: 'flex',
@@ -56,12 +42,6 @@ export default createStyles((theme) => ({
     flexDirection: 'column',
     gap: 10,
   },
-  mainSectionButtonGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 10,
-    maxWidth: 250,
-  },
   mainSectionNameBtns: {
     display: 'flex',
     flexDirection: 'column',
@@ -71,9 +51,6 @@ export default createStyles((theme) => ({
       alignItems: 'center',
       gap: 10,
     },
-  },
-  followButtonRoot: {
-    flexShrink: 2,
   },
   placeholderIcon: {
     width: '100%',
@@ -104,5 +81,10 @@ export default createStyles((theme) => ({
     position: 'relative',
     top: 0,
     left: 0,
+  },
+  activeOpacityLight: {
+    '&:active': {
+      opacity: 0.5,
+    },
   },
 }));

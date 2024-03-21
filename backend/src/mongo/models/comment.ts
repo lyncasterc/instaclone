@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { Post } from '../index';
 
 const commentSchema = new mongoose.Schema(
   {
@@ -36,6 +35,8 @@ const commentSchema = new mongoose.Schema(
 
 commentSchema.pre('remove', async function handleCommentDeletion(next) {
   const thisComment = this;
+  const Post = this.model('Post');
+  const Like = this.model('Like');
   const post = await Post.findById(thisComment.post);
   const isThisCommentAReply = Boolean(thisComment.parentComment);
   let deletedCommentsIds = [thisComment._id.toString()];
@@ -71,6 +72,8 @@ commentSchema.pre('remove', async function handleCommentDeletion(next) {
   );
 
   await post.save();
+
+  await Like.deleteMany({ 'likedEntity.id': { $in: deletedCommentsIds }, 'likedEntity.model': 'Comment' });
 
   next();
 });

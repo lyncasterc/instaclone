@@ -5,7 +5,6 @@ import {
 } from '@mantine/core';
 import {
   IconUserCircle,
-  IconSettings,
 } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import useStyles from './UserMenu.styles';
@@ -13,7 +12,6 @@ import useAuth from '../../hooks/useAuth';
 import { useAppSelector } from '../../hooks/selector-dispatch-hooks';
 import { selectUserByUsername } from '../../../app/apiSlice';
 
-// TODO: add user prop
 function UserMenu() {
   const { classes } = useStyles();
   const [user, { logout }] = useAuth();
@@ -43,13 +41,14 @@ function UserMenu() {
       <Menu.Item icon={<IconUserCircle size={18} />} component={Link} to={`/${user}`}>
         Profile
       </Menu.Item>
-      <Menu.Item icon={<IconSettings size={18} />}>Settings</Menu.Item>
 
       <Divider />
 
       <Menu.Item
-        onClick={() => logout()}
-        sx={{ backGroundColor: 'white' }}
+        onClick={async () => {
+          await logout();
+        }}
+        sx={{ backGroundColor: 'white', color: 'red' }}
       >
         Log Out
       </Menu.Item>

@@ -6,19 +6,19 @@ import {
   mockLogout,
   waitFor,
   fireEvent,
+  testStore,
 } from '../utils/test-utils';
 import App from '../../app/App';
 import '@testing-library/jest-dom/extend-expect';
 import { fakeUser } from '../mocks/handlers';
 import server from '../mocks/server';
 import { apiSlice } from '../../app/apiSlice';
-import { store } from '../../app/store';
 
 beforeAll(() => server.listen());
 beforeEach(() => {
   const fakeTokenInfo = {
     username: fakeUser.username,
-    token: 'supersecrettoken',
+    accessToken: 'supersecrettoken',
   };
   mockLogin({ fakeTokenInfo });
 });
@@ -43,7 +43,7 @@ test('user with an image can upload a new one', async () => {
 
   const file = new File(['hello'], 'anyfile.png', { type: 'image/png' });
 
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
   const avatarImages = await screen.findAllByRole('img');
@@ -71,7 +71,7 @@ test('user with an image can upload a new one', async () => {
 });
 
 test('updating username updates the JWT username field', async () => {
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
   const usernameInput = await screen.findByPlaceholderText(/username/i);
@@ -92,7 +92,7 @@ test('updating username updates the JWT username field', async () => {
 
 // testing ChangeAvatarModal features inside UserProfileEdit
 test('when clicking on avatar, modal does not appear if user does not have an image', async () => {
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
   await waitFor(async () => {
@@ -112,7 +112,7 @@ test('when clicking on avatar, modal does appear if user has an image', async ()
     }]))),
   );
 
-  store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const { user } = renderWithRouter(<App />, { route: '/accounts/edit' });
 
   const avatar = await screen.findByTestId('avatar');

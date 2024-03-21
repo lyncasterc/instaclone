@@ -10,8 +10,8 @@ import {
   Providers,
   waitFor,
   waitForElementToBeRemoved,
+  testStore,
 } from '../utils/test-utils';
-import { store } from '../../app/store';
 import { fakeUser } from '../mocks/handlers';
 import server from '../mocks/server';
 import { apiSlice } from '../../app/apiSlice';
@@ -22,7 +22,7 @@ beforeAll(() => server.listen());
 beforeEach(() => {
   const fakeTokenInfo = {
     username: fakeUser.username,
-    token: 'supersecrettoken',
+    accessToken: 'supersecrettoken',
   };
   mockLogin({ fakeTokenInfo });
 });
@@ -33,7 +33,7 @@ afterEach(() => {
 afterAll(() => server.close());
 
 test('creating a post navigates to homepage and displays an alert', async () => {
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  await testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
 
@@ -59,7 +59,7 @@ test('creating a post navigates to homepage and displays an alert', async () => 
 });
 
 test('share button not visible while post is being created', async () => {
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  await testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
 
@@ -92,7 +92,7 @@ test('unsuccessful post creation navigates to homepage and displays an alert', a
     rest.post('/api/posts', (req, res, ctx) => res(ctx.status(500))),
   );
 
-  await store.dispatch(apiSlice.endpoints.getUsers.initiate());
+  await testStore.dispatch(apiSlice.endpoints.getUsers.initiate());
   const history = createBrowserHistory();
   history.push('/create/details', { croppedImage: testImage });
 
