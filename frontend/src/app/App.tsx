@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
 import { Container, Loader } from '@mantine/core';
+import { io, Socket } from 'socket.io-client';
 import Damion from '../common/components/Damion';
 import GlobalStyles from '../common/components/GlobalStyles';
 import Login from '../features/auth/Login/Login';
@@ -25,7 +26,9 @@ import MobileHomeNavBar from '../common/components/Navbars/MobileHomeNavbar/Mobi
 import FollowingFollowersView from '../features/users/FollowingFollowersView/FollowingFollowersView';
 import CommentsView from '../features/comments/CommentsView/CommentsView';
 import LikedByView from '../features/users/LikedByView/LikedByView';
-import { usePrefetch } from './apiSlice';
+import { usePrefetch, selectUserByUsername } from './apiSlice';
+import { useAppSelector } from '../common/hooks/selector-dispatch-hooks';
+import { selectAccessToken } from '../features/auth/authSlice';
 
 interface LocationState {
   background: string,
@@ -42,6 +45,11 @@ function App() {
   const isMediumScreenOrWider = useMediaQuery('(min-width: 992px)');
   const [loading, setLoading] = useState(true);
   const prefetchUsers = usePrefetch('getUsers', { force: true });
+  const accessToken = useAppSelector(selectAccessToken);
+  const userObject = useAppSelector(
+    (estado) => selectUserByUsername(estado, user || ''),
+  );
+  const userId = userObject?.id;
 
   useEffect(() => {
     let isCancelled = false;
@@ -59,6 +67,30 @@ function App() {
       isCancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    let socket: Socket | undefined;
+
+    if (userId && accessToken) {
+      socket = io('http://localhost:3001', {
+        auth: {
+          accessToken,
+          userId,
+        },
+      });
+
+      socket.on('connect_error', (error) => {
+        console.error(error);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('connect_error');
+        socket.disconnect();
+      }
+    };
+  }, [userId, accessToken]);
 
   if (loading) {
     return (

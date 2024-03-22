@@ -31,6 +31,7 @@
     "mongodb-memory-server": "^8.4.2",
     "mongoose": "^6.2.9",
     "morgan": "^1.10.0",
+    "socket.io": "^4.7.5",
     "valid-data-url": "^4.0.0"
   },
   "devDependencies": {
