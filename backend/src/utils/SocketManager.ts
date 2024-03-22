@@ -44,6 +44,7 @@ class SocketManager {
         || !userId
         || !decodedToken
         || !decodedToken.id
+        || decodedToken.id !== userId
         || !decodedToken.username
       ) {
         return next(new Error('invalid token'));
