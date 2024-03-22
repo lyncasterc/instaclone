@@ -127,7 +127,7 @@ function UserProfileEdit({ user }: UserProfileEditProps) {
                   setAlertText('Profile saved.');
                 }
               } catch (error) {
-                console.log(error);
+                console.error(error);
               }
             }}
             validationSchema={Yup.object({

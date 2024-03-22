@@ -5,7 +5,6 @@ import {
   selectCurrentUser,
   setAuthenticatedState,
   removeAuthenticatedState,
-  updateAuthedUsername,
 } from '../../features/auth/authSlice';
 import {
   useLoginMutation,
@@ -72,19 +71,10 @@ const useAuth = () => {
     navigate('/login');
   };
 
-  /**
-   * Calls the `updateAuthedUsername` thunk defined in `authSlice.ts` to update JWT username.
-   * @param {string} username -The new username
-   */
-  const updateTokenUsername = (username: string) => {
-    dispatch(updateAuthedUsername(username));
-  };
-
   return [useMemo(() => (user), [user]), {
     login,
     logout,
     refreshAccessToken,
-    updateTokenUsername,
   }] as const;
 };
 
