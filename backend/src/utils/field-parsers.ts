@@ -94,7 +94,6 @@ const proofPostFields = ({ caption, imageDataUrl }: UnknownPostFields) => {
   return postFields;
 };
 
-// TODO: change to named exports.
 export default {
   proofNewUserFields,
   proofUpdateUserFields,
