@@ -1,8 +1,14 @@
 import supertest from 'supertest';
 import app from '../src/app';
-import { testMongodb, Post, Comment } from '../src/mongo';
+import {
+  testMongodb,
+  Post,
+  Comment,
+  Notification,
+} from '../src/mongo';
 import { User } from '../src/types';
 import testHelpers from './helpers/test-helpers';
+import SocketManager from '../src/utils/SocketManager';
 
 const api = supertest(app);
 let accessToken: string;
@@ -523,5 +529,157 @@ describe('when deleting comments', () => {
 
     expect(updatedParentComment).toBeNull();
     expect(updatedReplyComment).toBeNull();
+  });
+});
+
+describe('notifications', () => {
+  let testUser2: User;
+  let accessToken2: string;
+
+  beforeEach(async () => {
+    (SocketManager.getInstance().emitNotification as jest.Mock).mockClear();
+
+    testUser2 = await testHelpers.createTestUser({
+      username: 'bobbybo2',
+      fullName: 'Bobby Bo2',
+      email: 'bobby2@email.com',
+      password: 'secret',
+    });
+
+    const response = await api
+      .post('/api/auth/login')
+      .send({
+        username: testUser2.username,
+        password: 'secret',
+      })
+      .expect(200);
+
+    accessToken2 = response.body.accessToken;
+  });
+
+  test('user commenting on another user\'s post should create a notification for post creator', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+
+    await api
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({ body: 'This is a comment.' })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser2.id,
+      recipient: testUser.id,
+    });
+
+    expect(notification).not.toBeNull();
+    expect(notification?.type).toBe('comment');
+  });
+
+  test('user replying to another user\'s comment should create a notification for the post creator', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const parentComment = await Comment.create({
+      post: post.id,
+      body: 'This is a comment.',
+      author: testUser2.id,
+    });
+
+    post.comments = [parentComment.id];
+
+    await post.save();
+
+    // reply to the parent comment
+    await api
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        body: 'This is a reply.',
+        parentComment: parentComment.id,
+      })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser2.id,
+      recipient: testUser.id,
+    });
+
+    expect(notification).not.toBeNull();
+    expect(notification?.type).toBe('comment');
+  });
+
+  test('user commenting on another user\'s post should emit a notification to the post creator', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const emitNotificationSpy = jest.spyOn(SocketManager.getInstance(), 'emitNotification');
+
+    await api
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({ body: 'This is a comment.' })
+      .expect(201);
+
+    expect(emitNotificationSpy).toHaveBeenCalledTimes(1);
+    expect(emitNotificationSpy).toHaveBeenCalledWith(testUser.id, 'comment');
+  });
+
+  test('user commenting on their own post should not create a notification', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+
+    await api
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ body: 'This is a comment.' })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser.id,
+      recipient: testUser.id,
+    });
+
+    expect(notification).toBeNull();
+  });
+
+  test('user commenting on their own post should not emit a notification', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const emitNotificationSpy = jest.spyOn(SocketManager.getInstance(), 'emitNotification');
+
+    await api
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ body: 'This is a comment.' })
+      .expect(201);
+
+    expect(emitNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  test('deleting a comment should delete any notifications associated with it', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+
+    // commenting on the post to create a notification
+    await api
+      .post(`/api/posts/${post.id}/comments`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({ body: 'This is a comment.' })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser2.id,
+      recipient: testUser.id,
+    });
+
+    expect(notification).not.toBeNull();
+
+    // deleting the comment
+    const comment = await Comment.findOne({ author: testUser2.id });
+
+    await api
+      .delete(`/api/posts/${post.id}/comments/${comment.id}`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .expect(204);
+
+    const updatedNotification = await Notification.findOne({
+      creator: testUser2.id,
+      recipient: testUser.id,
+    });
+
+    expect(updatedNotification).toBeNull();
   });
 });

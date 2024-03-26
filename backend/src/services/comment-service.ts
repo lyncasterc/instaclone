@@ -1,5 +1,6 @@
-import { Comment, Post } from '../mongo';
+import { Comment, Post, Notification } from '../mongo';
 import { NewComment } from '../types';
+import SocketManager from '../utils/SocketManager';
 
 const getParentCommentsByPostId = async (postId: string) => {
   const comments = await Comment.find({ post: postId })
@@ -27,9 +28,9 @@ const getRepliesByParentCommentId = async (parentCommentId: string) => {
 const addComment = async (commentFields: NewComment) => {
   const post = await Post.findById(commentFields.post);
 
-  const comment = await Comment.create(commentFields);
+  const newComment = await Comment.create(commentFields);
 
-  post.comments = [...post.comments, comment.id];
+  post.comments = [...post.comments, newComment.id];
 
   // eslint-disable-next-line no-extra-boolean-cast
   if (Boolean(commentFields.parentComment)) {
@@ -39,9 +40,27 @@ const addComment = async (commentFields: NewComment) => {
       throw new Error('comment not found');
     }
 
-    parentComment.replies = [...parentComment.replies, comment.id];
+    parentComment.replies = [...parentComment.replies, newComment.id];
 
     await parentComment.save();
+  }
+
+  if (post.creator.toString() !== newComment.author.toString()) {
+    await Notification.create({
+      type: 'comment',
+      entity: {
+        id: post.id,
+        model: 'Post',
+      },
+      originEntity: {
+        id: newComment.id,
+        model: 'Comment',
+      },
+      creator: newComment.author,
+      recipient: post.creator,
+    });
+
+    SocketManager.getInstance().emitNotification(post.creator.toString(), 'comment');
   }
 
   await post.save();

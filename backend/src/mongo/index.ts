@@ -15,5 +15,6 @@ export default connect;
 export { default as User } from './models/user';
 export { default as Post } from './models/post';
 export { default as Comment } from './models/comment';
-export { default as testMongodb } from './test-mongodb';
 export { default as Like } from './models/like';
+export { default as Notification } from './models/notification';
+export { default as testMongodb } from './test-mongodb';

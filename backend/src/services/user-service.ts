@@ -1,8 +1,9 @@
 import bcyrpt from 'bcrypt';
 import { ObjectId } from 'mongoose';
-import { User } from '../mongo';
+import { User, Notification } from '../mongo';
 import { NewUser, UpdatedUserFields } from '../types';
 import cloudinary from '../utils/cloudinary';
+import SocketManager from '../utils/SocketManager';
 
 const getUsers = async () => {
   const users = await User.find({})
@@ -83,6 +84,19 @@ const followUserById = async (followerId: string, followedUserId: string) => {
 
   await followedUser.save();
   await follower.save();
+
+  await Notification.create({
+    type: 'follow',
+    creator: followerId,
+    entity: {
+      id: followerId,
+      model: 'User',
+    },
+    recipient: followedUserId,
+    hasBeenRead: false,
+  });
+
+  SocketManager.getInstance().emitNotification(followedUserId, 'follow');
 };
 
 const deleteUserImage = async (id: string) => {
@@ -111,6 +125,12 @@ const unfollowUserById = async (followerId: string, followedUserId: string) => {
 
   await follower.save();
   await followedUser.save();
+
+  await Notification.deleteOne({
+    type: 'follow',
+    creator: followerId,
+    recipient: followedUserId,
+  });
 };
 
 export default {

@@ -37,6 +37,7 @@ commentSchema.pre('remove', async function handleCommentDeletion(next) {
   const thisComment = this;
   const Post = this.model('Post');
   const Like = this.model('Like');
+  const Notification = this.model('Notification');
   const post = await Post.findById(thisComment.post);
   const isThisCommentAReply = Boolean(thisComment.parentComment);
   let deletedCommentsIds = [thisComment._id.toString()];
@@ -74,6 +75,7 @@ commentSchema.pre('remove', async function handleCommentDeletion(next) {
   await post.save();
 
   await Like.deleteMany({ 'likedEntity.id': { $in: deletedCommentsIds }, 'likedEntity.model': 'Comment' });
+  await Notification.deleteMany({ 'originEntity.id': { $in: deletedCommentsIds }, 'originEntity.model': 'Comment' });
 
   next();
 });

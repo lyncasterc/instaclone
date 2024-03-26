@@ -1,10 +1,15 @@
 import supertest from 'supertest';
 import app from '../src/app';
 import {
-  testMongodb, Post, Comment, Like,
+  testMongodb,
+  Post,
+  Comment,
+  Like,
+  Notification,
 } from '../src/mongo';
 import testHelpers from './helpers/test-helpers';
 import { User } from '../src/types';
+import SocketManager from '../src/utils/SocketManager';
 
 const api = supertest(app);
 let accessToken: string;
@@ -705,5 +710,189 @@ describe('when deleting entities with likes', () => {
     const replyLikeCountAfter = await Like.countDocuments({ 'likedEntity.id': entityId });
 
     expect(replyLikeCountAfter).toBe(0);
+  });
+});
+
+describe('notifications', () => {
+  let testUser2: User;
+  let accessToken2: string;
+
+  beforeEach(async () => {
+    (SocketManager.getInstance().emitNotification as jest.Mock).mockClear();
+
+    testUser2 = await testHelpers.createTestUser({
+      username: 'bobbybo2',
+      fullName: 'Bobby Bo2',
+      email: 'bobby2@email.com',
+      password: 'secret',
+    });
+
+    const response = await api
+      .post('/api/auth/login')
+      .send({
+        username: testUser2.username,
+        password: 'secret',
+      })
+      .expect(200);
+
+    accessToken2 = response.body.accessToken;
+  });
+
+  test('liking another user\'s entity should create a notification for the entity creator', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    // liking the post with testUser2
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser2.id,
+      recipient: testUser.id,
+      'entity.id': entityId,
+    });
+
+    expect(notification).not.toBeNull();
+    expect(notification?.type).toBe('like');
+  });
+
+  test('liking another user\'s entity should emit a notification to the user if they are connected', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+    const emitNotificationSpy = jest.spyOn(SocketManager.getInstance(), 'emitNotification');
+
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    expect(emitNotificationSpy).toHaveBeenCalledTimes(1);
+    expect(emitNotificationSpy).toHaveBeenCalledWith(testUser.id, 'like');
+  });
+
+  test('user liking their own entity should not create a notification', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser.id,
+      recipient: testUser.id,
+      'entity.id': entityId,
+    });
+
+    expect(notification).toBeNull();
+  });
+
+  test('user liking their own entity should not emit a notification', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+    const emitNotificationSpy = jest.spyOn(SocketManager.getInstance(), 'emitNotification');
+
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    expect(emitNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  test('unliking an post should delete any notification associated to it', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const entityId = post.id;
+
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        entityId,
+        entityModel: 'Post',
+      })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser2.id,
+      recipient: testUser.id,
+      'entity.id': entityId,
+    });
+
+    expect(notification).not.toBeNull();
+
+    await api
+      .delete(`/api/likes/${entityId}`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .expect(204);
+
+    const notificationAfter = await Notification.findOne({
+      creator: testUser2.id,
+      recipient: testUser.id,
+      'entity.id': entityId,
+    });
+
+    expect(notificationAfter).toBeNull();
+  });
+
+  test('unliking a comment should delete any notification associated to it', async () => {
+    const post = await Post.findOne({ creator: testUser.id });
+    const newComment = await Comment.create({
+      post: post.id,
+      body: 'A new comment',
+      author: testUser2.id,
+    });
+    const entityId = newComment.id;
+
+    post.comments = [newComment.id];
+    await post.save();
+
+    // liking the comment with testUser
+    await api
+      .post('/api/likes')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        entityId,
+        entityModel: 'Comment',
+      })
+      .expect(201);
+
+    const notification = await Notification.findOne({
+      creator: testUser.id,
+      recipient: testUser2.id,
+    });
+
+    expect(notification).not.toBeNull();
+
+    await api
+      .delete(`/api/likes/${entityId}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(204);
+
+    const notificationAfter = await Notification.findOne({
+      creator: testUser.id,
+      recipient: testUser2.id,
+    });
+
+    expect(notificationAfter).toBeNull();
   });
 });

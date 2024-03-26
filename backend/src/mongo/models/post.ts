@@ -38,6 +38,7 @@ postSchema.pre('remove', async function handlePostDeletion(next) {
   const thisPost = this;
   const Comment = this.model('Comment');
   const Like = this.model('Like');
+  const Notification = this.model('Notification');
   let postCommentIds = await Comment.find({ post: thisPost._id }).select('_id');
 
   postCommentIds = postCommentIds.map(
@@ -47,6 +48,7 @@ postSchema.pre('remove', async function handlePostDeletion(next) {
   await Comment.deleteMany({ post: thisPost._id });
   await Like.deleteMany({ 'likedEntity.id': thisPost._id, 'likedEntity.model': 'Post' });
   await Like.deleteMany({ 'likedEntity.id': { $in: postCommentIds }, 'likedEntity.model': 'Comment' });
+  await Notification.deleteMany({ 'entity.id': thisPost._id, 'entity.model': 'Post' });
 
   next();
 });
