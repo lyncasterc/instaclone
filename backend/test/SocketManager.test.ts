@@ -1,3 +1,6 @@
+/* eslint-disable import/first */
+jest.unmock('../src/utils/SocketManager');
+
 import supertest from 'supertest';
 import { io, Socket } from 'socket.io-client';
 import http from 'http';
@@ -8,6 +11,7 @@ import config from '../src/utils/config';
 import SocketManager from '../src/utils/SocketManager';
 import { User } from '../src/types';
 import testHelpers from './helpers/test-helpers';
+import logger from '../src/utils/logger';
 
 const api = supertest(app);
 
@@ -198,6 +202,103 @@ describe('SocketManager accessToken validation', () => {
 
     clientSocket.on('connect_error', (error) => {
       done('connect_error should not fire: ', error);
+    });
+  });
+});
+
+describe('SocketManager.emitNotification', () => {
+  beforeAll(async () => {
+    await testMongodb.connect();
+    SocketManager.getInstance(httpServer);
+    httpServer.listen(PORT);
+  });
+
+  beforeEach(async () => {
+    await testMongodb.clear();
+
+    testUser = await testHelpers.createTestUser({
+      username: 'bobbybo1',
+      fullName: 'Bobby Bo',
+      email: 'bobby@email.com',
+      password: 'secret',
+    });
+
+    const response = await api
+      .post('/api/auth/login')
+      .send({
+        username: testUser.username,
+        password: 'secret',
+      })
+      .expect(200);
+
+    accessToken = response.body.accessToken;
+  });
+
+  afterEach(() => {
+    if (clientSocket.connected) {
+      clientSocket.disconnect();
+    }
+
+    jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await testMongodb.close();
+    httpServer.close();
+  });
+
+  test('should emit notification to the user if they are connected', (done) => {
+    const loggerInfoSpy = jest.spyOn(logger, 'info');
+
+    clientSocket = io(`http://localhost:${PORT}`, {
+      auth: {
+        accessToken,
+        userId: testUser.id,
+      },
+    });
+
+    clientSocket.on('connect', () => {
+      SocketManager.getInstance().emitNotification(testUser.id, 'like');
+    });
+
+    clientSocket.on('notification', (notification) => {
+      expect(notification).toBe('like');
+
+      const loggerInfoCalls = loggerInfoSpy.mock.calls.flat().map((call) => call?.message);
+      expect(loggerInfoCalls).toContain('notification sent');
+
+      clientSocket.disconnect();
+      done();
+    });
+  });
+
+  test('should not emit notification to a user if they are not connected', (done) => {
+    const loggerInfoSpy = jest.spyOn(logger, 'info');
+
+    clientSocket = io(`http://localhost:${PORT}`, {
+      auth: {
+        accessToken,
+        userId: testUser.id,
+      },
+    });
+
+    clientSocket.on('connect', () => {
+      console.log('client connected');
+      clientSocket.disconnect();
+    });
+
+    setTimeout(() => {
+      SocketManager.getInstance().emitNotification(testUser.id, 'like');
+
+      const loggerInfoCalls = loggerInfoSpy.mock.calls.flat().map((call) => call?.message);
+
+      expect(loggerInfoCalls).not.toContain('notification sent');
+
+      done();
+    }, 1500);
+
+    clientSocket.on('notification', () => {
+      done('should not receive notification');
     });
   });
 });

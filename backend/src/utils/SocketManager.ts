@@ -3,6 +3,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import config from './config';
 import logger from './logger';
+import { NotificationType } from '../types';
 
 /**
  * Manages the socket connections and events for the server.
@@ -96,6 +97,25 @@ class SocketManager {
     }
 
     return SocketManager.instance;
+  }
+
+  /**
+   * Emits a notification to a specific user.
+   * @param userId - The ID of the user to send the notification to.
+   * @param notification - The notification to send.
+   */
+  emitNotification(userId: string, notification: NotificationType): void {
+    const socketId = this.users.get(userId);
+
+    if (socketId) {
+      this.io.to(socketId).emit('notification', notification);
+
+      logger.info({
+        message: 'notification sent',
+        userId,
+        notification,
+      });
+    }
   }
 }
 

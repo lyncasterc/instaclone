@@ -88,3 +88,8 @@ export interface ProofedUpdatedPost {
   comments?: string[] // ref,
   likes?: string[] // ref -> User
 }
+
+/**
+ * Represents the types of notifications a user can receive.
+*/
+export type NotificationType = 'like' | 'comment' | 'follow';
